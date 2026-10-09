@@ -1,0 +1,34 @@
+{
+  "id": "primitive.auth-floating-input",
+  "kind": "primitive",
+  "name": "Floating-label input",
+  "designSystem": "auth",
+  "props": {
+    "label": {
+      "type": "string",
+      "maxWords": 3,
+      "measuredValue": "\"Phone Number\" \u2014 capital N on /log-in; /sign-up says \"Phone number\". A real cross-screen copy inconsistency; preserved."
+    },
+    "type": {
+      "enum": [
+        "tel",
+        "text",
+        "email",
+        "password"
+      ]
+    },
+    "name": {
+      "type": "string"
+    },
+    "autocomplete": {
+      "const": "off",
+      "hardConstraint": true
+    }
+  },
+  "measuredFrom": "spec/SPEC_auth.md:469-576",
+  "notes": [
+    "Label animates between placeholder position (16px/24px weight 600, #b2babf) and floated position (11px/15px weight 600, #667680).",
+    "Transition: border/outline/background/colour 200ms ease on the input; all 200ms ease on the label.",
+    "HARD CONSTRAINT: autocomplete=\"off\" and no credential transport. See sections/auth.login-form.json constraints."
+  ]
+}

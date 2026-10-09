@@ -1,0 +1,132 @@
+{
+  "id": "blog.related-posts",
+  "kind": "section",
+  "name": "Similar articles",
+  "category": "blog",
+  "designSystem": "marketing",
+  "variants": [
+    "default"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "heading": {
+        "const": "Similar articles"
+      },
+      "posts": {
+        "type": "array",
+        "minItems": 3,
+        "maxItems": 3,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "slug": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string",
+              "maxWords": 12,
+              "measuredLongestRealInstance": "\"How to Set Your Sitter Up for Success\" = 8 words"
+            },
+            "cover": {
+              "type": "object",
+              "assetRoleEnumRef": "assets/asset-roles.json#/roles",
+              "allowedRoles": [
+                "editorial.cover",
+                "photo.person"
+              ]
+            },
+            "tags": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 3,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxWords": 3,
+                    "measuredLongestRealInstance": "\"Otter news\" = 2 words"
+                  },
+                  "color": {
+                    "enum": [
+                      "midnight",
+                      "sandstone",
+                      "coral",
+                      "celeste",
+                      "peach",
+                      "olive"
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "color"
+                ]
+              }
+            },
+            "featured": {
+              "type": "boolean",
+              "default": false,
+              "note": "the featured card shows a single static celeste 'Featured' pill INSTEAD of the CMS tags"
+            }
+          },
+          "required": [
+            "slug",
+            "title",
+            "cover",
+            "tags"
+          ],
+          "forbiddenFields": [
+            "author",
+            "date",
+            "publishedAt",
+            "readTime",
+            "excerpt",
+            "deck",
+            "shareLinks",
+            "breadcrumb"
+          ],
+          "forbiddenFieldsReason": "None of this data exists on the original. There is not a single <time> element on any blog page. Do not add fields the original lacks."
+        }
+      }
+    },
+    "required": [
+      "heading",
+      "posts"
+    ]
+  },
+  "constraints": {
+    "mustBeLastBeforeFooter": true,
+    "onePerPage": true,
+    "maxPerPage": 1,
+    "allowedTemplates": [
+      "blog-post"
+    ],
+    "exactlyThree": "Exactly 3 cards. No 'view all' link, no pagination.",
+    "widerContainer": "Uses the WIDE .container (1296px at 1440), not .cc-narrow, so this grid is wider than the prose above it. Deliberate on the original; kept."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. Global .btn hover transitions only."
+  },
+  "responsive": {
+    "desktop": "3-up via col-lg-4.",
+    "le991": "col-md-6.",
+    "le479": "col-xs-12 -> 1-up."
+  },
+  "assetRoles": [
+    "editorial.cover",
+    "photo.person"
+  ],
+  "observedOn": [
+    "/blog-posts/:slug"
+  ],
+  "measuredFrom": "spec/SPEC_blog_legal.md:602-629"
+}

@@ -1,0 +1,23 @@
+{
+  "id": "primitive.link-inline",
+  "kind": "primitive",
+  "name": "Bare inline link",
+  "designSystem": "marketing",
+  "props": {
+    "label": {
+      "type": "string",
+      "maxWords": 4
+    },
+    "href": {
+      "type": "string"
+    },
+    "newTab": {
+      "type": "boolean"
+    }
+  },
+  "measuredFrom": "CLONE_SPEC.md:156-159",
+  "notes": [
+    "No class. Inherits a{color:color.primary; font-weight:500; text-decoration:none} plus the global underline tuning (text-underline-position:under, thickness .1em, offset .05em).",
+    ":hover changes nothing visually. :focus-visible gets the 2px dashed outline."
+  ]
+}

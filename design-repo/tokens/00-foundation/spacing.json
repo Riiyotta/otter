@@ -1,0 +1,82 @@
+{
+  "id": "tokens.foundation.spacing",
+  "designSystem": "marketing",
+  "note": "Marketing spacing is section-rhythm plus a small set of em-based utilities. There is no 4/8 numeric scale on this site.",
+  "sectionRhythm": {
+    "default": {
+      "paddingBlock": "5rem = 80px",
+      "le991": "4rem = 64px",
+      "le479": "3rem = 48px",
+      "measuredFrom": "CLONE_SPEC.md:135-139"
+    },
+    "footer": {
+      "paddingBlock": "80px 48px",
+      "le479": "48px 0",
+      "measuredFrom": "CLONE_SPEC.md:140-140"
+    }
+  },
+  "gridGutter": {
+    "$value": "40px total",
+    "mechanism": ".row{margin-inline:-20px} over .col{padding-inline:20px}",
+    "rowGap": "40px from .col{margin-bottom:40px}",
+    "measuredFrom": "CLONE_SPEC.md:123-126"
+  },
+  "utilities": {
+    "u-mb-0": {
+      "$value": "margin-bottom:0",
+      "alsoDeclares": "font-weight:400",
+      "warning": "This extra declaration is load-bearing \u2014 see typography.syntheticWeightNote."
+    },
+    "u-mb-1": {
+      "$value": "1em"
+    },
+    "u-mb-2": {
+      "$value": "2em"
+    },
+    "u-mb-3": {
+      "$value": "3em = 48px"
+    },
+    "u-mt-1": {
+      "$value": "1em"
+    },
+    "u-pt-0": {
+      "$value": "padding-top:0"
+    },
+    "u-pb-0": {
+      "$value": "padding-bottom:0"
+    },
+    "u-pb-2": {
+      "$value": "padding-bottom:2em",
+      "note": "At <=479 the .section{padding-block:3rem} media query wins the cascade, giving 48px not 32px."
+    },
+    "u-p-0": {
+      "$value": "padding:0"
+    }
+  },
+  "componentGaps": {
+    "sectionHeader": {
+      "$value": "1.5em = 24px",
+      "le991": "1em = 16px",
+      "measuredFrom": "CLONE_SPEC.md:398-398"
+    },
+    "containerFooter": {
+      "$value": "2.5rem = 40px"
+    },
+    "trustBar": {
+      "$value": "2em = 32px",
+      "le479": "3em = 48px"
+    },
+    "featuredLogos": {
+      "$value": "2.5em = 40px",
+      "le991": "2em = 32px"
+    },
+    "statContain": {
+      "$value": "0.75em = 12px"
+    },
+    "navButtons": {
+      "$value": "1em = 16px",
+      "le991": "1.5em = 24px",
+      "le479": "1.25em = 20px"
+    }
+  }
+}

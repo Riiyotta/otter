@@ -1,0 +1,17 @@
+{
+  "id": "primitive.press-logo",
+  "kind": "primitive",
+  "name": "Press logo mark",
+  "designSystem": "marketing",
+  "props": {
+    "height": {
+      "const": "24px",
+      "note": "1.5em on .featured-logo-wrap; 1.7em at <=767, 1.5em at <=479"
+    }
+  },
+  "measuredFrom": "CLONE_SPEC.md:420-425",
+  "notes": [
+    "Four marks in DOM order on the homepage press bar, rendered at 24px tall.",
+    "LICENSING: these are four real third-party publications' trademarks. assetRole press.logo is pinned to must-not-reproduce-real-mark. A generated instance MUST NOT emit these files, copies of them, or imitations. The press-bar section's content contract therefore carries no logo-file field a generator can populate."
+  ]
+}

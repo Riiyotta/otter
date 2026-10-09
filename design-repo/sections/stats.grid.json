@@ -1,0 +1,150 @@
+{
+  "id": "stats.grid",
+  "kind": "section",
+  "name": "Statistics grid",
+  "category": "stats",
+  "designSystem": "marketing",
+  "variants": [
+    "six-with-spacers",
+    "three-centered"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "variant": {
+        "enum": [
+          "six-with-spacers",
+          "three-centered"
+        ],
+        "note": "six-with-spacers = the 'kidcare gap' block: a centred h2 plus 6 stat columns separated by two col-lg-1.col-md-hide spacers that are display:none at <=991. three-centered = the compensation-philosophy block: a .cc-centered section header plus 3 .stat-contain.u-text-center columns."
+      },
+      "eyebrow": {
+        "anyOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "string",
+            "maxWords": 4,
+            "measuredLongestRealInstance": "\"internal equity\" = 2 words"
+          }
+        ],
+        "note": "null for six-with-spacers (which has no eyebrow, only a centred h2); present for three-centered."
+      },
+      "heading": {
+        "type": "string",
+        "maxWords": 10,
+        "measuredLongestRealInstance": "\"Our compensation philosophy\" = 3 words"
+      },
+      "lede": {
+        "anyOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "string",
+            "maxWords": 32,
+            "measuredLongestRealInstance": "24 words measured"
+          }
+        ]
+      },
+      "stats": {
+        "type": "array",
+        "minItems": 3,
+        "maxItems": 6,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "eyebrow": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "string",
+                  "maxWords": 4,
+                  "measuredLongestRealInstance": "\"stay-at-home parents\" = 2 words",
+                  "note": "authored in mixed case, uppercased by CSS"
+                }
+              ]
+            },
+            "figure": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "string",
+                  "maxWords": 3,
+                  "measuredLongestRealInstance": "\"2 million\" = 2 words"
+                }
+              ]
+            },
+            "label": {
+              "type": "string",
+              "maxWords": 22,
+              "measuredLongestRealInstance": "15 words measured"
+            },
+            "body": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "string",
+                  "maxWords": 32,
+                  "measuredLongestRealInstance": "22 words measured"
+                }
+              ]
+            }
+          },
+          "required": [
+            "label"
+          ]
+        }
+      }
+    },
+    "required": [
+      "variant",
+      "heading",
+      "stats"
+    ]
+  },
+  "constraints": {
+    "maxPerPage": 2,
+    "onePerPage": false,
+    "repeatable": true,
+    "allowedTemplates": [
+      "careers"
+    ],
+    "variantKeyed": true,
+    "variantMustDiffer": "The two instances on /careers use DIFFERENT variants. Two instances of the same variant on one page has never been observed.",
+    "statCountByVariant": {
+      "six-with-spacers": 6,
+      "three-centered": 3
+    }
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. Global .btn hover transitions only."
+  },
+  "responsive": {
+    "desktop": "six-with-spacers: 3 + 3 across two rows, .stat-contain 270x155.781. three-centered: 3 columns, 373.328 wide.",
+    "le991": "the two col-md-hide spacers become display:none (measured rect 0,0,0,0).",
+    "le767": "stats go col-sm-6 -> two per row.",
+    "le479": "two per row at 155.5 wide; the centred h2 drops to 28.8px with 57.6px bottom margin."
+  },
+  "assetRoles": [],
+  "observedOn": [
+    "/careers"
+  ],
+  "measuredFrom": "spec/SPEC_faq_contact_careers.md:579-598",
+  "notes": [
+    "three-centered carries a measured asymmetry: .stat-contain.u-text-center sets text-align:center on the wrapper, but the h3.h4.u-mb-0 inside still computes text-align:LEFT while the p is centred. Reproduce verbatim \u2014 it is not a bug."
+  ]
+}

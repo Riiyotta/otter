@@ -1,0 +1,59 @@
+{
+  "id": "faq.category-empty",
+  "kind": "section",
+  "name": "FAQ category (empty collection)",
+  "category": "faq",
+  "designSystem": "marketing",
+  "variants": [
+    "default"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "heading": {
+        "type": "string",
+        "maxWords": 6,
+        "measuredLongestRealInstance": "\"For parents\" = 2 words"
+      },
+      "emptyState": {
+        "const": true,
+        "note": "LOCKED TRUE. Both CMS collections on /faq are genuinely empty on the original: the server HTML ships no item template at all, only Webflow's .w-dyn-empty placeholder. So /faq genuinely has NO FAQ content and NO accordion is rendered on it."
+      }
+    },
+    "required": [
+      "heading",
+      "emptyState"
+    ]
+  },
+  "constraints": {
+    "maxPerPage": 2,
+    "onePerPage": false,
+    "repeatable": true,
+    "allowedTemplates": [
+      "faq-categories"
+    ],
+    "noInventedContent": "A generated instance must not invent FAQ copy. There is no items field.",
+    "noConsecutiveException": "This section legitimately appears TWICE in a row on /faq ('For parents' then 'For sitters'). compatibility/graph.json lists it as a named exception to NO_ADJACENT_SAME_CATEGORY."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. Global .btn hover transitions only."
+  },
+  "responsive": {
+    "desktop": ".row.row-justify-around with a col-lg-4 heading column and a col-lg-7 list column. Sections 278.4px tall.",
+    "le991": "columns narrow; the 'For parents' heading wraps to two lines at 1024, growing the first section to 334.4px.",
+    "le479": "both columns go flex-basis 100%; sections 257.4px tall."
+  },
+  "assetRoles": [],
+  "observedOn": [
+    "/faq"
+  ],
+  "measuredFrom": "spec/SPEC_faq_contact_careers.md:218-256",
+  "notes": [
+    "The accordion CSS exists in the design system (and is used by /careers' job rows) but has ZERO live instances on /faq."
+  ]
+}

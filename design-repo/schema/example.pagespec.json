@@ -1,0 +1,170 @@
+{
+  "pageSpecVersion": "1.0.0",
+  "route": "/parents",
+  "template": "audience-landing",
+  "designSystem": "marketing",
+  "theme": "marketing-light",
+  "nodes": [
+    {
+      "section": "chrome.navbar",
+      "variant": "site",
+      "content": {
+        "variant": "site"
+      },
+      "motion": {
+        "pattern": "mobileNav.open",
+        "reducedMotionFallback": "instant-switch",
+        "durationMs": 400,
+        "delayMs": 200,
+        "easing": "ease.outQuart",
+        "asymmetricTiming": true
+      }
+    },
+    {
+      "section": "hero.light-split",
+      "variant": "pst-stones",
+      "content": {
+        "variant": "pst-stones",
+        "heading": "Quality kidcare, when you need it",
+        "headingWeightQuirk": false,
+        "lede": "Care options designed for both planned and unplanned schedule changes, with sitters available on as little as two hours notice.",
+        "ledeClass": "paragraph-1-25",
+        "ctas": [
+          {
+            "label": "Book kidcare",
+            "href": "https://app.withotter.com/sign-up/welcome",
+            "variant": "dark"
+          }
+        ],
+        "shapes": [
+          {
+            "clipId": "stone-hero_middle-left",
+            "fill": "color.coral",
+            "rotate90": false,
+            "media": {
+              "assetRole": "photo.person",
+              "assetRef": "public/img/Parents.webp"
+            }
+          },
+          {
+            "clipId": "stone-hero_top-left",
+            "fill": "color.olive",
+            "rotate90": true,
+            "media": {
+              "assetRole": "decorative.none"
+            }
+          }
+        ],
+        "heroImage": null
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    },
+    {
+      "section": "disclosure.tabs-accordion",
+      "content": {
+        "eyebrow": "how it works",
+        "heading": "We help families find reliable, flexible kidcare",
+        "lede": "We match you with sitters based on your family's needs and their availability.",
+        "items": [
+          {
+            "key": "signup",
+            "label": "Sign up",
+            "body": "Tell us your contact information and a little about your kids. Just like that, you are all set.",
+            "media": {
+              "assetRole": "photo.person",
+              "assetRef": "public/img/Sign-up-2.webp"
+            }
+          },
+          {
+            "key": "book",
+            "label": "Book a sitter",
+            "body": "Let us know when you need care and we match you with a sitter based on your needs and their availability.",
+            "media": {
+              "assetRole": "photo.person",
+              "assetRef": "public/img/home-tabs-–-book.webp"
+            }
+          },
+          {
+            "key": "care",
+            "label": "Get care & pay",
+            "body": "Your sitter shows up so you can head out. After the booking wraps up you receive a payment request in the app.",
+            "media": {
+              "assetRole": "photo.person",
+              "assetRef": "public/img/home-tabs-–-heda-out.webp"
+            }
+          }
+        ]
+      },
+      "motion": {
+        "pattern": "tabs.desktopSwitch",
+        "reducedMotionFallback": "instant-switch",
+        "durationMs": 500,
+        "delayMs": 0,
+        "easing": "ease.outQuart",
+        "replaysOnSwitch": true
+      }
+    },
+    {
+      "section": "conversion.cta-card",
+      "variant": "narrow",
+      "content": {
+        "variant": "narrow",
+        "heading": "Experienced kidcare is right around the corner.",
+        "cta": {
+          "label": "Book kidcare",
+          "href": "https://app.withotter.com/sign-up/welcome",
+          "variant": "dark"
+        },
+        "image": {
+          "assetRole": "photo.person",
+          "assetRef": "public/img/mom-on-phone.webp"
+        },
+        "blob": {
+          "clipId": "footer-shape-right",
+          "fill": "color.peach"
+        }
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    },
+    {
+      "section": "testimonials.slider-empty",
+      "content": {
+        "heading": "What our parents are saying",
+        "lede": "We can confidently say we would leave our own kids with Otter in a heartbeat.",
+        "emptyState": true
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    },
+    {
+      "section": "faq.common-questions-empty",
+      "content": {
+        "heading": "Common questions",
+        "emptyState": true
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    },
+    {
+      "section": "chrome.footer",
+      "variant": "site",
+      "content": {
+        "variant": "site"
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    }
+  ]
+}

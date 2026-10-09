@@ -1,0 +1,18 @@
+{
+  "id": "primitive.bullet-number",
+  "kind": "primitive",
+  "name": "Numbered organic bullet",
+  "designSystem": "marketing",
+  "props": {
+    "number": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 3
+    }
+  },
+  "measuredFrom": "CLONE_SPEC.md:380-381",
+  "notes": [
+    "64x64 (48px at <=479), background-image bullet-organic.svg, radius 99px, flex-centred. Inner label 24px/24px weight 600, centred.",
+    "Observed only on the homepage how-it-works cards, numbered 1-3."
+  ]
+}

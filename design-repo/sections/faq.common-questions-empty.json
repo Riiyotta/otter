@@ -1,0 +1,54 @@
+{
+  "id": "faq.common-questions-empty",
+  "kind": "section",
+  "name": "Common questions (empty collection)",
+  "category": "faq",
+  "designSystem": "marketing",
+  "variants": [
+    "default"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "heading": {
+        "type": "string",
+        "maxWords": 8,
+        "measuredLongestRealInstance": "\"Common questions\" = 2 words"
+      },
+      "emptyState": {
+        "const": true,
+        "note": "LOCKED TRUE for the same reason as testimonials.slider-empty. No questions array exists."
+      }
+    },
+    "required": [
+      "heading",
+      "emptyState"
+    ]
+  },
+  "constraints": {
+    "maxPerPage": 1,
+    "onePerPage": true,
+    "allowedTemplates": [
+      "audience-landing"
+    ],
+    "noInventedContent": "A generated instance must not invent FAQ question/answer pairs."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. Global .btn hover transitions only."
+  },
+  "responsive": {
+    "desktop": "300px tall section with the grey empty box.",
+    "le479": "209px tall."
+  },
+  "assetRoles": [],
+  "observedOn": [
+    "/parents",
+    "/sitters"
+  ],
+  "measuredFrom": "spec/SPEC_parents_sitters_trust.md:738-756"
+}

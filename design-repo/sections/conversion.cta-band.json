@@ -1,0 +1,96 @@
+{
+  "id": "conversion.cta-band",
+  "kind": "section",
+  "name": "Blog CTA band",
+  "category": "conversion",
+  "designSystem": "marketing",
+  "variants": [
+    "default"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "heading": {
+        "type": "string",
+        "maxWords": 14,
+        "measuredLongestRealInstance": "measured on /blog"
+      },
+      "cta": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxWords": 5,
+            "measuredLongestRealInstance": "\"Get started\" = 2 words"
+          },
+          "href": {
+            "enum": [
+              "#"
+            ],
+            "note": "The real href on the original is the literal '#' -- a DEAD LINK, kept as-is rather than repaired, because guessing its intended destination would be inventing content. Do NOT substitute an app-host URL here. Measured in src/components/blog/CtaBand.jsx:8-19."
+          },
+          "variant": {
+            "enum": [
+              "dark",
+              "cc-white",
+              "cc-light"
+            ]
+          }
+        },
+        "required": [
+          "label",
+          "href",
+          "variant"
+        ]
+      },
+      "image": {
+        "type": "object",
+        "assetRoleEnumRef": "assets/asset-roles.json#/roles",
+        "allowedRoles": [
+          "editorial.cover",
+          "photo.person",
+          "decorative.none"
+        ]
+      }
+    },
+    "required": [
+      "heading",
+      "cta",
+      "image"
+    ]
+  },
+  "constraints": {
+    "maxPerPage": 1,
+    "onePerPage": true,
+    "allowedTemplates": [
+      "blog-index"
+    ],
+    "mustBeLastBeforeFooter": true
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. Global .btn hover transitions only."
+  },
+  "responsive": {
+    "desktop": "copy + image split inside the band.",
+    "le991": "reflows per col spans.",
+    "le479": "stacks."
+  },
+  "assetRoles": [
+    "editorial.cover",
+    "photo.person",
+    "decorative.none"
+  ],
+  "observedOn": [
+    "/blog"
+  ],
+  "measuredFrom": "spec/SPEC_blog_legal.md:374-422",
+  "notes": [
+    "A first draft of this contract pinned the CTA to https://app.withotter.com/sign-up by analogy with the other conversion sections. Direct inspection of src/components/blog/CtaBand.jsx showed the real href is '#'. The invented value was removed; this is the kind of plausible-but-unmeasured guess the build methodology forbids."
+  ]
+}

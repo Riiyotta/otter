@@ -1,0 +1,147 @@
+/* ============================================================
+   Site chrome — the nav content links + footer link columns that
+   every route EXCEPT `/` ships.
+
+   Scope rule: every selector in this file targets an element that
+   only exists when <Nav chrome="site"> / <Footer chrome="site"> is
+   rendered (`.nav_link-current-icon`, `.current-icon`,
+   `.nav_link.w--current`, `.footer_link-list`, `.footer_link`).
+   The homepage renders empty `.nav_links-parent` / `.footer_links-
+   container` with none of those descendants, so nothing here can
+   reach it. Shared base rules (`.nav_links-parent`, `.nav_link`,
+   `.footer_links-container`, the IX2 mobile-nav timings) already
+   live in src/index.css and are NOT redeclared here.
+
+   Plain CSS on purpose — imported from JS, so it sits outside
+   Tailwind's @layer machinery. That also means it out-ranks the
+   layered rules in index.css regardless of import order, which is
+   why the scoping above matters.
+
+   Sources: spec/SPEC_parents_sitters_trust.md §3.1 / §3.2 / §3.3 /
+   §8.5, spec/SPEC_faq_contact_careers.md §2.1 / §2.2,
+   spec/SPEC_blog_legal.md §1.1 / §1.2, cross-checked against
+   reference/assets/with-otter-*.shared.*.min.css.
+   ============================================================ */
+
+/* Webflow base — not previously needed because the homepage has no
+   unstyled lists. */
+.w-list-unstyled {
+  padding-left: 0;
+  list-style: none;
+}
+
+/* ---------- Nav: the current/hover blob (§3.1) ---------- */
+
+/* `.nav_link` is already `position:relative; overflow:hidden` in
+   index.css, which is what clips the blob's translateY(100%) rest
+   state. */
+.nav_link-current-icon {
+  z-index: -1;
+  opacity: 0;
+  color: var(--celeste); /* the inline SVG is fill="currentColor" */
+  mix-blend-mode: multiply;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  position: absolute;
+  inset: 0%;
+  transform: translateY(100%);
+  transition: opacity 0.3s var(--out-quart), transform 0.3s var(--out-quart);
+}
+
+.current-icon {
+  width: 2.5em; /* 40px @ the 16px desktop link */
+  position: relative;
+  top: 3px;
+}
+
+/* The reveal. This is the site's ONLY min-width query — it lives in
+   the per-page inline <style> embed (§8.5), not in the compiled
+   stylesheet, which is why the blob never shows ≤991px even on the
+   current route. */
+@media screen and (min-width: 992px) {
+  .nav_link.w--current .nav_link-current-icon,
+  .nav_link:hover .nav_link-current-icon {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  /* Keyboard parity: the original has no focus rule here, so this is
+     additive only — it reuses the hover visual rather than inventing
+     one. The global focus-visible outline in index.css still applies. */
+  .nav_link:focus-visible .nav_link-current-icon {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- Footer: link columns (§3.3) ---------- */
+
+/* `.footer_links-container` (display:flex; flex-wrap:wrap; width:80%)
+   and its ≤767 override already exist in index.css. */
+.footer_link-list {
+  width: 25%;
+  padding-left: 0;
+}
+
+.footer_link {
+  margin-bottom: 1.25rem; /* 20px */
+  font-size: 1rem;
+}
+
+/* ============================================================
+   ≤991  (medium)
+   ============================================================ */
+@media screen and (max-width: 991px) {
+  /* Current route gets a solid coral-74% pill instead of the blob.
+     #fbad9cbd === rgba(251,173,156,.741). */
+  .nav_link.w--current {
+    background-color: #fbad9cbd;
+    border-radius: 99px;
+    padding: 8px 16px;
+  }
+  /* Recoloured but still opacity:0 — the ≥992 reveal doesn't apply. */
+  .nav_link-current-icon {
+    color: var(--coral);
+  }
+  .current-icon {
+    width: 1.5em; /* 36px @ the 24px mobile link */
+  }
+
+  .footer_link-list {
+    width: 30%;
+  }
+}
+
+/* ============================================================
+   ≤767  (small)
+   ============================================================ */
+@media screen and (max-width: 767px) {
+  .footer_link {
+    margin-bottom: 0.8rem; /* 12.8px */
+    font-size: 1rem;
+  }
+}
+
+/* ============================================================
+   ≤479  (tiny)
+   ============================================================ */
+@media screen and (max-width: 479px) {
+  .footer_link-list {
+    width: 50%;
+    margin-bottom: 1em;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+/* Not in the original (§8.4 confirms no prefers-reduced-motion block
+   exists), but index.css already opts the nav motion out, so the blob
+   follows the same house rule. */
+@media (prefers-reduced-motion: reduce) {
+  .nav_link-current-icon {
+    transition: none;
+  }
+}

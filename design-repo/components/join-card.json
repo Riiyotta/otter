@@ -1,0 +1,21 @@
+{
+  "id": "component.join-card",
+  "kind": "component",
+  "name": "Wide join card (.home-card-lg)",
+  "designSystem": "marketing",
+  "composes": [
+    "primitive.button-primary"
+  ],
+  "geometry": {
+    "background": "surface.card + background-image join-bg.svg at 100% 0, no-repeat, auto 100%",
+    "radius": "radius.card",
+    "padding": "4em = 64px",
+    "direction": "row",
+    "measured1440": "1200 x 423.2"
+  },
+  "measuredFrom": "CLONE_SPEC.md:388-396",
+  "notes": [
+    "Copy column max-width 50% (75% at <=767, none at <=479). background-position shifts per breakpoint: 160% at <=991, 190% at <=767, 200px at <=479.",
+    "Padding drops to 2em = 32px at <=767."
+  ]
+}

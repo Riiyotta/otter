@@ -1,0 +1,20 @@
+{
+  "id": "component.post-card",
+  "kind": "component",
+  "name": "Blog post card",
+  "designSystem": "marketing",
+  "composes": [
+    "primitive.tag-pill"
+  ],
+  "geometry": {
+    "variants": {
+      "featured": "col-lg-12 full width, carries a static celeste 'Featured' pill instead of the CMS tags",
+      "standard": "col-lg-4 / col-md-6 / col-sm-12"
+    }
+  },
+  "measuredFrom": "spec/SPEC_blog_legal.md:220-328",
+  "notes": [
+    "NO hover state and NO transition. Confirmed against the original \u2014 do not add one.",
+    "No author, no date, no excerpt, no read-time. The card's only fields are cover, title and tags."
+  ]
+}

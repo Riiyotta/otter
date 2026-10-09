@@ -1,0 +1,425 @@
+/* ============================================================================
+   blog.css — /blog (CMS collection list) + /blog-posts/:slug (post template)
+
+   Port of the compiled Webflow stylesheet, rule-for-rule, per
+   spec/SPEC_blog_legal.md §2, §3 and §5. Plain CSS on purpose (no @layer, no
+   @tailwind directives): this file is imported from JS, outside Tailwind's
+   layer machinery.
+
+   ⚠️ Source order is NOT reliable here. Vite emits this file BEFORE index.css
+   (App's module subtree is walked before main.jsx's own `import './index.css'`),
+   and PostCSS flattens Tailwind's @layer, so everything lands in one flat
+   cascade with blog.css first. Every rule below that has to beat something in
+   index.css therefore wins on SPECIFICITY, not position. The two cascade
+   gotchas the spec flags are called out inline.
+
+   Everything here is blog-only. Shared primitives (.container, .cc-narrow,
+   .row/.col, .section, .section-header, .btn, .tag, .u-mb-0, .u-sr-only,
+   .u-aspect-1x1, .u-img-cover, .h2/.h3/.h4, the type scale) already live in
+   index.css and are NOT redefined.
+   ============================================================================ */
+
+/* ---------------------------------------------------------------- §5 utilities
+   Missing from index.css because only blog/legal use them. */
+.u-mb-2 { margin-bottom: 2em; } /* 32px */
+.u-mt-3 { margin-top: 3em; }    /* 48px */
+.u-d-none { display: none; }
+
+/* ⚠️ CASCADE GOTCHA (§3.5). `.u-mb-1{margin-bottom:1em}` wins above 991px →
+   56px on `h2.h3.u-mb-1`. At ≤991 the stylesheet's later
+   `@media(max-width:991px){.h3{margin-bottom:.3em;font-size:2.5rem}}` takes
+   over → .3em of the *then-current* .h3 size (12px ≤991, 8.64px ≤479).
+   The 0,2,0 media rule below pins that result regardless of emitted order.
+   Do not hardcode 1em. */
+.u-mb-1 { margin-bottom: 1em; }
+@media screen and (max-width: 991px) {
+  .h3.u-mb-1 { margin-bottom: 0.3em; }
+}
+
+.b-radius-32 {
+  border-radius: 32px;
+  overflow: hidden;
+}
+
+/* ------------------------------------------------- Webflow CMS list wrappers
+   `div.w-dyn-list` / `div[role=list].w-dyn-items` carry no visual styling of
+   their own — the `.row` on the items div does all the work. Declared so the
+   markup can mirror the original DOM 1:1 (§2.1).
+   NOTE: no `.w-dyn-empty` block exists in the original markup for either list
+   (§2.1) — none is rendered here either. */
+.w-dyn-list,
+.w-dyn-items,
+.w-dyn-item {
+  /* intentionally empty — structural classes only */
+}
+
+.w-list-unstyled {
+  padding-left: 0;
+  list-style: none;
+}
+
+/* ------------------------------------------------------------- §2.3 tag pills
+   `.tag` base (celeste bg / primary fg, r8, .4em .8em, .875rem) is in
+   index.css. Only the CMS `color` attribute map is new. Specificity 0,2,0
+   beats the bare `.tag`. `midnight` is the only token that flips the
+   foreground. */
+.tag[color='coral'] { background-color: #fbad9c; }
+.tag[color='sandstone'] { background-color: #ac9e88; }
+.tag[color='peach'] { background-color: #fbd3b6; }
+.tag[color='midnight'] {
+  background-color: #00373e;
+  color: #f8f6f5;
+}
+
+/* ------------------------------------------------------- §2.3 the post card */
+.blog_item {
+  gap: 1em; /* 16px */
+  flex-direction: column;
+  display: flex;
+  position: relative;
+}
+.blog_item.cc-featured {
+  gap: 4em; /* 64px */
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.blog_item-image {
+  border-radius: 2em; /* 32px */
+  width: 100%;
+  overflow: hidden;
+  isolation: isolate; /* from the global <style> embed — keeps iOS clipping the radius */
+}
+.blog_item-image.cc-featured { width: 50%; }
+
+.blog_item-image-aspect {
+  width: 100%;
+  padding-top: 100%;
+  position: relative;
+  overflow: hidden;
+}
+/* 4:3. Carried by BOTH card variants on these pages, so there is no 1:1 card
+   even though the base class defaults to 1:1 (§2.3). */
+.blog_item-image-aspect.cc-featured { padding-top: 75%; }
+
+.blog_heading-wrapper {
+  gap: 1em; /* 16px */
+  flex-direction: column;
+  display: flex;
+}
+.blog_heading-wrapper.cc-featured { max-width: 40%; }
+
+.blog_item-tags-wrapper {
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em; /* 8px */
+  display: flex;
+}
+
+/* The whole-card link. NO hover state and NO transition anywhere on the card —
+   verified against every :hover rule in the compiled stylesheet; the only match
+   is the focus ring below (§2.3). Do not add one. */
+.u-link-cover {
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position: absolute;
+  inset: 0;
+}
+.u-link-cover:focus-visible,
+.u-link-cover[data-wf-focus-visible] {
+  outline-offset: 4px;
+  outline-width: 3px;
+}
+
+@media screen and (max-width: 991px) {
+  .blog_item.cc-featured {
+    flex-direction: column;
+    gap: 1em;
+  }
+  .blog_item-image {
+    border-radius: 1.5em; /* 24px */
+    width: 100%;
+  }
+  .blog_heading-wrapper.cc-featured {
+    max-width: none;
+    gap: 0.8em; /* 12.8px */
+  }
+}
+@media screen and (max-width: 767px) {
+  .blog_item-image { border-radius: 1em; } /* 16px */
+  .blog_item-image.cc-featured { width: 100%; }
+}
+@media screen and (max-width: 479px) {
+  .blog_item-image { border-radius: 1em; } /* 16px */
+}
+
+/* -------------------------------------------------- §2.5 load-more pagination
+   Finsweet CMS Load v1 on the original (`fs-cmsload-mode="load-under"`), not
+   Webflow paging. */
+.w-pagination-wrapper {
+  flex-wrap: wrap;
+  justify-content: center;
+  display: flex;
+}
+
+/* ⚠️ CASCADE GOTCHA (§2.5). Webflow's unstyled `.w-pagination-next` base sets
+   `font-size:14px` and `margin-inline:10px`, and in the compiled sheet it is
+   declared AFTER `.btn{font-size:1rem}` — so 14px wins. Because `.btn`'s
+   padding (.875em 1.25em) and radius (99em) are in `em`, the whole pill scales
+   down with it: padding 12.25px/17.5px, radius 1386px, rendered 110×40.5.
+   Reproduced with a 0,2,0 selector rather than by relying on source order:
+   Vite concatenates this file BEFORE index.css (App's module subtree is walked
+   before main.jsx's own `import './index.css'`), and PostCSS flattens
+   Tailwind's @layer, so an unlayered `.w-pagination-next{font-size:14px}` would
+   LOSE to `.btn{font-size:1rem}` — and to its ≤767 override. `.w-pagination-next.btn`
+   beats both on specificity at every breakpoint, whatever the emitted order. */
+.w-pagination-next {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.w-pagination-next.btn {
+  font-size: 14px; /* → lh 14px (.btn line-height:1), pad 12.25/17.5, r1386, box 110×40.5 */
+  /* Re-measured against the live pill: the original is a real `a[href]`, so the
+     UA gives it `cursor:pointer`. Ours is deliberately inert (no href), which
+     computed `cursor:auto` — a visible appearance delta, not a behaviour one.
+     Pinned back to pointer so the pill looks identical; it still does nothing. */
+  cursor: pointer;
+}
+/* ⚠️ …but ONLY above 767px. In the compiled sheet the Webflow base
+   `.w-pagination-next{font-size:14px}` is declared BEFORE
+   `@media(max-width:767px){.btn{font-size:1rem}}`, and at equal specificity
+   (0,1,0) the later media rule wins — so on the original the pill is 16px at
+   ≤767 and the em-based padding/radius scale back UP: measured 125.44×46,
+   pad 14/20, r1584 at 390 (re-measured live, which corrects the "same at @390"
+   row in SPEC §5). Pinning 14px at (0,2,0) unconditionally over-compensated for
+   the cascade and broke the mobile pill, so the ≤767 value is pinned at the
+   same specificity here. */
+@media screen and (max-width: 767px) {
+  .w-pagination-next.btn {
+    font-size: 1rem; /* 16px → pad 14/20, r1584, box 125.44×46 */
+  }
+}
+
+/* The hidden "previous" link. `.u-d-none` keeps it `display:none` so none of
+   this renders, but it is Webflow's unstyled pagination base and the original's
+   computed values (14px/21px, #333 on #fafafa, 1px #ccc, r2, pad 9/20,
+   margin-inline 10px) come from it — reproduced so the hidden node matches.
+   NOTE: deliberately NOT applied to `.w-pagination-next`, where `.btn` has to
+   win every one of these properties; leaving the next pill's base out removes
+   any dependence on emitted order.
+
+   ⚠️ And NO `display:block` here, even though Webflow's base declares it.
+   `.u-d-none{display:none}` is declared earlier in THIS file at the same
+   specificity (0,1,0), so a `display:block` on `.w-pagination-previous` wins
+   the tie and un-hides the "Previous" link — which then joins the flex line and
+   stretches the "Load more" pill from 40.5px to 41px. Measured that regression
+   into existence once; don't reintroduce it. The original computes
+   `display:none` here anyway. */
+.w-pagination-previous {
+  color: #333;
+  background-color: #fafafa;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 9px 20px;
+  font-size: 14px;
+}
+
+.w-page-count {
+  text-align: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
+/* ------------------------------------------------------------- §2.6 CTA band */
+.container.cc-cta {
+  background-color: var(--white);
+  border-radius: 4.5rem; /* 72px */
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  min-height: 30rem; /* 480px */
+  padding-top: 4rem; /* 64px */
+  padding-bottom: 4rem;
+  display: flex;
+  overflow: hidden;
+  isolation: isolate; /* global <style> embed */
+}
+.container.cc-narrow.cc-cta-2 { width: 85%; }
+
+.cta-image-wrapper {
+  z-index: 1;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position: absolute;
+  inset: 0;
+}
+.cta-image-contain { width: 33%; }
+.cta-image-contain.cc-extra-wide { width: 50%; }
+.cta-image-aspect {
+  width: 100%;
+  padding-top: 141%;
+  position: relative;
+  overflow: hidden;
+}
+.cta-image-aspect.cc-wide { padding-top: 75%; }
+.cta-image-aspect.cc-extra-wide { padding-top: 62%; }
+
+@media screen and (max-width: 991px) {
+  .container.cc-cta.cc-wide-cta {
+    justify-content: flex-start;
+    padding-bottom: 39%;
+  }
+  .cta-image-wrapper.cc-extra-wide {
+    justify-content: center;
+    align-items: flex-end;
+  }
+  .cta-image-contain {
+    width: 50%;
+    margin-right: -10%;
+  }
+  .cta-image-contain.cc-extra-wide {
+    width: 90%;
+    margin-right: 0;
+  }
+}
+@media screen and (max-width: 767px) {
+  .container.cc-cta {
+    border-radius: 2rem; /* 32px */
+    min-height: auto;
+    padding: 2rem 2rem 11rem;
+  }
+  /* 41% resolves against the parent .section's width → 159.898px at 390 */
+  .container.cc-cta.cc-wide-cta { padding-bottom: 41%; }
+  .container.cc-narrow.cc-cta-2 { width: 100%; }
+  .cta-image-wrapper {
+    justify-content: space-between;
+    align-items: flex-end;
+    inset: auto 0 0;
+  }
+  .cta-image-contain {
+    margin-bottom: -18%;
+    margin-right: -14%;
+    position: absolute;
+    inset: auto 0 0 auto;
+  }
+  .cta-image-contain.cc-extra-wide {
+    width: 100%;
+    margin-bottom: 0;
+    margin-left: auto;
+  }
+}
+@media screen and (max-width: 479px) {
+  .container.cc-cta { padding-bottom: 13.3rem; }
+  .cta-image-contain {
+    width: 80%;
+    margin-bottom: -40%;
+    margin-right: -35%;
+  }
+  .cta-image-contain.cc-extra-wide { margin-right: -11%; }
+}
+
+/* ================================================= §3.4 rich-text post body ==
+   The measure comes entirely from `.col.col-lg-8` inside `.container.cc-narrow`
+   (786.66 / 601.06 / 351px) — `.blog-rich-text` itself has NO max-width.
+   Prose is base `body` type: 16px/24px weight 500, identical at all three
+   widths. It is NOT `.paragraph-1-25`. */
+.blog-rich-text {
+  margin-left: auto;
+  margin-right: auto;
+}
+.blog-rich-text p { margin-bottom: 1em; } /* 16px */
+/* Flat 4rem — in rem, not em, so it does NOT shrink on mobile (§3.4). */
+.blog-rich-text h3 { margin-top: 4rem; }
+.blog-rich-text h4 {
+  margin-top: 4rem;
+  margin-bottom: 0.5em;
+}
+.blog-rich-text img { border-radius: 16px; }
+
+/* Global <style> embed: first/last child margin resets. */
+.w-richtext > :first-child { margin-top: 0; }
+.w-richtext > :last-child,
+.w-richtext ol li:last-child,
+.w-richtext ul li:last-child {
+  margin-bottom: 0;
+}
+
+/* Webflow rich-text figure/video/alignment plumbing.
+   ⚠️ UNMEASURED (§3.4): neither sample post contains a ul, ol, blockquote, img,
+   figure, hr or embedded video, so none of the rules in this block could be
+   confirmed against a live computed style. They are transcribed from the
+   compiled stylesheet so the prose block is complete — treat the numbers as
+   unverified. `ul/ol/li` and `blockquote` base styling already exists in
+   index.css's base layer (padding-left 2.2em, li mb .3em, and the grey 5px
+   blockquote rule); it is NOT duplicated here. The blockquote rule in
+   particular is unstyled Webflow boilerplate and almost certainly unintended —
+   flagged rather than embellished. */
+.w-richtext ol,
+.w-richtext ul {
+  overflow: hidden;
+}
+.w-richtext figure {
+  max-width: 60%;
+  position: relative;
+}
+.w-richtext figure > div { width: 100%; }
+.w-richtext figure img { width: 100%; }
+.w-richtext figure figcaption {
+  text-align: center;
+  margin-top: 5px;
+}
+.w-richtext figure[data-rt-type='image'] > figcaption {
+  caption-side: bottom;
+  display: table-caption;
+}
+.w-richtext figure[data-rt-type='video'] {
+  width: 60%;
+  height: 0;
+}
+.w-richtext figure[data-rt-type='video'] > div { width: 100%; }
+.w-richtext figure[data-rt-type='video'] iframe {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0 auto auto 0;
+}
+.w-richtext-align-fullwidth {
+  width: 100%;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+.w-richtext-align-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+.w-richtext-align-floatleft {
+  float: left;
+  margin-right: 15px;
+}
+.w-richtext-align-floatright {
+  float: right;
+  margin-left: 15px;
+}
+
+/* ------------------------------------------------- §2.2 hero padding reset
+   `.u-p-0{padding:0}` is in index.css, but the ≤991 companion rule
+   (`@media(max-width:991px){.section.u-p-0{padding-block:0}}`) is not — without
+   it the breakpoint's `.section{padding:4rem}` would win back. Measured
+   padding on `header.section.u-p-0` is 0 at all three widths. */
+@media screen and (max-width: 991px) {
+  .section.u-p-0 {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}

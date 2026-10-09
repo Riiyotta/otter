@@ -1,0 +1,110 @@
+{
+  "id": "blog.post-header",
+  "kind": "section",
+  "name": "Blog post header",
+  "category": "blog",
+  "designSystem": "marketing",
+  "variants": [
+    "default"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "title": {
+        "type": "string",
+        "maxWords": 12,
+        "measuredLongestRealInstance": "\"How to Set Your Sitter Up for Success\" = 8 words",
+        "note": "h1.h2.u-mb-0 \u2014 takes .h2's 4.5rem/1.1 scale but keeps h1's Reckless Neue family and -.01em tracking, and .u-mb-0 drops it to weight 400. Net: Reckless Neue 400, not 900. Intentional."
+      },
+      "tags": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 3,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string",
+              "maxWords": 3,
+              "measuredLongestRealInstance": "\"Otter news\" = 2 words"
+            },
+            "color": {
+              "enum": [
+                "midnight",
+                "sandstone",
+                "coral",
+                "celeste",
+                "peach",
+                "olive"
+              ]
+            }
+          },
+          "required": [
+            "name",
+            "color"
+          ]
+        }
+      },
+      "cover": {
+        "type": "object",
+        "assetRoleEnumRef": "assets/asset-roles.json#/roles",
+        "allowedRoles": [
+          "editorial.cover",
+          "photo.person"
+        ],
+        "note": "forced 1:1 square, 32px radius at EVERY breakpoint, letterboxed by object-fit: contain. alt=\"\" on the original. This is a SEPARATE CMS field from the card cover; 9 of the 10 real posts serve the same file for both, and exactly one differs."
+      }
+    },
+    "required": [
+      "title",
+      "tags",
+      "cover"
+    ]
+  },
+  "constraints": {
+    "mustBeFirst": true,
+    "onePerPage": true,
+    "maxPerPage": 1,
+    "allowedTemplates": [
+      "blog-post"
+    ],
+    "noHero": "This template has no hero section at all. The post header IS the top of the page, and it is a plain div.section.u-pb-0, not a <header>.",
+    "forbiddenFields": [
+      "author",
+      "date",
+      "publishedAt",
+      "readTime",
+      "shareLinks",
+      "breadcrumb",
+      "backToBlog",
+      "deck",
+      "subtitle",
+      "excerpt",
+      "inlineCta",
+      "nextPrev"
+    ],
+    "forbiddenFieldsReason": "Recon checked the raw HTML and the live DOM on two sample posts. Zero <time> elements exist. None of this data is on the original, so none of it is invented here."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. Global .btn hover transitions only."
+  },
+  "responsive": {
+    "desktop": "title column col-lg-6 and cover column col-lg-6 inside .container.cc-narrow, row-justify-between + row-align-center. Section padding 80px 0 0.",
+    "le767": "columns go col-sm-12 -> stacked.",
+    "le479": "section padding 48px 0 0."
+  },
+  "assetRoles": [
+    "editorial.cover",
+    "photo.person"
+  ],
+  "observedOn": [
+    "/blog-posts/:slug"
+  ],
+  "measuredFrom": "spec/SPEC_blog_legal.md:499-527"
+}

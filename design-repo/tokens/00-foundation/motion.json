@@ -1,0 +1,143 @@
+{
+  "id": "tokens.foundation.motion",
+  "designSystem": "marketing",
+  "engine": "Webflow IX2 (not GSAP, not Framer Motion, no IntersectionObserver in site code)",
+  "note": "The complete motion inventory for the whole marketing site. It is genuinely tiny. Several states deliberately have NO transition and must stay that way.",
+  "easing": {
+    "ease.outQuart": {
+      "$value": "cubic-bezier(0.165, 0.84, 0.44, 1)",
+      "alias": "--out-quart",
+      "measuredFrom": "src/index.css:64-64"
+    },
+    "ease.plain": {
+      "$value": "ease",
+      "usedBy": "slideInFromBottom keyframe only"
+    }
+  },
+  "duration": {
+    "duration.300": "300ms",
+    "duration.400": "400ms",
+    "duration.500": "500ms",
+    "duration.1000": "1000ms"
+  },
+  "delay": {
+    "delay.0": "0ms",
+    "delay.100": "100ms (tab accordion open only)",
+    "delay.200": "200ms (mobile nav, per-property)"
+  },
+  "patterns": {
+    "scrollReveal.slideInBottom": {
+      "appliesTo": ".section-header.cc-tabas-header on / ONLY",
+      "from": {
+        "opacity": 0,
+        "transform": "translateY(100px)"
+      },
+      "to": {
+        "opacity": 1,
+        "transform": "none"
+      },
+      "duration": 1000,
+      "delay": 0,
+      "easing": "ease.outQuart",
+      "trigger": "scroll into view, offset 20% of viewport height",
+      "fires": "once",
+      "doesNotRunOn": "/parents and /sitters carry the same class but no data-w-id and no inline opacity:0 \u2014 do NOT add a reveal there",
+      "measuredFrom": "CLONE_SPEC.md:462-492"
+    },
+    "mobileNav.open": {
+      "total": "~600ms",
+      "easing": "ease.outQuart",
+      "perProperty": "burger lines 300ms at delay 0 for translateY, 300ms at delay 200 for rotateZ; card opacity+translateY 400ms at delay 200; overlay opacity 300ms at delay 0",
+      "measuredFrom": "CLONE_SPEC.md:493-524"
+    },
+    "mobileNav.close": {
+      "total": "~500ms",
+      "easing": "ease.outQuart",
+      "asymmetry": "rotateZ back to 0 at delay 0; everything else at delay 200",
+      "measuredFrom": "CLONE_SPEC.md:525-549"
+    },
+    "tabs.desktopSwitch": {
+      "opacity": "300ms ease.outQuart",
+      "card": "animation slideInFromBottom 500ms ease, translateY(20%)->0, replays on every switch",
+      "measuredFrom": "spec/SPEC_parents_sitters_trust.md:882-896"
+    },
+    "tabs.accordion": {
+      "appliesAt": "<=991px",
+      "property": "max-height",
+      "duration": 300,
+      "easing": "ease.outQuart",
+      "asymmetric": true,
+      "openDelay": 100,
+      "closeDelay": 0,
+      "measuredFrom": "spec/SPEC_parents_sitters_trust.md:882-896"
+    },
+    "navCurrentIcon.reveal": {
+      "properties": [
+        "opacity",
+        "transform"
+      ],
+      "duration": 300,
+      "easing": "ease.outQuart",
+      "gatedBy": "@media screen and (min-width:992px)",
+      "measuredFrom": "spec/SPEC_parents_sitters_trust.md:886-886"
+    },
+    "hover.btn": {
+      "properties": [
+        "color",
+        "background-color",
+        "border-color"
+      ],
+      "duration": 300,
+      "easing": "ease.outQuart",
+      "measuredFrom": "CLONE_SPEC.md:554-559"
+    },
+    "hover.tabTriggerRadius": {
+      "properties": [
+        "border-radius"
+      ],
+      "duration": 300,
+      "easing": "ease.outQuart",
+      "visibleAt": "<=479 only",
+      "measuredFrom": "spec/SPEC_parents_sitters_trust.md:889-889"
+    },
+    "hover.swiperArrow": {
+      "properties": [
+        "color",
+        "background-color"
+      ],
+      "duration": 300,
+      "easing": "ease.outQuart",
+      "measuredFrom": "spec/SPEC_parents_sitters_trust.md:888-888"
+    },
+    "hover.listingRow": {
+      "properties": [
+        "color",
+        "background-color"
+      ],
+      "duration": 300,
+      "easing": "ease.outQuart",
+      "measuredFrom": "src/styles/faq-contact-careers.css:231-241"
+    },
+    "none": {
+      "$value": "no transition at all",
+      "appliesTo": [
+        ".btn.cc-white box-shadow",
+        ".btn.cc-white :active transform scale(.95)",
+        ".button-primary (declares no transition \u2014 hover and :active are instant)",
+        "blog post cards (no hover state and no transition)"
+      ],
+      "measuredFrom": "CLONE_SPEC.md:564-572"
+    }
+  },
+  "notPresent": {
+    "stagger": "none anywhere on the site",
+    "marquee": "none",
+    "parallax": "none",
+    "canvas": "none",
+    "lottie": "none",
+    "videoAutoplay": "none \u2014 0 <video> elements site-wide; /trust-safety is a click-to-play facade",
+    "swiperSlides": "1 live .swiper on /parents and /sitters but 0 .swiper-slide (empty CMS collection); no autoplay, no loop",
+    "prefersReducedMotion": "NO @media (prefers-reduced-motion) block exists in the original stylesheet or inline embed. Generated instances must still declare reducedMotionFallback; implementing it is an additive improvement over the original, documented as such.",
+    "measuredFrom": "spec/SPEC_parents_sitters_trust.md:897-906"
+  }
+}

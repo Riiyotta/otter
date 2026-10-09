@@ -1,0 +1,19 @@
+{
+  "id": "component.shape-stack",
+  "kind": "component",
+  "name": "Overlapping blob pair",
+  "designSystem": "marketing",
+  "composes": [
+    "primitive.stone-shape"
+  ],
+  "geometry": {
+    "variants": {
+      "pst": "two .shape-contain siblings inside the hero column (/parents, /sitters, /trust-safety)",
+      "header-shapes": ".header-shapes-contain with .cc-sitters-top + .cc-sitters-bottom (/faq, /careers)"
+    }
+  },
+  "measuredFrom": "spec/SPEC_faq_contact_careers.md:257-288",
+  "notes": [
+    "Both variants draw from the same closed 7-id clip-path vocabulary. Only fill, image and rotation differ per route."
+  ]
+}

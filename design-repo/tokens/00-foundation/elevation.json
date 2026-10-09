@@ -1,0 +1,28 @@
+{
+  "id": "tokens.foundation.elevation",
+  "designSystem": "marketing",
+  "note": "The marketing site has almost no elevation. Only .btn.cc-white carries a shadow, and it is NOT transitioned.",
+  "tokens": {
+    "elevation.none": {
+      "$value": "none",
+      "appliesTo": "every card, the hero, the trust bar, the footer cards, .button-primary"
+    },
+    "elevation.whiteBtnHover": {
+      "$value": "0 1px rgba(27,30,31,.08), 0 1px 5px rgba(27,30,31,.04)",
+      "transition": "NONE \u2014 box-shadow is absent from the .btn transition list, so it snaps",
+      "measuredFrom": "CLONE_SPEC.md:213-213"
+    },
+    "elevation.whiteBtnActive": {
+      "$value": "0 1px rgba(27,30,31,.08)",
+      "alsoApplies": "transform: scale(.95)",
+      "transition": "NONE \u2014 instant",
+      "measuredFrom": "CLONE_SPEC.md:214-214"
+    }
+  },
+  "filters": {
+    "filter": "none anywhere",
+    "backdropFilter": "none anywhere",
+    "mixBlendMode": "only .btn.cc-white declares mix-blend-mode:normal (a no-op); .nav_link-current-icon uses multiply",
+    "measuredFrom": "CLONE_SPEC.md:222-222"
+  }
+}

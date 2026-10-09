@@ -1,0 +1,43 @@
+{
+  "id": "primitive.stone-shape",
+  "kind": "primitive",
+  "name": "Clip-path blob",
+  "designSystem": "marketing",
+  "props": {
+    "clipId": {
+      "enum": [
+        "stone-hero_top-right",
+        "stone-hero_bottom-right",
+        "stone-hero_top-left",
+        "stone-hero_middle-left",
+        "stone-hero_bottom-left",
+        "footer-shape-left",
+        "footer-shape-right"
+      ]
+    },
+    "fill": {
+      "enum": [
+        "color.peach",
+        "color.celeste",
+        "color.olive",
+        "color.coral",
+        "color.sandstone",
+        "none"
+      ]
+    },
+    "rotate90": {
+      "type": "boolean",
+      "default": false
+    },
+    "image": {
+      "type": "object",
+      "note": "optional; when present the blob carries a .u-aspect-1x1 > img.u-img-cover (object-fit: CONTAIN)",
+      "assetRoleRequired": true
+    }
+  },
+  "measuredFrom": "src/components/ClipPathDefs.jsx:4-41",
+  "notes": [
+    "The shape vocabulary is CLOSED at 7 ids. No route adds path data \u2014 routes recombine the same 7 with different fills, images and rotations.",
+    "clipPathUnits=\"objectBoundingBox\", so the path is resolution-independent and the div just needs a 1:1 box."
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "id": "tokens.foundation.typography",
+  "designSystem": "marketing",
+  "families": {
+    "font.display": {
+      "$value": "'Reckless Neue', sans-serif",
+      "hostedWeights": [
+        900
+      ],
+      "files": [
+        "public/fonts/RecklessNeue-Heavy.woff"
+      ],
+      "format": "woff",
+      "fontDisplay": "swap",
+      "measuredFrom": "src/index.css:43-49"
+    },
+    "font.sans": {
+      "$value": "Jokker, sans-serif",
+      "hostedWeights": [
+        400,
+        500,
+        600
+      ],
+      "hostedStyles": [
+        "normal",
+        "italic (400,500 only)"
+      ],
+      "files": [
+        "public/fonts/Jokker-Regular.woff",
+        "public/fonts/Jokker-RegularItalic.woff",
+        "public/fonts/Jokker-Medium.woff",
+        "public/fonts/Jokker-MediumItalic.woff",
+        "public/fonts/Jokker-Semibold.woff"
+      ],
+      "format": "woff",
+      "fontDisplay": "swap",
+      "measuredFrom": "src/index.css:8-42"
+    }
+  },
+  "fontCount": {
+    "files": 6,
+    "note": "6 .woff files total; all local. No Google Fonts request, no font CDN."
+  },
+  "weightScale": {
+    "400": "regular / also what .u-mb-0 forces",
+    "500": "body default (body{font-weight:500})",
+    "600": "semibold \u2014 headings h2-h4, buttons, eyebrows",
+    "700": "strong (synthesised from 600 Semibold; no 700 file hosted)",
+    "900": "Reckless Neue Heavy \u2014 h1 default"
+  },
+  "syntheticWeightNote": "INTENTIONAL, DO NOT 'FIX'. .u-mb-0 declares font-weight:400 in addition to margin-bottom:0. Several h1s carry .u-mb-0 (/sitters, /blog, /blog-posts/:slug, /careers, /contact) so they compute Reckless Neue 400 while only the 900 Heavy file is hosted \u2014 the browser synthesises a lighter face. That is the original's correct appearance.",
+  "syntheticWeightMeasuredFrom": "src/pages/Sitters.jsx:62-66",
+  "scale": {
+    "h1": {
+      "desktop": "80px/80px",
+      "le991": "64px",
+      "le767": "57.6px",
+      "le479": "48px",
+      "family": "font.display",
+      "weight": 900,
+      "letterSpacing": "-0.01em",
+      "marginBottom": "0.2em",
+      "measuredFrom": "CLONE_SPEC.md:166-166"
+    },
+    "h2": {
+      "desktop": "72px/72px",
+      "le991": "56px",
+      "le767": "48px",
+      "le479": "32px",
+      "family": "font.sans",
+      "weight": 600,
+      "measuredFrom": "CLONE_SPEC.md:167-167"
+    },
+    "h3": {
+      "desktop": "56px",
+      "le991": "44.8px",
+      "le767": "40px",
+      "le479": "28.8px",
+      "weight": 600,
+      "lineHeight": 1.2,
+      "measuredFrom": "CLONE_SPEC.md:168-168"
+    },
+    "classH3": {
+      "desktop": "56px",
+      "le991": "40px",
+      "le767": "40px",
+      "le479": "28.8px",
+      "note": ".h3 utility differs from the h3 element at <=991",
+      "measuredFrom": "CLONE_SPEC.md:169-169"
+    },
+    "h4": {
+      "desktop": "40px",
+      "le991": "32px",
+      "le767": "28.8px",
+      "le479": "20px",
+      "weight": 600,
+      "measuredFrom": "CLONE_SPEC.md:170-170"
+    },
+    "h3Small": {
+      "desktop": "32px",
+      "le479": "24px",
+      "weight": 600,
+      "measuredFrom": "CLONE_SPEC.md:171-171"
+    },
+    "paragraph15": {
+      "desktop": "24px/36px",
+      "le767": "18px/27px",
+      "weight": 500,
+      "measuredFrom": "CLONE_SPEC.md:172-172"
+    },
+    "paragraph125": {
+      "desktop": "20px/30px",
+      "le767": "16px/24px",
+      "weight": 400,
+      "weightWhenUMb0": 500,
+      "measuredFrom": "CLONE_SPEC.md:173-173"
+    },
+    "eyebrow": {
+      "all": "14px/19.6px",
+      "weight": 600,
+      "letterSpacing": "0.49px",
+      "transform": "uppercase",
+      "measuredFrom": "CLONE_SPEC.md:174-174"
+    },
+    "btn": {
+      "all": "16px",
+      "weight": 600,
+      "padding": "14px 20px",
+      "measuredFrom": "CLONE_SPEC.md:175-175"
+    },
+    "buttonPrimary": {
+      "all": "16px",
+      "lineHeight": 0,
+      "weight": 600,
+      "padding": "32px",
+      "maxHeight": "64px",
+      "measuredFrom": "CLONE_SPEC.md:197-197"
+    }
+  }
+}

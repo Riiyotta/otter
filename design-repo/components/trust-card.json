@@ -1,0 +1,33 @@
+{
+  "id": "component.trust-card",
+  "kind": "component",
+  "name": "Dark feature card (.trust-card)",
+  "designSystem": "marketing",
+  "composes": [],
+  "geometry": {
+    "background": "surface.inverse",
+    "color": "text.onInverse",
+    "radius": "radius.card",
+    "minHeight": "30em = 480px",
+    "padding": "3em = 48px",
+    "le991": "gap 2em, min-height auto, padding 2em"
+  },
+  "measuredFrom": "spec/SPEC_faq_contact_careers.md:644-668",
+  "responsive": {
+    "trustSafety": {
+      "desktop": "2 rows of 2 via col-lg-5",
+      "le991": "col-md-6",
+      "le767": "col-sm-12 -> 1-up"
+    },
+    "careersBenefits": {
+      "desktop": "3 x 2 grid via col-lg-4",
+      "le991": "col-md-6 (still 3-up at 1024 since 1024 > 991)",
+      "le767": "col-sm-12 -> 1-up"
+    }
+  },
+  "notes": [
+    "Used by BOTH /trust-safety (4 cards, icon cap 104px) and /careers Benefits (6 cards, .benefits-icons max-width 88px with margin-bottom 48px).",
+    "Header block .trust-card_header: gap 1.5em, max-width 80% (86% at <=767, 100% at <=479).",
+    "Heading .trust-bar_header is 2em = 32px (1.5em at <=767, 1.25em at <=479), margin-bottom 0."
+  ]
+}

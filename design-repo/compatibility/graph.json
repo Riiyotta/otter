@@ -1,0 +1,266 @@
+{
+  "$comment": "Rhythm and adjacency rules JSON Schema cannot express. EVERY rule below was derived by reading templates/templates.json's actual node sequences at the moment it was written, never from assumption \u2014 the sets in `derivedSets` are computed, not hand-listed. schema/semantic_validate.py enforces these and must agree with this file; extraction/verify_all.py fails the run if the two drift apart.",
+  "version": "1.0.0",
+  "severities": [
+    "error",
+    "warn"
+  ],
+  "derivedSets": {
+    "NO_HERO_TEMPLATES": {
+      "value": [
+        "auth-login",
+        "blog-post",
+        "legal-prose",
+        "not-found"
+      ],
+      "derivedBy": "templates with no node whose section has category 'hero'",
+      "count": 4
+    },
+    "NO_CHROME_TEMPLATES": {
+      "value": [
+        "auth-login"
+      ],
+      "derivedBy": "templates with no chrome.* node",
+      "count": 1
+    },
+    "HOME_ONLY_SECTIONS": {
+      "value": [
+        "banner.beta-card",
+        "conversion.join-card",
+        "hero.dark-rounded",
+        "process.numbered-cards",
+        "trust.press-bar"
+      ],
+      "derivedBy": "non-chrome sections appearing in the 'home' template's node list",
+      "count": 5
+    },
+    "MARKETING_TEMPLATES": {
+      "value": [
+        "audience-landing",
+        "blog-index",
+        "blog-post",
+        "careers",
+        "contact",
+        "faq-categories",
+        "home",
+        "legal-prose",
+        "not-found",
+        "trust-safety"
+      ],
+      "count": 10
+    }
+  },
+  "rules": [
+    {
+      "id": "ONE_HERO_PER_PAGE",
+      "severity": "error",
+      "rule": "A PageSpec may contain at most one node whose section category is 'hero'.",
+      "exception": "REAL AND REQUIRED: auth-login, blog-post, legal-prose, not-found have no hero at all and must not be forced to have one. blog-post's top element is a plain div.section.u-pb-0 holding the post header, legal-prose starts with the document title, auth-login belongs to a different design system, and not-found is an unmeasured stub. This set is DERIVED from the node sequences, so it cannot silently diverge from the validator.",
+      "exceptionSet": "derivedSets.NO_HERO_TEMPLATES",
+      "enforcedBy": "semantic_validate.py::check_one_hero"
+    },
+    {
+      "id": "HERO_KIND_BY_ROUTE",
+      "severity": "error",
+      "rule": "hero.dark-rounded may appear ONLY on the 'home' template; every other hero-bearing template must use hero.light-split.",
+      "evidence": "No route other than / uses .container.cc-hero. Verified against every page component.",
+      "enforcedBy": "semantic_validate.py::check_hero_kind"
+    },
+    {
+      "id": "NAV_FIRST",
+      "severity": "error",
+      "rule": "chrome.navbar must be the first node of every marketing template.",
+      "exception": "auth-login renders no marketing chrome at all (the app host has no header on this screen). Scoped to derivedSets.MARKETING_TEMPLATES.",
+      "enforcedBy": "semantic_validate.py::check_chrome_position"
+    },
+    {
+      "id": "FOOTER_LAST",
+      "severity": "error",
+      "rule": "chrome.footer must be the last node of every marketing template.",
+      "exception": "auth-login renders no footer. Same scoping as NAV_FIRST.",
+      "enforcedBy": "semantic_validate.py::check_chrome_position"
+    },
+    {
+      "id": "NO_DUPLICATE_SINGLETON",
+      "severity": "error",
+      "rule": "A section whose own contract sets onePerPage:true may appear at most once. Duplicate detection is keyed on (section, variant), NOT bare section id.",
+      "exception": "REAL: stats.grid appears TWICE on /careers with genuinely different variants ('six-with-spacers' for the kidcare-gap block, 'three-centered' for the compensation-philosophy block), and its contract sets onePerPage:false with maxPerPage:2. Keying on bare id would false-positive here. faq.category-empty is likewise repeatable, exactly twice on /faq.",
+      "enforcedBy": "semantic_validate.py::check_duplicates"
+    },
+    {
+      "id": "STATS_GRID_VARIANTS_MUST_DIFFER",
+      "severity": "error",
+      "rule": "When stats.grid appears twice on one page, the two instances must use different variants.",
+      "evidence": "The only real occurrence (/careers) uses one of each. Two instances of the same variant on one page has never been observed.",
+      "enforcedBy": "semantic_validate.py::check_duplicates"
+    },
+    {
+      "id": "NO_ADJACENT_SAME_CATEGORY",
+      "severity": "warn",
+      "rule": "Two consecutive nodes should not share the same section category.",
+      "exception": "REAL AND NAMED: faq.category-empty legitimately appears twice consecutively on /faq ('For parents' then 'For sitters'). Verified against src/pages/Faq.jsx, which renders exactly two CategorySection elements back to back. This is a warn, not an error, precisely because a blanket rule here would reject real, correct content.",
+      "exemptSections": [
+        "faq.category-empty"
+      ],
+      "enforcedBy": "semantic_validate.py::check_adjacency"
+    },
+    {
+      "id": "HOME_ONLY_SECTIONS",
+      "severity": "error",
+      "rule": "The sections in derivedSets.HOME_ONLY_SECTIONS may appear only on the 'home' template.",
+      "evidence": "Each of these appears in exactly one template's node list \u2014 the homepage's. Derived from templates.json, not hand-listed.",
+      "enforcedBy": "semantic_validate.py::check_home_only"
+    },
+    {
+      "id": "SECTION_TEMPLATE_ALLOWLIST",
+      "severity": "error",
+      "rule": "A section whose contract declares constraints.allowedTemplates may appear only on those templates.",
+      "enforcedBy": "semantic_validate.py::check_allowed_templates"
+    },
+    {
+      "id": "TEMPLATE_NODE_SEQUENCE_MATCH",
+      "severity": "error",
+      "rule": "A PageSpec's nodes[] must match its DECLARED template's own node list: same sections, same order, every required node present, no node the template does not list, and each node's variant must be the template's declared variant where the template pins one. Repeatable nodes may occur between their minOccurs and maxOccurs.",
+      "whyItMatters": "This is the single most repeated bug class across prior design-repo builds: a validator that checks nodes[] in isolation lets a PageSpec contradict its own template and still pass. The check must CROSS-REFERENCE the `template` field, not just inspect the array.",
+      "enforcedBy": "semantic_validate.py::check_template_sequence"
+    },
+    {
+      "id": "MOTION_BUDGET",
+      "severity": "error",
+      "rule": "At most ONE scroll-reveal pattern per page, and scrollReveal.slideInBottom may appear only on the 'home' template.",
+      "evidence": "The entire marketing site has exactly one scroll reveal: .section-header.cc-tabas-header on / only. /parents and /sitters carry the same class but have no data-w-id and no inline opacity:0, so they must NOT get a reveal.",
+      "enforcedBy": "semantic_validate.py::check_motion_budget"
+    },
+    {
+      "id": "MOTION_PATTERN_CLOSED",
+      "severity": "error",
+      "rule": "A node's motion.pattern must be one of its section contract's own allowedPatterns.",
+      "enforcedBy": "semantic_validate.py::check_motion_pattern"
+    },
+    {
+      "id": "REDUCED_MOTION_FALLBACK_REQUIRED",
+      "severity": "error",
+      "rule": "Every node's motion object must declare reducedMotionFallback, and it must equal the section contract's declared fallback.",
+      "note": "The original ships NO @media (prefers-reduced-motion) block. Requiring the field here is a deliberate additive improvement over the source, documented as such rather than presented as measured behaviour.",
+      "enforcedBy": "semantic_validate.py::check_reduced_motion"
+    },
+    {
+      "id": "NO_STAGGER",
+      "severity": "error",
+      "rule": "No motion object may declare a stagger. There is no stagger anywhere on the site.",
+      "enforcedBy": "schema (motion.additionalProperties:false \u2014 there is no stagger field to set)"
+    },
+    {
+      "id": "AUTH_SYSTEM_ISOLATION",
+      "severity": "error",
+      "rule": "Sections with designSystem 'auth' may appear only on templates with designSystem 'auth', and vice versa. auth-login must contain no marketing chrome and no marketing section.",
+      "evidence": "The app host is a Vite + React + Mantine SPA with its own grid, breakpoints, spacing, radii and line-height. It shares only the two font families and the brand hexes.",
+      "enforcedBy": "semantic_validate.py::check_design_system_isolation"
+    },
+    {
+      "id": "AUTH_FORM_MUST_STAY_INERT",
+      "severity": "error",
+      "rule": "Any instance of auth.login-form must keep submit.inert === true, submit.disabled === true and field.autocomplete === 'off'. No action, no method, no endpoint, no fetch, no credential transport may be introduced.",
+      "whyItMatters": "A generated instance of a log-in screen must never acquire credential submission. This is a hard safety constraint, not a styling preference.",
+      "enforcedBy": "semantic_validate.py::check_auth_inert (plus schema const-locks)"
+    },
+    {
+      "id": "EMPTY_COLLECTIONS_STAY_EMPTY",
+      "severity": "error",
+      "rule": "testimonials.slider-empty, faq.common-questions-empty and faq.category-empty must keep emptyState === true and may never gain an items array.",
+      "evidence": "These CMS collections are genuinely empty on the live original, which renders visible grey #ddd 'No items found.' boxes (10px padding, 44px tall). The clone reproduces them on purpose. /faq therefore genuinely has NO FAQ content and no accordion.",
+      "whyItMatters": "A generator must not read these as missing content to be filled, and must not invent FAQ or testimonial copy for a real company.",
+      "enforcedBy": "semantic_validate.py::check_empty_collections (plus schema const-locks)"
+    },
+    {
+      "id": "VIDEO_MUST_NOT_AUTOPLAY",
+      "severity": "error",
+      "rule": "trust.video-and-cards must keep video.clickToPlay === true.",
+      "evidence": "The original ships 0 iframes, 0 <video> elements and 0 third-party requests on load; the iframe is injected only after a user click.",
+      "enforcedBy": "semantic_validate.py::check_video_facade (plus schema const-lock)"
+    },
+    {
+      "id": "PRESS_LOGOS_NOT_SETTABLE",
+      "severity": "error",
+      "rule": "trust.press-bar exposes a logoCount integer and an eyebrow only. No PageSpec field may carry a press mark.",
+      "licensing": "The four real marks are third-party trademarks. assetRole press.logo is pinned to must-not-reproduce-real-mark. A generator must never emit these files, copies of them, or imitations.",
+      "enforcedBy": "schema (there is no logo field to populate) + semantic_validate.py::check_asset_roles",
+      "ruleIdEmittedAs": "ASSET_ROLE_CLOSED",
+      "enforcementNote": "Enforced STRUCTURALLY: the press-bar content contract exposes an eyebrow and an integer logoCount and nothing else, so there is no field a generator could put a mark in. If a press.logo role is smuggled into any other media field, check_asset_roles rejects it on exposedAsPageSpecField and reports it under the ASSET_ROLE_CLOSED id -- which is why ruleIdEmittedAs is declared here rather than pretending this rule id appears in the validator source."
+    },
+    {
+      "id": "LEGAL_TEXT_NOT_FABRICABLE",
+      "severity": "error",
+      "rule": "legal.document-prose exposes a documentRef enum of the two real documents and NO body field.",
+      "licensing": "Operative legal text, ported verbatim from the real company's site. assetRole legal.operativeText is pinned to must-not-fabricate. A generator must never write, paraphrase, summarise or 'restore' legal clauses. Requires sign-off from whoever owns legal/content before any real deployment.",
+      "enforcedBy": "schema (there is no body field) + semantic_validate.py::check_asset_roles",
+      "ruleIdEmittedAs": "ASSET_ROLE_CLOSED",
+      "enforcementNote": "Enforced STRUCTURALLY: legal.document-prose exposes a documentRef enum of the two real documents and no body field, so a PageSpec cannot carry legal prose at all. A smuggled legal.operativeText role is rejected by check_asset_roles under the ASSET_ROLE_CLOSED id."
+    },
+    {
+      "id": "ASSET_ROLE_CLOSED",
+      "severity": "error",
+      "rule": "Every media-bearing field must carry an assetRole drawn from the closed enum in assets/asset-roles.json, and that role must be listed in the field's own allowedRoles. Bare generic 'image'/'src' strings are forbidden.",
+      "enforcedBy": "schema (closed enum) + semantic_validate.py::check_asset_roles (closed enum + exposedAsPageSpecField)"
+    },
+    {
+      "id": "PINNED_ASSET_POLICIES",
+      "severity": "error",
+      "rule": "The four compliance-critical roles must hold their EXACT pinned generationPolicy value, not merely a member of the enum: brand.wordmark and press.logo and photo.person -> must-not-reproduce-real-mark; legal.operativeText -> must-not-fabricate.",
+      "whyItMatters": "Membership-in-a-closed-set is a weaker claim than 'this role must have this value'. A role covering a real trademark or a real person's likeness could otherwise be silently switched to may-generate-new and still pass an enum check. Proven by an adversarial mutation to a DIFFERENT-BUT-STILL-VALID enum member.",
+      "enforcedBy": "extraction/verify_all.py::check_pinned_asset_policies",
+      "scope": "A claim about the REGISTRY, not about any one PageSpec: it asserts that assets/asset-roles.json still holds the exact pinned generationPolicy value for each of the four compliance-critical roles. It is therefore enforced by extraction/verify_all.py, not by semantic_validate.py.",
+      "doesNotMean": "'Pinned' does NOT mean 'banned from a PageSpec' uniformly. brand.wordmark, press.logo and legal.operativeText are exposedAsPageSpecField:false, so any appearance in a PageSpec is an error (ASSET_ROLE_CLOSED). photo.person IS exposed: a PageSpec may REFERENCE an existing local photograph by path, and what is forbidden is SYNTHESISING a new photograph of a person. That ban is enforced structurally by ASSET_REF_MUST_BE_DECLARED_FILE. This distinction was caught mid-build when a first draft of the validator banned photo.person outright and the bundled example -- which correctly references real existing files -- failed against it. The rule was wrong, not the example."
+    },
+    {
+      "id": "ASSET_REF_MUST_BE_DECLARED_FILE",
+      "severity": "error",
+      "rule": "For any assetRole whose generationPolicy is NOT may-generate-new and which declares a non-empty file list, a PageSpec's assetRef must be one of those declared files.",
+      "whyItMatters": "This is what structurally prevents fabrication. A generator can point at an asset that already exists, but cannot name one that does not -- so it cannot synthesise a new photograph of a real person, a new brand illustration, or a new editorial cover for a real article title. blob.fill and decorative.none are the only may-generate-new roles, and neither carries third-party content.",
+      "enforcedBy": "semantic_validate.py::check_asset_roles"
+    },
+    {
+      "id": "NO_EXTERNAL_ASSET_REQUESTS",
+      "severity": "error",
+      "rule": "Every assetRef must be a local repository path. No assetRef may be an absolute http(s) URL.",
+      "evidence": "grep -rnE 'https?://[^\"'' ]*\\.(webp|png|jpe?g|svg|woff2?|mp4)' src/ returns nothing \u2014 re-run and confirmed empty during this build. All 83 images and 6 fonts are served locally.",
+      "enforcedBy": "semantic_validate.py::check_asset_roles"
+    },
+    {
+      "id": "BLOG_POST_FORBIDDEN_FIELDS",
+      "severity": "error",
+      "rule": "blog.post-header, blog.post-grid and blog.related-posts items must not carry author, date, publishedAt, readTime, excerpt, deck, subtitle, shareLinks, breadcrumb, backToBlog, inlineCta or nextPrev.",
+      "evidence": "There is not a single <time> element on any blog page. None of this data exists on the original.",
+      "enforcedBy": "schema (additionalProperties:false) + semantic_validate.py::check_blog_forbidden_fields"
+    },
+    {
+      "id": "CTA_HREF_NOT_NORMALISED",
+      "severity": "error",
+      "rule": "Every CTA href must be one of the values its own SECTION contract pins. The app-host target is a property of the COMPONENT, not of the route.",
+      "enforcedBy": "schema (per-section href enum) + semantic_validate.py::check_cta_hrefs",
+      "correctedDuringBuild": "A first draft of this rule asserted 'the homepage uses /sign-up and subpages use /sign-up/welcome', taken from the build brief. Enumerating every real occurrence (grep -rno 'app\\.withotter\\.com[a-zA-Z/-]*' src --include='*.jsx') disproved the route-level framing: the nav 'Sign up' pill and the footer 'Get started' CTA both target /sign-up on EVERY route, homepage and subpages alike. The split is per component. Two source comments in Nav.jsx and Footer.jsx even contradict each other about what the original did; the code is unambiguous and was treated as authoritative.",
+      "measuredTable": {
+        "chrome.navbar 'Sign up'": "https://app.withotter.com/sign-up (every route)",
+        "chrome.footer 'Get started'": "https://app.withotter.com/sign-up (every route)",
+        "hero.dark-rounded / banner.beta-card / conversion.join-card": "https://app.withotter.com/sign-up (homepage)",
+        "hero.light-split CTAs": "https://app.withotter.com/sign-up/welcome, or the #jobs anchor on /careers",
+        "conversion.cta-card": "https://app.withotter.com/sign-up/welcome",
+        "conversion.cta-band (/blog)": "'#' -- a dead link on the original, preserved deliberately"
+      }
+    },
+    {
+      "id": "NO_REMOVED_ROUTES",
+      "severity": "error",
+      "rule": "No PageSpec may declare template 'sign-up' or 'welcome', or a route of /sign-up or /welcome.",
+      "evidence": "Both were built and then removed on purpose by explicit decision. They must NOT be reintroduced as templates. Their CTAs are now plain external links to the app host.",
+      "enforcedBy": "schema (closed template enum) + semantic_validate.py::check_removed_routes"
+    },
+    {
+      "id": "MAX_WORDS_BUDGETS",
+      "severity": "error",
+      "rule": "Every text-bearing field must respect its section contract's maxWords budget. Budgets are set from the measured longest real instance plus roughly 30% headroom, and each field records that measured figure.",
+      "enforcedBy": "semantic_validate.py::check_max_words"
+    }
+  ],
+  "ruleCount": 28
+}

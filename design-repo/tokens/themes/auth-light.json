@@ -1,0 +1,171 @@
+{
+  "id": "theme.auth-light",
+  "designSystem": "auth",
+  "default": true,
+  "SEPARATE_NAMESPACE": "These tokens belong to the app host (/log-in), a Vite + React + Mantine SPA. They are NOT part of the marketing token set and must never be merged into it. The two systems share only the two font families and the brand hexes.",
+  "sharedWithMarketing": [
+    "font.sans (Jokker)",
+    "font.display (Reckless Neue)",
+    "#00373e",
+    "#cafff2",
+    "#f8f6f5"
+  ],
+  "measuredFrom": "src/styles/auth.css:19-58",
+  "color": {
+    "auth.surface.shell": {
+      "$value": "#f8f6f5",
+      "note": "the visible page background; there is NO card or panel \u2014 content sits flat on this"
+    },
+    "auth.surface.white": {
+      "$value": "#ffffff"
+    },
+    "auth.river": {
+      "$value": "#00373e",
+      "mantine": "river-8/9, text-4, --mantine-color-black"
+    },
+    "auth.aqua": {
+      "$value": "#cafff2",
+      "mantine": "aqua-6..9"
+    },
+    "auth.moss": {
+      "$value": "#93954c",
+      "mantine": "moss-6",
+      "note": "NOT the marketing olive #94954c \u2014 one byte different, kept distinct on purpose"
+    },
+    "auth.border.rest": {
+      "$value": "#f1eceb"
+    },
+    "auth.border.hover": {
+      "$value": "#f7f5f3"
+    },
+    "auth.label.placeholder": {
+      "$value": "#b2babf"
+    },
+    "auth.label.floated": {
+      "$value": "#667680"
+    },
+    "auth.btn.disabledBg": {
+      "$value": "#aebdbe"
+    },
+    "auth.btn.disabledFg": {
+      "$value": "#fffffa"
+    },
+    "auth.error": {
+      "$value": "#f56d58"
+    }
+  },
+  "spacing": {
+    "auth.space.xs": "4px",
+    "auth.space.sm": "8px",
+    "auth.space.md": "16px",
+    "auth.space.lg": "32px",
+    "auth.space.xl": "48px"
+  },
+  "radius": {
+    "auth.radius.sm": "12px",
+    "auth.radius.md": "16px",
+    "auth.radius.lg": "24px"
+  },
+  "typography": {
+    "lineHeight": "1.55 (--mantine-line-height) \u2014 NOT the marketing 1.5",
+    "baseSize": "16px",
+    "baseWeight": 400,
+    "roles": {
+      "auth.title.h3": {
+        "size": "20px",
+        "lineHeight": "24px",
+        "weight": 600,
+        "align": "left",
+        "note": "/log-in's screen title is an h3, not an h1"
+      },
+      "auth.body": {
+        "size": "16px",
+        "lineHeight": "22.4px",
+        "weight": 500,
+        "align": "center"
+      },
+      "auth.input.value": {
+        "size": "16px",
+        "lineHeight": "24px",
+        "weight": 600,
+        "color": "#000000"
+      },
+      "auth.label.placeholderPos": {
+        "size": "16px",
+        "lineHeight": "24px",
+        "weight": 600,
+        "color": "#b2babf"
+      },
+      "auth.label.floatedPos": {
+        "size": "11px",
+        "lineHeight": "15px",
+        "weight": 600,
+        "color": "#667680"
+      },
+      "auth.error": {
+        "size": "12px",
+        "lineHeight": "16.8px",
+        "weight": 600,
+        "color": "#f56d58"
+      },
+      "auth.button": {
+        "size": "16px",
+        "lineHeight": "16px",
+        "weight": 600,
+        "color": "#cafff2",
+        "align": "center"
+      }
+    },
+    "responsive": "none \u2014 the type scale is identical at 1440 / 1024 / 390",
+    "measuredFrom": "spec/SPEC_auth.md:303-320"
+  },
+  "layout": {
+    "shell": "min-height 100vh; overflow-x hidden; flex column; min-width 300px",
+    "outerContainer": "max-width 960px; padding 48px 16px 0",
+    "contentColumn": "max-width 540px; padding-inline 16px -> 508px of content at 1440/1024, 326px at 390",
+    "noPanel": "There is no card, panel, border or shadow around the form. Content sits directly on the shell background.",
+    "measuredFrom": "src/styles/auth.css:68-92"
+  },
+  "breakpoints": {
+    "model": "Mantine min-width em queries",
+    "values": [
+      "576",
+      "768",
+      "992",
+      "1200",
+      "1408"
+    ],
+    "criticalNote": "NONE of these fire on the /log-in screen. The only responsive change is the content column narrowing, which falls out of max-width + padding alone.",
+    "measuredFrom": "src/styles/auth.css:83-92"
+  },
+  "motion": {
+    "input": {
+      "properties": [
+        "border-color",
+        "outline-color",
+        "background-color",
+        "color"
+      ],
+      "duration": 200,
+      "easing": "ease"
+    },
+    "floatingLabel": {
+      "properties": [
+        "all"
+      ],
+      "duration": 200,
+      "easing": "ease"
+    },
+    "button": {
+      "properties": [
+        "all"
+      ],
+      "duration": 300,
+      "easing": "ease"
+    },
+    "entranceAnimations": "none",
+    "scrollAnimations": "none",
+    "stagger": "none",
+    "measuredFrom": "spec/SPEC_auth.md:703-716"
+  }
+}

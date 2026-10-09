@@ -1,0 +1,17 @@
+{
+  "id": "component.rich-text-body",
+  "kind": "component",
+  "name": "CMS rich-text prose",
+  "designSystem": "marketing",
+  "composes": [],
+  "geometry": {
+    "column": "col-lg-8 / col-md-12 inside .container.cc-narrow",
+    "paragraph": "16px/24px weight 500, 16px gap between paragraphs at every breakpoint"
+  },
+  "measuredFrom": "spec/SPEC_blog_legal.md:528-601",
+  "notes": [
+    "Block types in use: p, h3 (rendered inside <strong>, so 600 -> 700), ul.",
+    "DEVIATION recorded in the clone: the original fakes lists with <br> + ' - ' inside a <p>; the clone authors real <ul>. Vertical rhythm of those passages therefore differs from source.",
+    "CONTENT PROVENANCE: the article bodies in the clone are ORIGINAL PLACEHOLDER PROSE, deliberately not the original articles. Titles, covers and tags are genuine. A generator must not try to 'restore' the originals."
+  ]
+}

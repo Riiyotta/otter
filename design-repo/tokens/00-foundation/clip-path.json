@@ -1,0 +1,23 @@
+{
+  "id": "tokens.foundation.clipPath",
+  "designSystem": "marketing",
+  "note": "The 7 organic 'stone'/blob shapes. Defined ONCE and referenced by id. No route adds new path data \u2014 routes only recombine these 7 with different fills, images and rotations.",
+  "mechanism": "plain <div> clipped by an inline <clipPath clipPathUnits=\"objectBoundingBox\"> served from a 0x0 hidden fixed container; applied as clip-path: url(#id)",
+  "definedIn": "src/components/ClipPathDefs.jsx:4-41",
+  "renderedAs": "one JSX <clipPath> element mapped over a 7-entry SHAPES array (so the source contains 1 literal <clipPath>, the DOM contains 7)",
+  "count": 7,
+  "ids": [
+    "stone-hero_top-right",
+    "stone-hero_bottom-right",
+    "stone-hero_top-left",
+    "stone-hero_middle-left",
+    "stone-hero_bottom-left",
+    "footer-shape-left",
+    "footer-shape-right"
+  ],
+  "transforms": {
+    "rotate-90": "transform: rotate(90deg) -> matrix(0,1,-1,0,0,0); used on /parents hero bottom shape and /careers hero bottom shape"
+  },
+  "closed": true,
+  "aiGuidance": "A generated instance MAY pick any of these 7 ids and any foundation colour fill. It MUST NOT invent new path data \u2014 the shape vocabulary is closed."
+}

@@ -1,0 +1,23 @@
+{
+  "id": "primitive.wordmark",
+  "kind": "primitive",
+  "name": "Otter wordmark",
+  "designSystem": "marketing",
+  "props": {
+    "context": {
+      "enum": [
+        "nav",
+        "footer"
+      ]
+    },
+    "linked": {
+      "type": "boolean",
+      "note": "true in the nav (a[href=\"/\"]), false in the footer (a plain div)"
+    }
+  },
+  "measuredFrom": "src/components/OtterWordmark.jsx:1-25",
+  "notes": [
+    "Inline SVG, viewBox 0 0 139 48, fill color.primary. 128px wide in the nav (112px at <=479).",
+    "LICENSING: this is a real company's registered wordmark. assetRole brand.wordmark is pinned to must-not-reproduce-real-mark. A generator must never emit it or an imitation."
+  ]
+}

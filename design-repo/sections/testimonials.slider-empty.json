@@ -1,0 +1,64 @@
+{
+  "id": "testimonials.slider-empty",
+  "kind": "section",
+  "name": "Testimonials slider (empty collection)",
+  "category": "testimonials",
+  "designSystem": "marketing",
+  "variants": [
+    "default"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "heading": {
+        "type": "string",
+        "maxWords": 10,
+        "measuredLongestRealInstance": "\"What our parents are saying\" = 5 words"
+      },
+      "lede": {
+        "type": "string",
+        "maxWords": 24,
+        "measuredLongestRealInstance": "15 words measured on /parents"
+      },
+      "emptyState": {
+        "const": true,
+        "note": "LOCKED TRUE. The CMS collection behind this slider is genuinely empty on the live original, so the site renders Webflow's grey 'No items found.' box and the clone reproduces it. There is deliberately NO items array a generator could populate \u2014 inventing testimonial copy for a real company is forbidden."
+      }
+    },
+    "required": [
+      "heading",
+      "lede",
+      "emptyState"
+    ]
+  },
+  "constraints": {
+    "maxPerPage": 1,
+    "onePerPage": true,
+    "allowedTemplates": [
+      "audience-landing"
+    ],
+    "noInventedContent": "A generated instance must not add testimonial quotes, names, avatars or ratings. The slot has no field for them."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. Global .btn hover transitions only."
+  },
+  "responsive": {
+    "desktop": "1 live .swiper element but 0 .swiper-slide. No autoplay, no loop. Section 640px tall on /parents, 604px on /sitters.",
+    "le991": "same empty state; the arrows keep their 300ms colour hover transition.",
+    "le479": "447px tall."
+  },
+  "assetRoles": [],
+  "observedOn": [
+    "/parents",
+    "/sitters"
+  ],
+  "measuredFrom": "spec/SPEC_parents_sitters_trust.md:629-737",
+  "notes": [
+    "The grey box is #ddd, 10px padding, 44px tall. It is NOT missing content."
+  ]
+}

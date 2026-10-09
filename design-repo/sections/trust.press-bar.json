@@ -1,0 +1,55 @@
+{
+  "id": "trust.press-bar",
+  "kind": "section",
+  "name": "Press / as-featured-in bar",
+  "category": "trust",
+  "designSystem": "marketing",
+  "variants": [
+    "default"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "eyebrow": {
+        "type": "string",
+        "maxWords": 4,
+        "measuredLongestRealInstance": "\"As featured in\" = 3 words",
+        "note": "h2.eyebrow.u-mb-0.u-text-center \u2014 computes weight 400 because .u-mb-0 declares font-weight:400 and wins. Correct, not a bug."
+      },
+      "logoCount": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 4,
+        "note": "A COUNT ONLY. There is deliberately no logo-file field. The four real marks are third-party trademarks under assetRole press.logo, pinned to must-not-reproduce-real-mark \u2014 a generator has nothing here to populate with a mark."
+      }
+    },
+    "required": [
+      "eyebrow",
+      "logoCount"
+    ]
+  },
+  "constraints": {
+    "homeRouteOnly": true,
+    "onePerPage": true,
+    "maxPerPage": 1,
+    "licensing": "press.logo is pinned to must-not-reproduce-real-mark. See assets/asset-roles.json."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. CSS hover transitions on .btn (colour trio, 300ms ease.outQuart) are global chrome behaviour, not section motion."
+  },
+  "responsive": {
+    "desktop": "peach bar, radius 40px, padding 56px 43.2px, gap 32px, eyebrow left and a 70%-wide / max 750px logo row with space-between.",
+    "le991": "flex-direction column, padding 32px, logo row 100% wide and centred with 32px gap.",
+    "le479": "bar gap 48px; the logo row becomes a single stacked column."
+  },
+  "assetRoles": [],
+  "observedOn": [
+    "/"
+  ],
+  "measuredFrom": "CLONE_SPEC.md:403-425"
+}

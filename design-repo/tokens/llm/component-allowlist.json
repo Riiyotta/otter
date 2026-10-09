@@ -1,0 +1,1831 @@
+{
+  "$comment": "The closed list of what an AI generator is allowed to override. GENERATED FROM the real section contracts and cross-checked against schema/pagespec.schema.json by extraction/verify_all.py -- never hand-copied, so it cannot go stale against the schema. Anything absent from settableProperties is not settable.",
+  "version": "1.0.0",
+  "designSystems": {
+    "marketing": "The Webflow-derived marketing site. Theme marketing-light.",
+    "auth": "The app host (/log-in): Vite + React + Mantine. Theme auth-light. A SEPARATE design system -- different grid, breakpoints, spacing, radii and line-height. Its tokens live in tokens/themes/auth-light.json and must never be merged into the marketing set. The two share only the two font families and the brand hexes."
+  },
+  "globalRules": [
+    "A generator may set only the properties listed under a section's settableProperties. Everything else is contract-owned.",
+    "Every text field must respect its maxWords budget.",
+    "Every media field must carry an assetRole from the closed enum in assets/asset-roles.json, and that role must be in the field's own assetRoles list.",
+    "For any role whose generationPolicy is not may-generate-new, assetRef must be one of the files that role already declares. A generator may reference an existing asset but must never invent one.",
+    "Motion may only use a pattern from the section's allowedMotionPatterns, and reducedMotionFallback must equal the section's declared fallback.",
+    "No token values may be overridden per instance. This schema has NO per-instance style/token-override field at all -- styling is owned entirely by the section and component contracts. Recorded explicitly so nobody looks for a mechanism that does not exist.",
+    "Never emit or imitate the real third-party press marks, the Otter wordmark, brand illustrations, real people's photographs, or operative legal text. See assets/asset-roles.json.",
+    "Never reintroduce /sign-up or /welcome as local routes.",
+    "Never give an instance of auth.login-form any form of credential submission."
+  ],
+  "tokenOverridePolicy": {
+    "perInstanceOverridesSupported": false,
+    "statement": "There is deliberately no PageSpec-level token-override field. Adversarial coverage for token misuse therefore lives at the catalog layer (extraction/verify_all.py's drift-injection tests), not at the PageSpec layer, because the PageSpec layer has nothing to mutate.",
+    "rawValueRestrictions": {
+      "color": "Only the 9 foundation colours in tokens/00-foundation/color.json. No new hex may be introduced.",
+      "fontFamily": "Only font.display and font.sans.",
+      "fontSize": "Only the measured roles in tokens/00-foundation/typography.json#/scale.",
+      "radius": "Only the tokens in tokens/00-foundation/radius.json.",
+      "elevation": "Only the three in tokens/00-foundation/elevation.json; two of them are deliberately untransitioned.",
+      "motion": "Only the durations, delays and the one easing curve in tokens/00-foundation/motion.json.",
+      "clipPath": "Closed at the 7 ids in tokens/00-foundation/clip-path.json. No new path data."
+    },
+    "rawValueRestrictionsNote": "These category keys are the real top-level/section key names in the token files they govern, so a drift check can resolve each one against something that actually exists rather than against a convenient human label."
+  },
+  "sections": {
+    "auth.login-form": {
+      "contractFile": "sections/auth.login-form.json",
+      "designSystem": "auth",
+      "category": "auth",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "wordmark",
+        "illustration",
+        "title",
+        "field",
+        "submit"
+      ],
+      "settableProperties": {
+        "field": {
+          "settable": true
+        },
+        "field.autocomplete": {
+          "settable": false,
+          "lockedTo": "off",
+          "reason": "const-locked by the contract"
+        },
+        "field.label": {
+          "settable": false,
+          "lockedTo": "Phone Number",
+          "reason": "capital N here; /sign-up says \"Phone number\". A real cross-screen copy inconsistency in the original, preserved."
+        },
+        "field.name": {
+          "settable": false,
+          "lockedTo": "phoneNumber",
+          "reason": "const-locked by the contract"
+        },
+        "field.type": {
+          "settable": false,
+          "lockedTo": "tel",
+          "reason": "const-locked by the contract"
+        },
+        "illustration": {
+          "settable": true,
+          "assetRoles": [
+            "auth.illustration"
+          ]
+        },
+        "submit": {
+          "settable": true
+        },
+        "submit.disabled": {
+          "settable": false,
+          "lockedTo": true,
+          "reason": "const-locked by the contract"
+        },
+        "submit.inert": {
+          "settable": false,
+          "lockedTo": true,
+          "reason": "HARD CONSTRAINT, LOCKED TRUE. See constraints.inertForm."
+        },
+        "submit.label": {
+          "settable": false,
+          "lockedTo": "Continue",
+          "reason": "const-locked by the contract"
+        },
+        "title": {
+          "settable": true,
+          "maxWords": 4
+        },
+        "wordmark": {
+          "settable": false,
+          "lockedTo": true,
+          "reason": "centred, from primitive.auth-wordmark"
+        }
+      }
+    },
+    "banner.beta-card": {
+      "contractFile": "sections/banner.beta-card.json",
+      "designSystem": "marketing",
+      "category": "banner",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "eyebrow",
+        "heading",
+        "body",
+        "cta",
+        "illustration"
+      ],
+      "settableProperties": {
+        "body": {
+          "settable": true,
+          "maxWords": 26
+        },
+        "cta": {
+          "settable": true
+        },
+        "cta.href": {
+          "settable": true,
+          "enum": [
+            "https://app.withotter.com/sign-up"
+          ]
+        },
+        "cta.label": {
+          "settable": true,
+          "maxWords": 6
+        },
+        "cta.variant": {
+          "settable": false,
+          "lockedTo": "cc-white",
+          "reason": "const-locked by the contract"
+        },
+        "eyebrow": {
+          "settable": true,
+          "maxWords": 4
+        },
+        "heading": {
+          "settable": true,
+          "maxWords": 8
+        },
+        "illustration": {
+          "settable": true,
+          "assetRoles": [
+            "illustration.brand"
+          ]
+        }
+      }
+    },
+    "benefits.card-grid": {
+      "contractFile": "sections/benefits.card-grid.json",
+      "designSystem": "marketing",
+      "category": "benefits",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "eyebrow",
+        "heading",
+        "lede",
+        "cards"
+      ],
+      "settableProperties": {
+        "cards": {
+          "settable": true,
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "cards[].body": {
+          "settable": true,
+          "maxWords": 40
+        },
+        "cards[].heading": {
+          "settable": true,
+          "maxWords": 10
+        },
+        "cards[].icon": {
+          "settable": true,
+          "assetRoles": [
+            "icon.feature"
+          ]
+        },
+        "eyebrow": {
+          "settable": true,
+          "maxWords": 6
+        },
+        "heading": {
+          "settable": true,
+          "maxWords": 6
+        },
+        "lede": {
+          "settable": true,
+          "maxWords": 24
+        }
+      }
+    },
+    "blog.post-grid": {
+      "contractFile": "sections/blog.post-grid.json",
+      "designSystem": "marketing",
+      "category": "blog",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "srHeading",
+        "featured",
+        "posts",
+        "loadMore"
+      ],
+      "settableProperties": {
+        "featured": {
+          "settable": true
+        },
+        "featured.cover": {
+          "settable": true,
+          "assetRoles": [
+            "editorial.cover",
+            "photo.person"
+          ]
+        },
+        "featured.featured": {
+          "settable": true
+        },
+        "featured.slug": {
+          "settable": true
+        },
+        "featured.tags": {
+          "settable": true,
+          "minItems": 1,
+          "maxItems": 3
+        },
+        "featured.tags[].color": {
+          "settable": true,
+          "enum": [
+            "midnight",
+            "sandstone",
+            "coral",
+            "celeste",
+            "peach",
+            "olive"
+          ]
+        },
+        "featured.tags[].name": {
+          "settable": true,
+          "maxWords": 3
+        },
+        "featured.title": {
+          "settable": true,
+          "maxWords": 12
+        },
+        "loadMore": {
+          "settable": false,
+          "reason": "A single 'Load more' pill, rendered for visual fidelity and DELIBERATELY INERT. The original is Finsweet CMS Load v1 pointed at page 2; this clone only holds the 10 real page-1 posts, so there is nothing to load and no extra posts are fabricated to give it something to reveal. It is an <a> with no href, role=\"button\", aria-disabled=\"true\" and a preventDefault click, inside a div[role=navigation][aria-label=\"List\"]. Its CSS pins cursor:pointer so it looks identical to the original's real anchor while still doing nothing. A generated instance must not wire it to real pagination. There is no category filter, no tab bar and no search on this page."
+        },
+        "posts": {
+          "settable": true,
+          "minItems": 1,
+          "maxItems": 9
+        },
+        "posts[].cover": {
+          "settable": true,
+          "assetRoles": [
+            "editorial.cover",
+            "photo.person"
+          ]
+        },
+        "posts[].featured": {
+          "settable": true
+        },
+        "posts[].slug": {
+          "settable": true
+        },
+        "posts[].tags": {
+          "settable": true,
+          "minItems": 1,
+          "maxItems": 3
+        },
+        "posts[].tags[].color": {
+          "settable": true,
+          "enum": [
+            "midnight",
+            "sandstone",
+            "coral",
+            "celeste",
+            "peach",
+            "olive"
+          ]
+        },
+        "posts[].tags[].name": {
+          "settable": true,
+          "maxWords": 3
+        },
+        "posts[].title": {
+          "settable": true,
+          "maxWords": 12
+        },
+        "srHeading": {
+          "settable": false,
+          "lockedTo": "Blog posts",
+          "reason": "h2.u-sr-only"
+        }
+      }
+    },
+    "blog.post-header": {
+      "contractFile": "sections/blog.post-header.json",
+      "designSystem": "marketing",
+      "category": "blog",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "title",
+        "tags",
+        "cover"
+      ],
+      "settableProperties": {
+        "cover": {
+          "settable": true,
+          "assetRoles": [
+            "editorial.cover",
+            "photo.person"
+          ]
+        },
+        "tags": {
+          "settable": true,
+          "minItems": 1,
+          "maxItems": 3
+        },
+        "tags[].color": {
+          "settable": true,
+          "enum": [
+            "midnight",
+            "sandstone",
+            "coral",
+            "celeste",
+            "peach",
+            "olive"
+          ]
+        },
+        "tags[].name": {
+          "settable": true,
+          "maxWords": 3
+        },
+        "title": {
+          "settable": true,
+          "maxWords": 12
+        }
+      }
+    },
+    "blog.related-posts": {
+      "contractFile": "sections/blog.related-posts.json",
+      "designSystem": "marketing",
+      "category": "blog",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "heading",
+        "posts"
+      ],
+      "settableProperties": {
+        "heading": {
+          "settable": false,
+          "lockedTo": "Similar articles",
+          "reason": "const-locked by the contract"
+        },
+        "posts": {
+          "settable": true,
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "posts[].cover": {
+          "settable": true,
+          "assetRoles": [
+            "editorial.cover",
+            "photo.person"
+          ]
+        },
+        "posts[].featured": {
+          "settable": true
+        },
+        "posts[].slug": {
+          "settable": true
+        },
+        "posts[].tags": {
+          "settable": true,
+          "minItems": 1,
+          "maxItems": 3
+        },
+        "posts[].tags[].color": {
+          "settable": true,
+          "enum": [
+            "midnight",
+            "sandstone",
+            "coral",
+            "celeste",
+            "peach",
+            "olive"
+          ]
+        },
+        "posts[].tags[].name": {
+          "settable": true,
+          "maxWords": 3
+        },
+        "posts[].title": {
+          "settable": true,
+          "maxWords": 12
+        }
+      }
+    },
+    "chrome.footer": {
+      "contractFile": "sections/chrome.footer.json",
+      "designSystem": "marketing",
+      "category": "chrome",
+      "variants": [
+        "home",
+        "site"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "variant"
+      ],
+      "settableProperties": {
+        "linkColumns": {
+          "settable": false,
+          "reason": "Fixed: column 1 Parents/Sitters/Trust & Safety, column 2 FAQ/Careers/Blog/Contact, column 3 the four social links (all target=_blank). Chrome, not page content."
+        },
+        "variant": {
+          "settable": true,
+          "enum": [
+            "home",
+            "site"
+          ]
+        }
+      }
+    },
+    "chrome.navbar": {
+      "contractFile": "sections/chrome.navbar.json",
+      "designSystem": "marketing",
+      "category": "chrome",
+      "variants": [
+        "home",
+        "site"
+      ],
+      "allowedMotionPatterns": [
+        "mobileNav.open",
+        "mobileNav.close",
+        "navCurrentIcon.reveal",
+        "none"
+      ],
+      "reducedMotionFallback": "instant-switch",
+      "requiredContentFields": [
+        "variant"
+      ],
+      "settableProperties": {
+        "contentLinks": {
+          "settable": false,
+          "reason": "Fixed on every 'site' route: Parents, Sitters, Trust & Safety, Blog. A PageSpec cannot change this set \u2014 it is chrome, not page content."
+        },
+        "variant": {
+          "settable": true,
+          "enum": [
+            "home",
+            "site"
+          ]
+        }
+      }
+    },
+    "content.image-copy-split": {
+      "contractFile": "sections/content.image-copy-split.json",
+      "designSystem": "marketing",
+      "category": "content",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "heading",
+        "body",
+        "image"
+      ],
+      "settableProperties": {
+        "body": {
+          "settable": true,
+          "maxWords": 40
+        },
+        "heading": {
+          "settable": true,
+          "maxWords": 10
+        },
+        "image": {
+          "settable": true,
+          "assetRoles": [
+            "illustration.editorial"
+          ]
+        }
+      }
+    },
+    "content.rich-text-body": {
+      "contractFile": "sections/content.rich-text-body.json",
+      "designSystem": "marketing",
+      "category": "content",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "blocks"
+      ],
+      "settableProperties": {
+        "blocks": {
+          "settable": true,
+          "minItems": 1
+        },
+        "blocks[].text": {
+          "settable": true,
+          "maxWords": 14
+        },
+        "blocks[].type": {
+          "settable": false,
+          "lockedTo": "ul",
+          "reason": "const-locked by the contract"
+        },
+        "blocks[].items": {
+          "settable": true,
+          "minItems": 1
+        }
+      }
+    },
+    "content.stub-notice": {
+      "contractFile": "sections/content.stub-notice.json",
+      "designSystem": "marketing",
+      "category": "content",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "text"
+      ],
+      "settableProperties": {
+        "text": {
+          "settable": true,
+          "maxWords": 8
+        }
+      }
+    },
+    "conversion.cta-band": {
+      "contractFile": "sections/conversion.cta-band.json",
+      "designSystem": "marketing",
+      "category": "conversion",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "heading",
+        "cta",
+        "image"
+      ],
+      "settableProperties": {
+        "cta": {
+          "settable": true
+        },
+        "cta.href": {
+          "settable": true,
+          "enum": [
+            "#"
+          ]
+        },
+        "cta.label": {
+          "settable": true,
+          "maxWords": 5
+        },
+        "cta.variant": {
+          "settable": true,
+          "enum": [
+            "dark",
+            "cc-white",
+            "cc-light"
+          ]
+        },
+        "heading": {
+          "settable": true,
+          "maxWords": 14
+        },
+        "image": {
+          "settable": true,
+          "assetRoles": [
+            "editorial.cover",
+            "photo.person",
+            "decorative.none"
+          ]
+        }
+      }
+    },
+    "conversion.cta-card": {
+      "contractFile": "sections/conversion.cta-card.json",
+      "designSystem": "marketing",
+      "category": "conversion",
+      "variants": [
+        "narrow",
+        "wide"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "variant",
+        "heading",
+        "cta",
+        "image",
+        "blob"
+      ],
+      "settableProperties": {
+        "blob": {
+          "settable": true
+        },
+        "blob.clipId": {
+          "settable": true,
+          "enum": [
+            "footer-shape-right"
+          ]
+        },
+        "blob.fill": {
+          "settable": true,
+          "enum": [
+            "color.peach",
+            "color.celeste"
+          ]
+        },
+        "cta": {
+          "settable": true
+        },
+        "cta.href": {
+          "settable": true,
+          "enum": [
+            "https://app.withotter.com/sign-up/welcome"
+          ]
+        },
+        "cta.label": {
+          "settable": true,
+          "maxWords": 5
+        },
+        "cta.variant": {
+          "settable": false,
+          "lockedTo": "dark",
+          "reason": "const-locked by the contract"
+        },
+        "heading": {
+          "settable": true,
+          "maxWords": 14
+        },
+        "image": {
+          "settable": true,
+          "assetRoles": [
+            "photo.person"
+          ]
+        },
+        "variant": {
+          "settable": true,
+          "enum": [
+            "narrow",
+            "wide"
+          ]
+        }
+      }
+    },
+    "conversion.join-card": {
+      "contractFile": "sections/conversion.join-card.json",
+      "designSystem": "marketing",
+      "category": "conversion",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "heading",
+        "body",
+        "cta"
+      ],
+      "settableProperties": {
+        "body": {
+          "settable": true,
+          "maxWords": 20
+        },
+        "cta": {
+          "settable": true
+        },
+        "cta.href": {
+          "settable": true,
+          "enum": [
+            "https://app.withotter.com/sign-up"
+          ]
+        },
+        "cta.label": {
+          "settable": true,
+          "maxWords": 4
+        },
+        "cta.variant": {
+          "settable": false,
+          "lockedTo": "button-primary",
+          "reason": "const-locked by the contract"
+        },
+        "heading": {
+          "settable": true,
+          "maxWords": 10
+        }
+      }
+    },
+    "disclosure.tabs-accordion": {
+      "contractFile": "sections/disclosure.tabs-accordion.json",
+      "designSystem": "marketing",
+      "category": "disclosure",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "tabs.desktopSwitch",
+        "tabs.accordion"
+      ],
+      "reducedMotionFallback": "instant-switch",
+      "requiredContentFields": [
+        "eyebrow",
+        "heading",
+        "lede",
+        "items"
+      ],
+      "settableProperties": {
+        "eyebrow": {
+          "settable": true,
+          "maxWords": 4
+        },
+        "heading": {
+          "settable": true,
+          "maxWords": 14
+        },
+        "items": {
+          "settable": true,
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "items[].body": {
+          "settable": true,
+          "maxWords": 36
+        },
+        "items[].key": {
+          "settable": true,
+          "maxWords": 1
+        },
+        "items[].label": {
+          "settable": true,
+          "maxWords": 5
+        },
+        "items[].media": {
+          "settable": true,
+          "assetRoles": [
+            "photo.person"
+          ]
+        },
+        "lede": {
+          "settable": true,
+          "maxWords": 28
+        }
+      }
+    },
+    "faq.category-empty": {
+      "contractFile": "sections/faq.category-empty.json",
+      "designSystem": "marketing",
+      "category": "faq",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "heading",
+        "emptyState"
+      ],
+      "settableProperties": {
+        "emptyState": {
+          "settable": false,
+          "lockedTo": true,
+          "reason": "LOCKED TRUE. Both CMS collections on /faq are genuinely empty on the original: the server HTML ships no item template at all, only Webflow's .w-dyn-empty placeholder. So /faq genuinely has NO FAQ content and NO accordion is rendered on it."
+        },
+        "heading": {
+          "settable": true,
+          "maxWords": 6
+        }
+      }
+    },
+    "faq.common-questions-empty": {
+      "contractFile": "sections/faq.common-questions-empty.json",
+      "designSystem": "marketing",
+      "category": "faq",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "heading",
+        "emptyState"
+      ],
+      "settableProperties": {
+        "emptyState": {
+          "settable": false,
+          "lockedTo": true,
+          "reason": "LOCKED TRUE for the same reason as testimonials.slider-empty. No questions array exists."
+        },
+        "heading": {
+          "settable": true,
+          "maxWords": 8
+        }
+      }
+    },
+    "form.contact": {
+      "contractFile": "sections/form.contact.json",
+      "designSystem": "marketing",
+      "category": "form",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "srHeading",
+        "fields",
+        "requiredNote",
+        "successBlock",
+        "errorBlock",
+        "contactBlocks"
+      ],
+      "settableProperties": {
+        "contactBlocks": {
+          "settable": true,
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "contactBlocks[].heading": {
+          "settable": true,
+          "maxWords": 4
+        },
+        "contactBlocks[].mailto": {
+          "settable": true
+        },
+        "errorBlock": {
+          "settable": false,
+          "lockedTo": true,
+          "reason": "the .form-error / .w-form-fail block, ported and kept in the DOM but hidden by default"
+        },
+        "fields": {
+          "settable": true,
+          "minItems": 5,
+          "maxItems": 5
+        },
+        "fields[].kind": {
+          "settable": true,
+          "enum": [
+            "text",
+            "email",
+            "tel",
+            "textarea"
+          ]
+        },
+        "fields[].label": {
+          "settable": true,
+          "maxWords": 4
+        },
+        "fields[].required": {
+          "settable": true
+        },
+        "requiredNote": {
+          "settable": false,
+          "lockedTo": "*Required",
+          "reason": "const-locked by the contract"
+        },
+        "srHeading": {
+          "settable": false,
+          "lockedTo": "Form",
+          "reason": "h2.u-sr-only \u2014 visually hidden, keep for a11y"
+        },
+        "successBlock": {
+          "settable": false,
+          "lockedTo": true,
+          "reason": "the custom .form-success / .w-form-done block, hidden by default"
+        }
+      }
+    },
+    "hero.dark-rounded": {
+      "contractFile": "sections/hero.dark-rounded.json",
+      "designSystem": "marketing",
+      "category": "hero",
+      "variants": [
+        "home"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "heading",
+        "lede",
+        "cta",
+        "stones"
+      ],
+      "settableProperties": {
+        "cta": {
+          "settable": true
+        },
+        "cta.href": {
+          "settable": true,
+          "enum": [
+            "https://app.withotter.com/sign-up"
+          ]
+        },
+        "cta.label": {
+          "settable": true,
+          "maxWords": 6
+        },
+        "cta.variant": {
+          "settable": false,
+          "lockedTo": "cc-light",
+          "reason": "const-locked by the contract"
+        },
+        "heading": {
+          "settable": true,
+          "maxWords": 12
+        },
+        "lede": {
+          "settable": true,
+          "maxWords": 18
+        },
+        "stones": {
+          "settable": true,
+          "minItems": 5,
+          "maxItems": 5
+        },
+        "stones[].fill": {
+          "settable": true,
+          "enum": [
+            "color.peach",
+            "color.celeste",
+            "color.olive",
+            "color.coral",
+            "color.sandstone",
+            "none"
+          ]
+        },
+        "stones[].media": {
+          "settable": true,
+          "assetRoles": [
+            "photo.person",
+            "decorative.none"
+          ]
+        },
+        "stones[].slot": {
+          "settable": true,
+          "enum": [
+            "top-left",
+            "middle-left",
+            "bottom-left",
+            "top-right",
+            "bottom-right"
+          ]
+        }
+      }
+    },
+    "hero.light-split": {
+      "contractFile": "sections/hero.light-split.json",
+      "designSystem": "marketing",
+      "category": "hero",
+      "variants": [
+        "pst-stones",
+        "shape-stack",
+        "image-square",
+        "bare-image"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "variant",
+        "heading",
+        "ctas",
+        "shapes"
+      ],
+      "settableProperties": {
+        "ctas": {
+          "settable": true,
+          "minItems": 0,
+          "maxItems": 2
+        },
+        "ctas[].href": {
+          "settable": true,
+          "enum": [
+            "https://app.withotter.com/sign-up/welcome",
+            "#jobs"
+          ]
+        },
+        "ctas[].label": {
+          "settable": true,
+          "maxWords": 6
+        },
+        "ctas[].variant": {
+          "settable": true,
+          "enum": [
+            "dark",
+            "cc-light"
+          ]
+        },
+        "heading": {
+          "settable": true,
+          "maxWords": 12
+        },
+        "headingWeightQuirk": {
+          "settable": true
+        },
+        "heroImage": {
+          "settable": true,
+          "nullable": true,
+          "assetRoles": [
+            "photo.person",
+            "decorative.none"
+          ]
+        },
+        "lede": {
+          "settable": true,
+          "nullable": true,
+          "maxWords": 30
+        },
+        "ledeClass": {
+          "settable": true,
+          "enum": [
+            "paragraph-1-25",
+            "paragraph-1-5",
+            "none"
+          ]
+        },
+        "shapes": {
+          "settable": true,
+          "minItems": 0,
+          "maxItems": 2
+        },
+        "shapes[].clipId": {
+          "settable": true,
+          "enum": [
+            "stone-hero_top-right",
+            "stone-hero_bottom-right",
+            "stone-hero_top-left",
+            "stone-hero_middle-left",
+            "stone-hero_bottom-left",
+            "footer-shape-left",
+            "footer-shape-right"
+          ]
+        },
+        "shapes[].fill": {
+          "settable": true,
+          "enum": [
+            "color.peach",
+            "color.celeste",
+            "color.olive",
+            "color.coral",
+            "color.sandstone",
+            "none"
+          ]
+        },
+        "shapes[].media": {
+          "settable": true,
+          "assetRoles": [
+            "photo.person",
+            "decorative.none"
+          ]
+        },
+        "shapes[].rotate90": {
+          "settable": true
+        },
+        "variant": {
+          "settable": true,
+          "enum": [
+            "pst-stones",
+            "shape-stack",
+            "image-square",
+            "bare-image"
+          ]
+        }
+      }
+    },
+    "jobs.listing-rows": {
+      "contractFile": "sections/jobs.listing-rows.json",
+      "designSystem": "marketing",
+      "category": "jobs",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "anchorId",
+        "eyebrow",
+        "heading",
+        "lede",
+        "rows"
+      ],
+      "settableProperties": {
+        "anchorId": {
+          "settable": false,
+          "lockedTo": "jobs",
+          "reason": "the hero CTA is a plain native #jobs jump \u2014 no smooth-scroll JS is attached"
+        },
+        "eyebrow": {
+          "settable": true,
+          "maxWords": 6
+        },
+        "heading": {
+          "settable": true,
+          "maxWords": 6
+        },
+        "lede": {
+          "settable": true,
+          "maxWords": 32
+        },
+        "rows": {
+          "settable": true,
+          "minItems": 1,
+          "maxItems": 8
+        },
+        "rows[].href": {
+          "settable": true
+        },
+        "rows[].location": {
+          "settable": true,
+          "maxWords": 4
+        },
+        "rows[].title": {
+          "settable": true,
+          "maxWords": 8
+        }
+      }
+    },
+    "legal.document-prose": {
+      "contractFile": "sections/legal.document-prose.json",
+      "designSystem": "marketing",
+      "category": "legal",
+      "variants": [
+        "terms",
+        "privacy"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "documentRef",
+        "title",
+        "sectionCount"
+      ],
+      "settableProperties": {
+        "documentRef": {
+          "settable": true,
+          "enum": [
+            "terms-of-use",
+            "privacy-policy"
+          ]
+        },
+        "sectionCount": {
+          "settable": true
+        },
+        "title": {
+          "settable": true,
+          "enum": [
+            "Terms of use",
+            "Privacy Policy"
+          ]
+        }
+      }
+    },
+    "process.numbered-cards": {
+      "contractFile": "sections/process.numbered-cards.json",
+      "designSystem": "marketing",
+      "category": "process",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "scrollReveal.slideInBottom"
+      ],
+      "reducedMotionFallback": "instant-visible",
+      "requiredContentFields": [
+        "eyebrow",
+        "heading",
+        "illustration",
+        "cards"
+      ],
+      "settableProperties": {
+        "cards": {
+          "settable": true,
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "cards[].body": {
+          "settable": true,
+          "maxWords": 40
+        },
+        "cards[].heading": {
+          "settable": true,
+          "maxWords": 6
+        },
+        "cards[].number": {
+          "settable": true
+        },
+        "eyebrow": {
+          "settable": true,
+          "maxWords": 4
+        },
+        "heading": {
+          "settable": true,
+          "maxWords": 14
+        },
+        "illustration": {
+          "settable": true,
+          "assetRoles": [
+            "illustration.editorial"
+          ]
+        }
+      }
+    },
+    "stats.grid": {
+      "contractFile": "sections/stats.grid.json",
+      "designSystem": "marketing",
+      "category": "stats",
+      "variants": [
+        "six-with-spacers",
+        "three-centered"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "variant",
+        "heading",
+        "stats"
+      ],
+      "settableProperties": {
+        "eyebrow": {
+          "settable": true,
+          "nullable": true,
+          "maxWords": 4
+        },
+        "heading": {
+          "settable": true,
+          "maxWords": 10
+        },
+        "lede": {
+          "settable": true,
+          "nullable": true,
+          "maxWords": 32
+        },
+        "stats": {
+          "settable": true,
+          "minItems": 3,
+          "maxItems": 6
+        },
+        "stats[].body": {
+          "settable": true,
+          "nullable": true,
+          "maxWords": 32
+        },
+        "stats[].eyebrow": {
+          "settable": true,
+          "nullable": true,
+          "maxWords": 4
+        },
+        "stats[].figure": {
+          "settable": true,
+          "nullable": true,
+          "maxWords": 3
+        },
+        "stats[].label": {
+          "settable": true,
+          "maxWords": 22
+        },
+        "variant": {
+          "settable": true,
+          "enum": [
+            "six-with-spacers",
+            "three-centered"
+          ]
+        }
+      }
+    },
+    "testimonials.slider-empty": {
+      "contractFile": "sections/testimonials.slider-empty.json",
+      "designSystem": "marketing",
+      "category": "testimonials",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "heading",
+        "lede",
+        "emptyState"
+      ],
+      "settableProperties": {
+        "emptyState": {
+          "settable": false,
+          "lockedTo": true,
+          "reason": "LOCKED TRUE. The CMS collection behind this slider is genuinely empty on the live original, so the site renders Webflow's grey 'No items found.' box and the clone reproduces it. There is deliberately NO items array a generator could populate \u2014 inventing testimonial copy for a real company is forbidden."
+        },
+        "heading": {
+          "settable": true,
+          "maxWords": 10
+        },
+        "lede": {
+          "settable": true,
+          "maxWords": 24
+        }
+      }
+    },
+    "trust.press-bar": {
+      "contractFile": "sections/trust.press-bar.json",
+      "designSystem": "marketing",
+      "category": "trust",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "eyebrow",
+        "logoCount"
+      ],
+      "settableProperties": {
+        "eyebrow": {
+          "settable": true,
+          "maxWords": 4
+        },
+        "logoCount": {
+          "settable": true
+        }
+      }
+    },
+    "trust.video-and-cards": {
+      "contractFile": "sections/trust.video-and-cards.json",
+      "designSystem": "marketing",
+      "category": "trust",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "heading",
+        "lede",
+        "video",
+        "cards"
+      ],
+      "settableProperties": {
+        "cards": {
+          "settable": true,
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "cards[].body": {
+          "settable": true,
+          "maxWords": 52
+        },
+        "cards[].heading": {
+          "settable": true,
+          "maxWords": 6
+        },
+        "cards[].icon": {
+          "settable": true,
+          "assetRoles": [
+            "icon.feature"
+          ]
+        },
+        "heading": {
+          "settable": true,
+          "maxWords": 12
+        },
+        "lede": {
+          "settable": true,
+          "maxWords": 56
+        },
+        "video": {
+          "settable": true
+        },
+        "video.clickToPlay": {
+          "settable": false,
+          "lockedTo": true,
+          "reason": "HARD CONSTRAINT, LOCKED TRUE. The original ships 0 iframes, 0 <video> elements and 0 third-party requests on load. The iframe is injected only after a user click. A generated instance must never autoplay or embed on load."
+        },
+        "video.poster": {
+          "settable": true,
+          "assetRoles": [
+            "media.videoPoster"
+          ]
+        },
+        "video.title": {
+          "settable": true,
+          "maxWords": 8
+        }
+      }
+    },
+    "values.principle-cards": {
+      "contractFile": "sections/values.principle-cards.json",
+      "designSystem": "marketing",
+      "category": "values",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "srHeading",
+        "cards"
+      ],
+      "settableProperties": {
+        "cards": {
+          "settable": true,
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "cards[].heading": {
+          "settable": true,
+          "maxWords": 6
+        },
+        "cards[].items": {
+          "settable": true,
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "cards[].items[].icon": {
+          "settable": true,
+          "assetRoles": [
+            "icon.values"
+          ]
+        },
+        "cards[].items[].label": {
+          "settable": true,
+          "maxWords": 6
+        },
+        "srHeading": {
+          "settable": false,
+          "lockedTo": "Values",
+          "reason": "h2.u-sr-only preceding the container"
+        }
+      }
+    }
+  },
+  "primitives": {
+    "auth-button": {
+      "contractFile": "primitives/auth-button.json",
+      "designSystem": "auth",
+      "settableProps": [
+        "disabled",
+        "label",
+        "type"
+      ]
+    },
+    "auth-floating-input": {
+      "contractFile": "primitives/auth-floating-input.json",
+      "designSystem": "auth",
+      "settableProps": [
+        "autocomplete",
+        "label",
+        "name",
+        "type"
+      ]
+    },
+    "auth-wordmark": {
+      "contractFile": "primitives/auth-wordmark.json",
+      "designSystem": "auth",
+      "settableProps": [
+        "idSuffix"
+      ]
+    },
+    "bullet-number": {
+      "contractFile": "primitives/bullet-number.json",
+      "designSystem": "marketing",
+      "settableProps": [
+        "number"
+      ]
+    },
+    "button-pill": {
+      "contractFile": "primitives/button-pill.json",
+      "designSystem": "marketing",
+      "settableProps": [
+        "href",
+        "label",
+        "newTab",
+        "variant"
+      ]
+    },
+    "button-primary": {
+      "contractFile": "primitives/button-primary.json",
+      "designSystem": "marketing",
+      "settableProps": [
+        "href",
+        "label",
+        "newTab"
+      ]
+    },
+    "eyebrow": {
+      "contractFile": "primitives/eyebrow.json",
+      "designSystem": "marketing",
+      "settableProps": [
+        "text",
+        "variant"
+      ]
+    },
+    "icon-arrow": {
+      "contractFile": "primitives/icon-arrow.json",
+      "designSystem": "marketing",
+      "settableProps": [
+        "size"
+      ]
+    },
+    "input-text": {
+      "contractFile": "primitives/input-text.json",
+      "designSystem": "marketing",
+      "settableProps": [
+        "kind",
+        "label",
+        "required"
+      ]
+    },
+    "link-inline": {
+      "contractFile": "primitives/link-inline.json",
+      "designSystem": "marketing",
+      "settableProps": [
+        "href",
+        "label",
+        "newTab"
+      ]
+    },
+    "press-logo": {
+      "contractFile": "primitives/press-logo.json",
+      "designSystem": "marketing",
+      "settableProps": [
+        "height"
+      ]
+    },
+    "stone-shape": {
+      "contractFile": "primitives/stone-shape.json",
+      "designSystem": "marketing",
+      "settableProps": [
+        "clipId",
+        "fill",
+        "image",
+        "rotate90"
+      ]
+    },
+    "tag-pill": {
+      "contractFile": "primitives/tag-pill.json",
+      "designSystem": "marketing",
+      "settableProps": [
+        "color",
+        "name"
+      ]
+    },
+    "wordmark": {
+      "contractFile": "primitives/wordmark.json",
+      "designSystem": "marketing",
+      "settableProps": [
+        "context",
+        "linked"
+      ]
+    }
+  },
+  "components": {
+    "auth-shell": {
+      "contractFile": "components/auth-shell.json",
+      "designSystem": "auth",
+      "composes": []
+    },
+    "card-white": {
+      "contractFile": "components/card-white.json",
+      "designSystem": "marketing",
+      "composes": [
+        "primitive.eyebrow",
+        "primitive.button-pill"
+      ]
+    },
+    "cta-card": {
+      "contractFile": "components/cta-card.json",
+      "designSystem": "marketing",
+      "composes": [
+        "primitive.button-pill",
+        "primitive.stone-shape"
+      ]
+    },
+    "empty-collection": {
+      "contractFile": "components/empty-collection.json",
+      "designSystem": "marketing",
+      "composes": []
+    },
+    "footer-card": {
+      "contractFile": "components/footer-card.json",
+      "designSystem": "marketing",
+      "composes": [
+        "primitive.button-pill",
+        "primitive.wordmark",
+        "primitive.stone-shape",
+        "primitive.link-inline"
+      ]
+    },
+    "home-card": {
+      "contractFile": "components/home-card.json",
+      "designSystem": "marketing",
+      "composes": [
+        "primitive.bullet-number"
+      ]
+    },
+    "job-listing-row": {
+      "contractFile": "components/job-listing-row.json",
+      "designSystem": "marketing",
+      "composes": [
+        "primitive.icon-arrow"
+      ]
+    },
+    "join-card": {
+      "contractFile": "components/join-card.json",
+      "designSystem": "marketing",
+      "composes": [
+        "primitive.button-primary"
+      ]
+    },
+    "legal-prose": {
+      "contractFile": "components/legal-prose.json",
+      "designSystem": "marketing",
+      "composes": [
+        "primitive.link-inline"
+      ]
+    },
+    "post-card": {
+      "contractFile": "components/post-card.json",
+      "designSystem": "marketing",
+      "composes": [
+        "primitive.tag-pill"
+      ]
+    },
+    "press-bar": {
+      "contractFile": "components/press-bar.json",
+      "designSystem": "marketing",
+      "composes": [
+        "primitive.eyebrow",
+        "primitive.press-logo"
+      ]
+    },
+    "rich-text-body": {
+      "contractFile": "components/rich-text-body.json",
+      "designSystem": "marketing",
+      "composes": []
+    },
+    "shape-stack": {
+      "contractFile": "components/shape-stack.json",
+      "designSystem": "marketing",
+      "composes": [
+        "primitive.stone-shape"
+      ]
+    },
+    "stat-block": {
+      "contractFile": "components/stat-block.json",
+      "designSystem": "marketing",
+      "composes": [
+        "primitive.eyebrow"
+      ]
+    },
+    "tabs-disclosure": {
+      "contractFile": "components/tabs-disclosure.json",
+      "designSystem": "marketing",
+      "composes": []
+    },
+    "trust-card": {
+      "contractFile": "components/trust-card.json",
+      "designSystem": "marketing",
+      "composes": []
+    },
+    "values-card": {
+      "contractFile": "components/values-card.json",
+      "designSystem": "marketing",
+      "composes": []
+    },
+    "video-facade": {
+      "contractFile": "components/video-facade.json",
+      "designSystem": "marketing",
+      "composes": []
+    }
+  },
+  "assetRoles": {
+    "auth.illustration": {
+      "generationPolicy": "must-reuse-exact",
+      "exposedAsPageSpecField": true
+    },
+    "blob.fill": {
+      "generationPolicy": "may-generate-new",
+      "exposedAsPageSpecField": true
+    },
+    "brand.wordmark": {
+      "generationPolicy": "must-not-reproduce-real-mark",
+      "exposedAsPageSpecField": false
+    },
+    "decorative.none": {
+      "generationPolicy": "may-generate-new",
+      "exposedAsPageSpecField": true
+    },
+    "editorial.cover": {
+      "generationPolicy": "must-reuse-exact",
+      "exposedAsPageSpecField": true
+    },
+    "icon.feature": {
+      "generationPolicy": "must-reuse-exact",
+      "exposedAsPageSpecField": true
+    },
+    "icon.values": {
+      "generationPolicy": "must-reuse-exact",
+      "exposedAsPageSpecField": true
+    },
+    "illustration.brand": {
+      "generationPolicy": "must-reuse-exact",
+      "exposedAsPageSpecField": true
+    },
+    "illustration.editorial": {
+      "generationPolicy": "must-reuse-exact",
+      "exposedAsPageSpecField": true
+    },
+    "legal.operativeText": {
+      "generationPolicy": "must-not-fabricate",
+      "exposedAsPageSpecField": false
+    },
+    "media.videoPoster": {
+      "generationPolicy": "must-reuse-exact",
+      "exposedAsPageSpecField": true
+    },
+    "photo.person": {
+      "generationPolicy": "must-not-reproduce-real-mark",
+      "exposedAsPageSpecField": true
+    },
+    "press.logo": {
+      "generationPolicy": "must-not-reproduce-real-mark",
+      "exposedAsPageSpecField": false
+    }
+  },
+  "pinnedAssetPolicies": {
+    "brand.wordmark": "must-not-reproduce-real-mark",
+    "press.logo": "must-not-reproduce-real-mark",
+    "photo.person": "must-not-reproduce-real-mark",
+    "legal.operativeText": "must-not-fabricate"
+  },
+  "counts": {
+    "sections": 28,
+    "primitives": 14,
+    "components": 18,
+    "assetRoles": 13
+  }
+}

@@ -1,0 +1,584 @@
+/* ============================================================
+   /faq, /contact, /careers — ported rule-for-rule from the
+   shipped Webflow stylesheet, per spec/SPEC_faq_contact_careers.md.
+
+   Plain CSS (no @layer, no @tailwind): this file is imported from
+   JS, so every rule here is unlayered and therefore wins over
+   src/index.css's `@layer components` rules at equal specificity.
+   Nothing already defined in index.css is redeclared here.
+
+   Declaration order is load-bearing in two places:
+     1. Webflow's own `.w-form-done` / `.w-form-fail` / `.w-dyn-empty`
+        defaults come FIRST so the site's `.form-success` /
+        `.form-error` overrides win (background + radius only —
+        Webflow's `text-align:center` and `padding:20px` still
+        contribute to the success card, as measured).
+     2. `.faq-item.cc-listing` comes after `.faq-item`.
+   ============================================================ */
+
+/* ---------- 1. Webflow base defaults these routes rely on ---------- */
+
+/* Webflow's `.w-dyn-list { position: relative }` is NOT in the shipped
+   stylesheet — the live lists compute `position: static` (measured). Declared
+   structurally only so the class exists in the markup. */
+.w-dyn-list {
+  /* intentionally empty */
+}
+.w-dyn-empty {
+  background-color: #ddd;
+  padding: 10px;
+}
+.w-dyn-hide {
+  display: none !important;
+}
+
+.w-form {
+  margin: 0 0 15px;
+}
+.w-form-done {
+  text-align: center;
+  background-color: #ddd;
+  padding: 20px;
+  display: none;
+}
+.w-form-fail {
+  background-color: #ffdede;
+  margin-top: 10px;
+  padding: 10px;
+  display: none;
+}
+.w-input,
+.w-select {
+  color: #333;
+  vertical-align: middle;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  width: 100%;
+  height: 38px;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1.42857;
+  display: block;
+}
+/* Webflow base: focusing a form control removes the UA focus ring; the site
+   indicates focus with the 2px border on `.input:focus-visible` instead.
+   Omitting this leaves Chrome's blue `:focus-visible` ring on the inputs. */
+.w-input:focus,
+.w-select:focus {
+  border-color: #3898ec;
+  outline: 0;
+}
+.w-input:-moz-placeholder,
+.w-input::-moz-placeholder,
+.w-input::-webkit-input-placeholder {
+  color: #999;
+}
+.w-input[disabled],
+.w-input[readonly] {
+  cursor: not-allowed;
+  background-color: #eee;
+}
+textarea.w-input {
+  height: auto;
+}
+.w-list-unstyled {
+  padding-left: 0;
+  list-style: none;
+}
+
+/* ---------- 2. New utilities ---------- */
+
+/* CASCADE: Vite emits this page stylesheet BEFORE index.css, so a rule here
+   that merely *ties* with an index.css rule silently loses. `.h3`/`.h4` and
+   the `h2` breakpoint rules in index.css both declare `margin-bottom`, so the
+   margin utilities below are doubled (`.u-mb-2.u-mb-2`, specificity 0-2-0) to
+   out-rank them the way source order does on the original. */
+.u-mb-1,
+.u-mb-1.u-mb-1 {
+  margin-bottom: 1em;
+}
+.u-mb-2,
+.u-mb-2.u-mb-2 {
+  margin-bottom: 2em;
+}
+.u-mt-1,
+.u-mt-1.u-mt-1 {
+  margin-top: 1em;
+}
+
+/* 56% padding-top ≈ 16:9 — the class name is wrong on the original. */
+.u-aspect-9x16 {
+  isolation: isolate;
+  background-color: var(--ivory);
+  border-radius: 2em; /* 32px */
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding-top: 56%;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ---------- 3. Hero shape stack (/faq + /careers) ---------- */
+
+.header-shapes-contain {
+  z-index: 1;
+  flex-direction: column;
+  align-items: flex-end;
+  display: flex;
+}
+
+.shape-contain.cc-sitters-top {
+  width: 90%;
+}
+.shape-contain.cc-sitters-bottom {
+  width: 50%;
+  margin-top: -20%;
+  margin-left: auto;
+}
+
+/* computed matrix(0, 1, -1, 0, 0, 0) */
+.shape.rotate-90 {
+  transform: rotate(90deg);
+}
+
+/* ---------- 4. FAQ accordion component ----------
+   The design system ships this; /faq has zero published items, so
+   nothing on /faq renders it. /careers reuses it via `.cc-listing`.
+   Open/close is IX2-driven on the original (open 600ms, close 200ms,
+   both cubic-bezier(.165,.84,.44,1)) — see spec §6.3. No instance is
+   rendered in this build, so no JS toggle is wired.
+*/
+.faq-item {
+  cursor: pointer;
+  background-color: var(--white);
+  border-radius: 2.5em; /* 40px */
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 1.5em; /* 24px */
+  padding: 1.5em 1.5em 1.5em 2.5em; /* 24px 24px 24px 40px */
+  display: flex;
+  position: relative;
+}
+.faq-item:focus-visible {
+  outline: 3px dashed #00373e;
+  outline-offset: 0;
+}
+/* CASCADE: `.faq-item` is also `.w-inline-block` on /careers, and index.css's
+   `.w-inline-block { display: inline-block }` ties at 0-1-0 but is emitted
+   last, so it would win. Re-assert `display:flex` at 0-1-1. */
+a.faq-item,
+.faq-item.w-inline-block {
+  display: flex;
+}
+
+.faq-content {
+  z-index: 3;
+  width: 75%;
+}
+.faq-spacer {
+  padding-top: 0.6em; /* 9.6px */
+  padding-bottom: 0.6em;
+}
+.faq-answer {
+  overflow: hidden;
+}
+
+.faq-icon-wrapper {
+  z-index: 3;
+  background-color: var(--ivory);
+  border-radius: 99px;
+  justify-content: center;
+  align-items: center;
+  width: 2.5em; /* 40px */
+  height: 2.5em;
+  margin-top: 1.5em; /* 24px */
+  margin-right: 1.5em;
+  display: flex;
+  position: absolute;
+  inset: 0 0 auto auto;
+}
+.faq-icon {
+  justify-content: center;
+  align-items: center;
+  width: 1em; /* 16px */
+  min-width: 1em;
+  height: 1em;
+  min-height: 1em;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+/* plus / minus glyph — `.cc-vr` is the bare `.icon-line` */
+.icon-line {
+  background-color: var(--primary);
+  width: 4px;
+  height: 100%;
+}
+.icon-line.cc-hr {
+  width: 100%;
+  height: 4px;
+  position: absolute;
+}
+
+/* ---------- 5. /careers job rows — `.faq-item.cc-listing` ---------- */
+
+.faq-item.cc-listing {
+  border-radius: 8em; /* 128px */
+  align-items: center;
+  padding-left: 4em; /* 64px */
+  padding-right: 4em;
+  font-weight: 500;
+  transition: color 0.3s var(--out-quart), background-color 0.3s var(--out-quart);
+}
+.faq-item.cc-listing:hover {
+  background-color: var(--primary);
+  color: var(--white);
+}
+/* the icon pill deliberately stays ivory on hover and is not transitioned */
+.faq-icon-wrapper.cc-listing {
+  margin-top: 0;
+  margin-right: 0;
+  position: relative;
+}
+
+/* ---------- 6. /contact — form ---------- */
+
+.form {
+  width: 100%;
+  position: relative;
+}
+
+.input-group {
+  text-align: left;
+  flex-direction: column;
+  display: block;
+  position: relative;
+}
+.input-group.cc-textarea {
+  min-height: 140px;
+}
+
+.input-label {
+  z-index: 1;
+  color: var(--primary);
+  cursor: default;
+  border-top-right-radius: 3px;
+  margin: 0 0 8px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1;
+  display: block;
+  position: relative;
+}
+
+/* Form controls do not inherit the page font from the UA stylesheet, and
+   neither preflight nor the index.css normalize port supplies
+   `font-family: inherit` for them — declare it so the inputs, the textarea
+   and the submit button render in Jokker at 16px like the original. */
+.input,
+.input.cc-text-area,
+input.btn {
+  font-family: Jokker, sans-serif;
+}
+input.btn {
+  font-size: 1rem;
+}
+
+.input {
+  color: var(--primary);
+  background-color: var(--ivory);
+  border: 1px solid var(--primary);
+  border-radius: 99px;
+  height: 100%;
+  min-height: 3.5rem; /* 56px */
+  margin-bottom: 0;
+  padding: 1em 1.25em; /* 16px 20px */
+  font-size: 1rem;
+  transition: border-color 0.3s var(--out-quart);
+}
+/* `:hover`/`:focus` re-declare the same colour → no visual change.
+   `:focus-visible` thickens the border to 2px; width is not in the
+   transition list, so it snaps. There is NO author-written error
+   styling on the original — do not add one. */
+.input:hover,
+.input:focus {
+  border-color: var(--primary);
+}
+.input:focus-visible {
+  border-width: 2px;
+}
+.input::placeholder {
+  color: #00373e5e; /* rgba(0,55,62,.37) */
+}
+.input.cc-text-area {
+  border-radius: 24px;
+  min-height: 150px;
+}
+
+.form_required-note {
+  font-size: 0.8rem; /* 12.8px */
+  font-weight: 400;
+  position: absolute;
+  inset: auto 0 0 auto;
+}
+
+.form-success {
+  background-color: var(--white);
+  border-radius: 1.5em; /* 24px */
+  min-height: 320px;
+  position: relative;
+}
+.form-success_flex {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  position: absolute;
+  inset: 0;
+}
+.trust-card_icon {
+  max-width: 6.5rem; /* 104px */
+  margin-bottom: 3rem; /* 48px */
+}
+
+.form-error {
+  color: #e31700;
+  background-color: transparent;
+  border-top: 1px solid #e31700;
+  margin-top: 16px;
+  padding: 8px 0 0;
+}
+
+/* ---------- 7. /contact — info blocks ---------- */
+
+.contact-info {
+  gap: 1.5em; /* 24px */
+  align-items: center;
+  margin-bottom: 2.5rem; /* 40px */
+  display: flex;
+}
+.contact-info_icon {
+  background-color: var(--primary);
+  color: var(--celeste);
+  border-radius: 99px;
+  justify-content: center;
+  align-items: center;
+  width: 3.5rem; /* 56px */
+  height: 3.5rem;
+  padding: 14px;
+  display: flex;
+}
+.icon-wrap-24 {
+  width: 24px;
+  height: 24px;
+  overflow: hidden;
+}
+/* class name is misspelled on the original ("conta") — kept verbatim */
+.conta-info_emails {
+  flex-direction: column;
+  gap: 8px;
+  display: flex;
+}
+
+/* ---------- 8. /careers — stats ---------- */
+
+.stat-contain {
+  flex-direction: column;
+  gap: 0.75em; /* 12px */
+  display: flex;
+}
+
+/* ---------- 9. /careers — values cards ---------- */
+
+.values-wrap {
+  background-color: var(--white);
+  border-radius: 4.5em; /* 72px */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 4.5em 3.5em; /* 72px 56px */
+  display: flex;
+}
+.values_item {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding-top: 1em; /* 16px */
+  padding-bottom: 1em;
+  display: flex;
+}
+.icon-wrap-72 {
+  width: 72px;
+  height: 72px;
+  overflow: hidden;
+}
+
+/* ---------- 10. /careers — benefit cards ---------- */
+
+.trust-card {
+  background-color: var(--primary);
+  color: var(--white);
+  border-radius: 2em; /* 32px */
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  min-height: 30em; /* 480px */
+  padding: 3em; /* 48px */
+  display: flex;
+}
+.benefits-icons {
+  max-width: 5.5rem; /* 88px */
+  margin-bottom: 3rem; /* 48px */
+}
+.trust-card_header {
+  z-index: 3;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5em; /* 24px */
+  max-width: 80%;
+  display: flex;
+  position: relative;
+}
+.trust-bar_header {
+  margin-bottom: 0;
+  font-size: 2em; /* 32px */
+}
+
+/* ============================================================
+   Breakpoints — Webflow's three max-width queries, in order.
+   ============================================================ */
+
+@media screen and (max-width: 991px) {
+  .header-shapes-contain {
+    justify-content: center;
+    align-items: flex-end;
+    width: 50%;
+    position: absolute;
+    inset: 0 0 0 auto;
+  }
+  .shape-contain.cc-sitters-bottom {
+    margin-top: -40%;
+  }
+
+  .trust-card {
+    gap: 2em; /* 32px */
+    min-height: auto;
+    padding: 2em; /* 32px */
+  }
+  .trust-card_header {
+    gap: 1em; /* 16px */
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .header-shapes-contain {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 10%;
+    width: 100%;
+    margin-top: -13%;
+    position: relative;
+  }
+  .shape-contain.cc-sitters-top {
+    width: 80%;
+    margin-right: -20%;
+  }
+  .shape-contain.cc-sitters-bottom {
+    width: 40%;
+    margin-top: -33%;
+    margin-left: -10%;
+  }
+
+  .faq-item {
+    padding-left: 2em; /* 32px */
+  }
+  .faq-content {
+    width: 86%;
+  }
+
+  .form-success_flex {
+    max-width: 340px;
+  }
+
+  .benefits-icons {
+    max-width: 4rem; /* 64px */
+  }
+  .trust-card_header {
+    max-width: 86%;
+  }
+  .trust-bar_header {
+    font-size: 1.5em; /* 24px */
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .u-aspect-9x16 {
+    border-radius: 1em; /* 16px */
+  }
+
+  .header-shapes-contain {
+    justify-content: flex-start;
+    width: 100%;
+    margin-top: -5%;
+    margin-right: 0;
+  }
+  .shape-contain.cc-sitters-top {
+    width: 80%;
+  }
+  .shape-contain.cc-sitters-bottom {
+    width: 50%;
+    margin-top: 0;
+    margin-bottom: 11%;
+    margin-left: -18%;
+  }
+
+  .faq-item {
+    padding-left: 1.5em; /* 24px */
+  }
+  .faq-item.cc-listing {
+    border-radius: 1.5em; /* 24px */
+    padding-left: 2em; /* 32px */
+    padding-right: 2em;
+  }
+
+  .form-success_flex {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  .trust-card_icon {
+    width: 50%;
+  }
+
+  .values-wrap {
+    border-radius: 2.5em; /* 40px */
+    padding: 3em 1.5em; /* 48px 24px */
+  }
+  .icon-wrap-72 {
+    width: 56px;
+    height: 56px;
+  }
+
+  .benefits-icons {
+    width: 50%;
+  }
+  .trust-card_header {
+    max-width: 100%;
+  }
+  .trust-bar_header {
+    font-size: 1.25em; /* 20px */
+  }
+}

@@ -1,0 +1,207 @@
+{
+  "id": "hero.light-split",
+  "kind": "section",
+  "name": "Light split hero",
+  "category": "hero",
+  "designSystem": "marketing",
+  "variants": [
+    "pst-stones",
+    "shape-stack",
+    "image-square",
+    "bare-image"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "variant": {
+        "enum": [
+          "pst-stones",
+          "shape-stack",
+          "image-square",
+          "bare-image"
+        ],
+        "note": "pst-stones = two sibling .shape-contain blobs (/parents, /sitters, /trust-safety). shape-stack = .header-shapes-contain with cc-sitters-top + cc-sitters-bottom (/faq, /careers). image-square = a 1:1 .u-img-cover photo (/contact). bare-image = an unwrapped width-limited img with the section's padding zeroed by .u-p-0 (/blog)."
+      },
+      "heading": {
+        "type": "string",
+        "maxWords": 12,
+        "measuredLongestRealInstance": "\"Making the impossible things about kidcare possible\" = 7 words"
+      },
+      "headingWeightQuirk": {
+        "type": "boolean",
+        "default": false,
+        "note": "true when the h1 carries .u-mb-0, which also declares font-weight:400 \u2014 so the h1 computes Reckless Neue 400 while only the 900 Heavy file is hosted and the browser synthesises a lighter face. Observed true on /sitters, /careers, /contact and /blog; false on /trust-safety, /faq and /parents. INTENTIONAL \u2014 this is the original's correct appearance."
+      },
+      "lede": {
+        "anyOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "string",
+            "maxWords": 30,
+            "measuredLongestRealInstance": "24 words measured on /parents"
+          }
+        ],
+        "note": "Absent on /faq, which has a heading only."
+      },
+      "ledeClass": {
+        "enum": [
+          "paragraph-1-25",
+          "paragraph-1-5",
+          "none"
+        ],
+        "note": "/trust-safety uses .paragraph-1-5, which is text-align:center with margin-bottom:24px even inside this left-aligned hero. Reproduced as measured."
+      },
+      "ctas": {
+        "type": "array",
+        "minItems": 0,
+        "maxItems": 2,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "label": {
+              "type": "string",
+              "maxWords": 6,
+              "measuredLongestRealInstance": "\"Become a caregiver\" = 3 words"
+            },
+            "href": {
+              "type": "string",
+              "enum": [
+                "https://app.withotter.com/sign-up/welcome",
+                "#jobs"
+              ],
+              "note": "Only two CTA targets are observed on light heroes: the app-host welcome path (subpages use /sign-up/welcome, NOT the bare /sign-up the homepage uses) and the /careers same-page #jobs anchor."
+            },
+            "variant": {
+              "enum": [
+                "dark",
+                "cc-light"
+              ]
+            }
+          },
+          "required": [
+            "label",
+            "href",
+            "variant"
+          ]
+        },
+        "note": "0 on /faq and /blog, 1 on /parents, /sitters and /careers, 2 on /trust-safety (wrapped in .buttons-wrapper)."
+      },
+      "shapes": {
+        "type": "array",
+        "minItems": 0,
+        "maxItems": 2,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "clipId": {
+              "enum": [
+                "stone-hero_top-right",
+                "stone-hero_bottom-right",
+                "stone-hero_top-left",
+                "stone-hero_middle-left",
+                "stone-hero_bottom-left",
+                "footer-shape-left",
+                "footer-shape-right"
+              ]
+            },
+            "fill": {
+              "enum": [
+                "color.peach",
+                "color.celeste",
+                "color.olive",
+                "color.coral",
+                "color.sandstone",
+                "none"
+              ]
+            },
+            "rotate90": {
+              "type": "boolean",
+              "default": false
+            },
+            "media": {
+              "type": "object",
+              "assetRoleEnumRef": "assets/asset-roles.json#/roles",
+              "allowedRoles": [
+                "photo.person",
+                "decorative.none"
+              ]
+            }
+          },
+          "required": [
+            "clipId",
+            "fill",
+            "media"
+          ]
+        }
+      },
+      "heroImage": {
+        "anyOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "object",
+            "assetRoleEnumRef": "assets/asset-roles.json#/roles",
+            "allowedRoles": [
+              "photo.person",
+              "decorative.none"
+            ]
+          }
+        ],
+        "note": "Only for the image-square and bare-image variants. /contact's hero image is display:none at <=767 via .col-sm-hide, so it is absent at 390."
+      }
+    },
+    "required": [
+      "variant",
+      "heading",
+      "ctas",
+      "shapes"
+    ]
+  },
+  "constraints": {
+    "onePerPage": true,
+    "maxPerPage": 1,
+    "mustFollowNav": true,
+    "forbiddenOnRoutes": [
+      "/"
+    ],
+    "note": "The homepage uses hero.dark-rounded instead. Every other marketing route with a hero uses this one. /blog-posts/:slug, /terms-of-use, /privacy-policy and /log-in have NO hero at all \u2014 see compatibility/graph.json NO_HERO_TEMPLATES."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. CSS hover transitions on .btn (colour trio, 300ms ease.outQuart) are global chrome behaviour, not section motion."
+  },
+  "responsive": {
+    "desktop": "copy column (col-lg-5 or col-lg-6) and a shape/image column inside .container.cc-narrow with row-justify-between + row-align-center. Section padding 80px 0. Section header gap 24px.",
+    "le991": "columns narrow with the percentage container; still side by side at 1024 (1024 > 991).",
+    "le767": "columns collapse per their col-sm-* spans. /contact's hero image disappears (.col-sm-hide).",
+    "le479": "everything stacks (.col becomes flex-basis 100%). Section padding 48px 0, header gap 16px. /careers' bottom blob reflows below the top one."
+  },
+  "assetRoles": [
+    "photo.person",
+    "blob.fill",
+    "decorative.none"
+  ],
+  "observedOn": [
+    "/parents",
+    "/sitters",
+    "/trust-safety",
+    "/faq",
+    "/contact",
+    "/careers",
+    "/blog"
+  ],
+  "measuredFrom": "spec/SPEC_parents_sitters_trust.md:85-211",
+  "notes": [
+    "The three PST routes share one hero skeleton; only copy, CTA count and shape fills differ.",
+    "/parents and /careers rotate their bottom blob 90deg (computed matrix(0,1,-1,0,0,0))."
+  ]
+}

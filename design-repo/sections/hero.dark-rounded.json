@@ -1,0 +1,130 @@
+{
+  "id": "hero.dark-rounded",
+  "kind": "section",
+  "name": "Dark rounded hero",
+  "category": "hero",
+  "designSystem": "marketing",
+  "variants": [
+    "home"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "heading": {
+        "type": "string",
+        "maxWords": 12,
+        "measuredLongestRealInstance": "\"Build a care career that cares about you\" = 8 words"
+      },
+      "lede": {
+        "type": "string",
+        "maxWords": 18,
+        "measuredLongestRealInstance": "\"We want to get you the job and the pay you deserve.\" = 12 words"
+      },
+      "cta": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxWords": 6,
+            "measuredLongestRealInstance": "\"Create a free profile\" = 4 words"
+          },
+          "href": {
+            "type": "string",
+            "enum": [
+              "https://app.withotter.com/sign-up"
+            ]
+          },
+          "variant": {
+            "const": "cc-light"
+          }
+        },
+        "required": [
+          "label",
+          "href",
+          "variant"
+        ]
+      },
+      "stones": {
+        "type": "array",
+        "minItems": 5,
+        "maxItems": 5,
+        "note": "Exactly 5 blobs, in fixed slots: top-left (peach + photo), middle-left (olive, flat), bottom-left (photo), top-right (celeste, flat), bottom-right (photo). Slot geometry is CSS-owned; a PageSpec may only choose fill and photo per slot.",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "slot": {
+              "enum": [
+                "top-left",
+                "middle-left",
+                "bottom-left",
+                "top-right",
+                "bottom-right"
+              ]
+            },
+            "fill": {
+              "enum": [
+                "color.peach",
+                "color.celeste",
+                "color.olive",
+                "color.coral",
+                "color.sandstone",
+                "none"
+              ]
+            },
+            "media": {
+              "type": "object",
+              "assetRoleEnumRef": "assets/asset-roles.json#/roles",
+              "allowedRoles": [
+                "photo.person",
+                "decorative.none"
+              ]
+            }
+          },
+          "required": [
+            "slot",
+            "fill",
+            "media"
+          ]
+        }
+      }
+    },
+    "required": [
+      "heading",
+      "lede",
+      "cta",
+      "stones"
+    ]
+  },
+  "constraints": {
+    "homeRouteOnly": true,
+    "onePerPage": true,
+    "maxPerPage": 1,
+    "mustFollowNav": true,
+    "note": "This is the ONLY dark rounded hero on the site. No other route uses .container.cc-hero. The remaining routes use hero.light-split."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. CSS hover transitions on .btn (colour trio, 300ms ease.outQuart) are global chrome behaviour, not section motion."
+  },
+  "responsive": {
+    "desktop": "radius 72px, height 60vh with min-height 800px, so 1296x800 at 1440 and 921.6x800 at 1024. Copy column col-lg-7, hero_copy-wrapper 90% wide and centred.",
+    "le991": "height auto, min-height 60dvh. Left stone column widens to 35%.",
+    "le767": "radius 40px, padding 8em 4em, copy wrapper 80% wide.",
+    "le479": "padding 5em 2em, measured 351x506.4. The middle-left olive stone is display:none."
+  },
+  "assetRoles": [
+    "photo.person",
+    "blob.fill",
+    "decorative.none"
+  ],
+  "observedOn": [
+    "/"
+  ],
+  "measuredFrom": "CLONE_SPEC.md:305-334"
+}

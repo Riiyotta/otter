@@ -1,0 +1,17 @@
+{
+  "id": "component.video-facade",
+  "kind": "component",
+  "name": "Click-to-play video facade",
+  "designSystem": "marketing",
+  "composes": [],
+  "geometry": {
+    "wrapper": ".u-aspect-9x16 \u2014 ivory, 56% ratio, radius 32px (16px at <=767), isolate",
+    "inner": "inline padding-top 56.27659574468085%"
+  },
+  "measuredFrom": "src/components/pst/VideoFacade.jsx:1-20",
+  "notes": [
+    "HARD CONSTRAINT: 0 iframes, 0 <video> elements and 0 third-party requests on load. The iframe is injected ONLY after a user click.",
+    "A generated instance must not autoplay or embed on load.",
+    "The iframe interior (poster crop, play button, player chrome) was explicitly not measurable; only the outer box is spec-exact."
+  ]
+}

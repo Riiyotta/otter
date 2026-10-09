@@ -1,0 +1,38 @@
+{
+  "id": "tokens.foundation.breakpoint",
+  "designSystem": "marketing",
+  "model": "max-width (Webflow). Tailwind screens mirror these exactly; there are no min-width breakpoints except ONE.",
+  "tokens": {
+    "bp.main": {
+      "$value": "(default, no query)",
+      "appliesAt": [
+        1440,
+        1024
+      ],
+      "note": "1024 is > 991 so it still uses desktop styles; only the percentage container shrinks."
+    },
+    "bp.medium": {
+      "$value": "@media (max-width: 991px)"
+    },
+    "bp.small": {
+      "$value": "@media (max-width: 767px)"
+    },
+    "bp.tiny": {
+      "$value": "@media (max-width: 479px)",
+      "appliesAt": [
+        390
+      ]
+    }
+  },
+  "theOneMinWidthQuery": {
+    "$value": "@media screen and (min-width: 992px)",
+    "usedBy": ".nav_link-current-icon reveal only",
+    "measuredFrom": "spec/SPEC_parents_sitters_trust.md:886-886"
+  },
+  "measuredFrom": "tailwind.config.js:17-21",
+  "testWidths": [
+    1440,
+    1024,
+    390
+  ]
+}

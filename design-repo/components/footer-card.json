@@ -1,0 +1,28 @@
+{
+  "id": "component.footer-card",
+  "kind": "component",
+  "name": "Footer card pair",
+  "designSystem": "marketing",
+  "composes": [
+    "primitive.button-pill",
+    "primitive.wordmark",
+    "primitive.stone-shape",
+    "primitive.link-inline"
+  ],
+  "geometry": {
+    "left": "background surface.inverse, colour text.onInverse, radius radius.footerCard, padding 2.5em, flex:1, min-width 20rem",
+    "right": "background surface.card, radius radius.footerCard, padding 2.5em, flex:1 0 auto, min-width 66.66%"
+  },
+  "measuredFrom": "CLONE_SPEC.md:436-456",
+  "responsive": {
+    "desktop": "side by side, space-between, gap 40px",
+    "le991": "left card min-width 100% -> wraps to two full-width rows",
+    "le767": "footer_row becomes column with 32px gap; the wordmark gets order:-1 and sits above the terms row",
+    "le479": "left card padding 1.5em; link lists 50% wide"
+  },
+  "notes": [
+    "Each card carries one absolutely-positioned clip-path blob (footer-shape-left olive on the left card, footer-shape-right peach on the right).",
+    "The right card's .footer_links-container is EMPTY on the homepage (a 0-height spacer) and holds three ul.footer_link-list columns on every other marketing route.",
+    "An empty zero-height div.container precedes div.container.cc-footer-container in the real DOM and is reproduced on purpose."
+  ]
+}

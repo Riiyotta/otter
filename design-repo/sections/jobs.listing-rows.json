@@ -1,0 +1,102 @@
+{
+  "id": "jobs.listing-rows",
+  "kind": "section",
+  "name": "Job listing rows",
+  "category": "jobs",
+  "designSystem": "marketing",
+  "variants": [
+    "default"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "anchorId": {
+        "const": "jobs",
+        "note": "the hero CTA is a plain native #jobs jump \u2014 no smooth-scroll JS is attached"
+      },
+      "eyebrow": {
+        "type": "string",
+        "maxWords": 6,
+        "measuredLongestRealInstance": "\"join the team\" = 3 words"
+      },
+      "heading": {
+        "type": "string",
+        "maxWords": 6,
+        "measuredLongestRealInstance": "\"Current Positions\" = 2 words"
+      },
+      "lede": {
+        "type": "string",
+        "maxWords": 32,
+        "measuredLongestRealInstance": "24 words measured"
+      },
+      "rows": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 8,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "title": {
+              "type": "string",
+              "maxWords": 8,
+              "measuredLongestRealInstance": "\"General Interest\" = 2 words"
+            },
+            "location": {
+              "type": "string",
+              "maxWords": 4,
+              "measuredLongestRealInstance": "\"San Francisco\" = 2 words"
+            },
+            "href": {
+              "type": "string",
+              "pattern": "^https://boards\\.greenhouse\\.io/",
+              "note": "The three real rows link to the company's Greenhouse board. This is one of the few intentional outbound links on the site; rel=\"noopener noreferrer\" and target=_blank are required."
+            }
+          },
+          "required": [
+            "title",
+            "location",
+            "href"
+          ]
+        },
+        "note": "3 rows on the live original. No department grouping, no ATS iframe and no empty state \u2014 a flat Webflow collection list."
+      }
+    },
+    "required": [
+      "anchorId",
+      "eyebrow",
+      "heading",
+      "lede",
+      "rows"
+    ]
+  },
+  "constraints": {
+    "maxPerPage": 1,
+    "onePerPage": true,
+    "allowedTemplates": [
+      "careers"
+    ],
+    "mustBeLastBeforeFooter": true
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. Global .btn hover transitions only."
+  },
+  "responsive": {
+    "desktop": "full-width col-lg-12 rows; pill radius 128px, padding-inline 4em; hover flips to the dark primary fill over 300ms.",
+    "le991": "rows keep full width; padding tightens.",
+    "le479": "section 797.9px tall."
+  },
+  "assetRoles": [],
+  "observedOn": [
+    "/careers"
+  ],
+  "measuredFrom": "spec/SPEC_faq_contact_careers.md:692-700",
+  "notes": [
+    "CASCADE: the row is a.faq-item.cc-listing.w-inline-block. The display fix must win on SPECIFICITY, not source order. The earlier measured defect rendered the pills inline-block at 160px instead of 120px with the arrow on the wrong side. See docs/CASCADE.md."
+  ]
+}

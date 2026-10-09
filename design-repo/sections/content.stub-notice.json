@@ -1,0 +1,48 @@
+{
+  "id": "content.stub-notice",
+  "kind": "section",
+  "name": "Not-found stub",
+  "category": "content",
+  "designSystem": "marketing",
+  "variants": [
+    "default"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "text": {
+        "type": "string",
+        "maxWords": 8,
+        "measuredLongestRealInstance": "\"NotFound - not built yet.\" = 4 words"
+      }
+    },
+    "required": [
+      "text"
+    ]
+  },
+  "constraints": {
+    "onePerPage": true,
+    "maxPerPage": 1,
+    "allowedTemplates": [
+      "not-found"
+    ],
+    "soleSectionOnTemplate": true,
+    "honestEvidenceLevel": "STUB, NOT MEASURED. The original is a Webflow site-level 404 page that recon never visited, so there is no measured structure for it. The clone ships a deliberate one-paragraph placeholder. This section is recorded at its real evidence level rather than being dressed up as a designed page, and a generator must not invent a 404 layout from the marketing vocabulary."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. Global .btn hover transitions only."
+  },
+  "responsive": {
+    "all": "a single .section > .container > p. No measured geometry."
+  },
+  "assetRoles": [],
+  "observedOn": [
+    "*"
+  ],
+  "measuredFrom": "src/pages/NotFound.jsx:1-9"
+}

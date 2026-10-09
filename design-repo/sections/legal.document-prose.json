@@ -1,0 +1,74 @@
+{
+  "id": "legal.document-prose",
+  "kind": "section",
+  "name": "Legal document",
+  "category": "legal",
+  "designSystem": "marketing",
+  "variants": [
+    "terms",
+    "privacy"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "documentRef": {
+        "enum": [
+          "terms-of-use",
+          "privacy-policy"
+        ],
+        "note": "An ENUM of the two real documents, not a body field. A PageSpec can only point at an existing signed-off document; it cannot carry legal prose."
+      },
+      "title": {
+        "enum": [
+          "Terms of use",
+          "Privacy Policy"
+        ]
+      },
+      "sectionCount": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 40,
+        "note": "terms-of-use has 25 top-level sections, privacy-policy has 12. Recorded for structural validation only."
+      }
+    },
+    "required": [
+      "documentRef",
+      "title",
+      "sectionCount"
+    ]
+  },
+  "constraints": {
+    "mustBeFirst": true,
+    "onePerPage": true,
+    "maxPerPage": 1,
+    "allowedTemplates": [
+      "legal-prose"
+    ],
+    "noHero": "This template has no hero. The document title is the top of the page.",
+    "noTableOfContents": "No TOC, no jump-link list, no anchor nav. /privacy-policy has exactly ONE id in the whole document. scroll-behavior stays auto.",
+    "noFabrication": "HARD BAN. assetRole legal.operativeText is pinned to must-not-fabricate. A generator must never write, paraphrase, summarise or 'restore' legal clauses. The schema deliberately exposes no body field for them.",
+    "signOffRequired": "This is the real company's operative legal text, ported verbatim. It requires sign-off from whoever owns legal/content before any real deployment."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. Global .btn hover transitions only."
+  },
+  "responsive": {
+    "desktop": "single prose column; .splitter rules at 1px with 3em margin-block.",
+    "le991": "column narrows with the percentage container.",
+    "le479": "same structure; section padding 48px 0."
+  },
+  "assetRoles": [],
+  "observedOn": [
+    "/terms-of-use",
+    "/privacy-policy"
+  ],
+  "measuredFrom": "spec/SPEC_blog_legal.md:634-662",
+  "notes": [
+    "Two declared link repairs in the clone, both recorded rather than silently applied: a dead https://withotter.com/privacy link remapped to the local /privacy-policy route; and on /privacy-policy an orphaned href=\"#\" wired to the one real anchor id that already existed. One in-body href=\"#\" inside the binding-arbitration clause is deliberately LEFT INERT and flagged for content review, because synthesising an outbound URL there is a legal-content decision, not a build decision."
+  ]
+}

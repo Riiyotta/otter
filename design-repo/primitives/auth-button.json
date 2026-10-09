@@ -1,0 +1,28 @@
+{
+  "id": "primitive.auth-button",
+  "kind": "primitive",
+  "name": "Mantine primary button",
+  "designSystem": "auth",
+  "props": {
+    "label": {
+      "type": "string",
+      "maxWords": 3,
+      "measuredLongest": "\"Continue\" = 1 word"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": true,
+      "note": "the real /log-in button ships disabled until the field validates"
+    },
+    "type": {
+      "const": "submit"
+    }
+  },
+  "measuredFrom": "spec/SPEC_auth.md:609-662",
+  "notes": [
+    "16px/16px weight 600, colour #cafff2. Transition all 300ms ease.",
+    "Disabled: background #aebdbe, colour #fffffa.",
+    "Loading affordance is a blurred white sweep + label fade. There is NO spinner \u2014 Mantine's Loader CSS is not in the bundle. Do not add one.",
+    "INERT: this button must never acquire a submit handler that sends credentials anywhere."
+  ]
+}

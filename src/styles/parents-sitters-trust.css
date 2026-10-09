@@ -1,0 +1,760 @@
+/* ============================================================================
+   /parents, /sitters, /trust-safety
+   Rule-for-rule port of what SPEC_parents_sitters_trust.md records as NEW or
+   DIFFERENT vs. the shared design system already shipped in src/index.css.
+
+   Plain CSS on purpose (no @layer, no @tailwind) — this file is imported from
+   JS, so it sits outside Tailwind's layer machinery and therefore wins over
+   the layered rules in index.css at equal specificity. Nothing here
+   re-declares a primitive that index.css already ships; only the rules the
+   spec introduces.
+
+   Declaration order follows the compiled Webflow stylesheet (base rules
+   first, then 991 / 767 / 479 media blocks, then the site-wide inline
+   <style> embed from spec §8.5 last) because the cascade order is
+   load-bearing — see §8.5 for the duplicated .tab-content-mask rule.
+   ============================================================================ */
+
+/* ---------------------------------------------------------------------------
+   Webflow structural helpers not yet in index.css
+   --------------------------------------------------------------------------- */
+.w-embed::before,
+.w-embed::after {
+  content: " ";
+  display: table;
+  grid-column-start: 1;
+  grid-row-start: 1;
+  grid-column-end: 2;
+  grid-row-end: 2;
+}
+.w-embed::after {
+  clear: both;
+}
+.w-video {
+  width: 100%;
+  padding: 0;
+  position: relative;
+}
+.w-video iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+/* Webflow's empty-CMS-collection placeholder. Both CMS collections on
+   /parents and /sitters are empty on the live site, so this box is
+   genuinely visible there — see spec §6 and §11.1. */
+.w-dyn-empty {
+  background-color: #ddd;
+  padding: 10px;
+}
+
+/* ---------------------------------------------------------------------------
+   §2.1 New utility / layout classes
+   --------------------------------------------------------------------------- */
+.u-mb-2 {
+  margin-bottom: 2em;
+}
+.u-mb-3 {
+  margin-bottom: 3em;
+}
+.u-mt-1 {
+  margin-top: 1em;
+}
+
+.container.cc-narrow.cc-cta-2 {
+  width: 85%;
+}
+
+.buttons-wrapper {
+  flex-flow: wrap;
+  align-items: center;
+  gap: 1em; /* 16px */
+  display: flex;
+}
+
+.header-shapes-contain {
+  z-index: 1;
+  flex-direction: column;
+  align-items: flex-end;
+  display: flex;
+}
+
+.shape-contain.cc-sitters-top {
+  width: 90%;
+}
+.shape-contain.cc-sitters-bottom {
+  width: 50%;
+  margin-top: -20%;
+  margin-left: auto;
+}
+
+.shape.rotate-90 {
+  transform: rotate(90deg);
+}
+
+/* ---------------------------------------------------------------------------
+   §4.2 Tabs / accordion — one dual-mode widget
+   --------------------------------------------------------------------------- */
+.tabs-wrapper {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5em; /* 8px */
+  margin-top: 1.5em; /* 24px */
+  display: flex;
+}
+
+.tab-item {
+  flex-direction: column;
+  align-items: flex-start;
+  display: flex;
+}
+
+.tab-trigger {
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em; /* 8px */
+  border-radius: 99px;
+  padding: 12px 20px;
+  font-weight: 600;
+  display: flex;
+  transition: border-radius 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+/* Specificity bump (0,1,1), NOT cosmetic: `.tab-trigger` carries
+   `w-inline-block`, and index.css ships `.w-inline-block{display:inline-block}`
+   at the same specificity but LATER in the bundle (index.css is emitted last
+   and PostCSS flattens @layer), so the plain `.tab-trigger{display:flex}`
+   above silently loses. In the original stylesheet `.w-inline-block` sits at
+   byte 5149 and `.tab-trigger` at 56828, so flex wins there. */
+a.tab-trigger {
+  display: flex;
+}
+.tab-trigger.cc-active {
+  background-color: var(--white);
+}
+
+.tab-trigger_icon {
+  background-color: var(--coral);
+  border-radius: 99px;
+  width: 0.8em;
+  height: 0.8em;
+  display: none;
+}
+
+.tab-content-mask {
+  transform-origin: 50% 0;
+  max-height: 0;
+  display: none;
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.tab-content {
+  background-color: var(--ivory);
+  border-radius: 48px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  gap: 1.5em; /* 24px */
+  margin-top: 1.5em;
+  padding: 1.5em;
+  display: none;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.tab-content.cc-card {
+  z-index: 0;
+  opacity: 0;
+  margin-top: 0;
+  position: absolute;
+  inset: 0%; /* the original declares 0%, which is what it computes to */
+  transform: translateY(50%);
+  transition: opacity 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.tab-content.cc-card.cc-active {
+  background-color: var(--white);
+  opacity: 1;
+  display: flex;
+  position: relative;
+  transform: none;
+}
+
+.tab-content-wrapper {
+  position: relative;
+}
+
+.tab-content-image {
+  border-radius: 32px;
+  width: 100%;
+  padding-top: 80%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ---------------------------------------------------------------------------
+   §5 CTA card
+   --------------------------------------------------------------------------- */
+.container.cc-cta {
+  background-color: var(--white);
+  border-radius: 4.5rem; /* 72px */
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  min-height: 30rem; /* 480px */
+  padding-block: 4rem; /* 64px */
+  display: flex;
+  overflow: hidden;
+}
+
+.cta-image-wrapper {
+  z-index: 1;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position: absolute;
+  inset: 0;
+}
+
+.cta-image-contain {
+  width: 33%;
+}
+.cta-image-contain.cc-extra-wide {
+  width: 50%;
+}
+
+.cta-image-aspect {
+  width: 100%;
+  padding-top: 141%;
+  position: relative;
+  overflow: hidden;
+}
+.cta-image-aspect.cc-wide {
+  padding-top: 75%;
+}
+.cta-image-aspect.cc-extra-wide {
+  padding-top: 62%;
+} /* declared, unused here */
+
+.shape-contain.cc-cta {
+  width: 55%;
+  display: none;
+}
+
+/* ---------------------------------------------------------------------------
+   §6 Testimonials slider (CMS collection is empty — 0 slides)
+   --------------------------------------------------------------------------- */
+.testimonials-contain {
+  z-index: 99;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 80%;
+  height: 100%;
+  display: flex;
+  position: relative;
+}
+
+.slider-arrows-wrapper {
+  gap: 1em; /* 16px */
+  margin-top: 3rem; /* 48px */
+  display: flex;
+}
+
+.swiper-arrow {
+  background-color: var(--white);
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  width: 3em; /* 48px */
+  height: 3em;
+  cursor: pointer;
+  display: flex;
+  transition:
+    color 0.3s cubic-bezier(0.165, 0.84, 0.44, 1),
+    background-color 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.swiper-arrow:hover {
+  background-color: var(--primary);
+  color: var(--celeste);
+}
+/* Same `.w-inline-block` tie as `.tab-trigger` above — the original's arrow
+   anchors carry `w-inline-block` too. */
+a.swiper-arrow {
+  display: flex;
+}
+.swiper-arrow.swiper-button-next {
+  transform: rotate(180deg);
+}
+.swiper-arrow.swiper-button-next:hover {
+  background-color: var(--primary);
+}
+
+.swiper-icon {
+  width: 1.375em; /* 22px */
+  height: 1.75em; /* 28px */
+  overflow: hidden;
+}
+
+.swiper-contain {
+  flex-direction: row;
+  height: 100%;
+}
+.swiper {
+  z-index: 2;
+  height: 100%;
+  cursor: grab;
+}
+
+/* Declared for slides that never render on these routes (empty collection). */
+.swiper-slide {
+  background-color: var(--primary);
+  color: var(--white);
+  border-radius: 2em; /* 32px */
+  flex: none;
+}
+
+/* ---------------------------------------------------------------------------
+   §7 /trust-safety — video block + trust cards
+   --------------------------------------------------------------------------- */
+.trust-content {
+  flex-flow: wrap;
+  align-items: flex-end;
+  gap: 3em 2em; /* row 48px, column 32px */
+  display: flex;
+}
+
+.u-aspect-9x16 {
+  background-color: var(--ivory);
+  border-radius: 2em; /* 32px */
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding-top: 56%;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.trust-card {
+  background-color: var(--primary);
+  color: var(--white);
+  border-radius: 2em; /* 32px */
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  min-height: 30em; /* 480px */
+  padding: 3em; /* 48px */
+  display: flex;
+}
+
+.trust-card_icon {
+  max-width: 6.5rem; /* 104px */
+  margin-bottom: 3rem; /* 48px */
+}
+
+.trust-card_header {
+  z-index: 3;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5em; /* 24px */
+  max-width: 80%;
+  display: flex;
+  position: relative;
+}
+
+.trust-bar_header {
+  margin-bottom: 0;
+  font-size: 2em; /* 32px */
+}
+
+/* The click-to-play facade that stands in for the cross-origin
+   embedly -> Vimeo iframe. The original iframe's interior was not
+   measurable (spec §7), so only the outer box is spec-exact. */
+.video-facade {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: var(--ivory);
+  border: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  cursor: pointer;
+  display: block;
+  position: absolute;
+  inset: 0;
+}
+.video-facade_poster {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+.video-facade_play {
+  background-color: var(--primary);
+  color: var(--celeste);
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  width: 4.5em; /* 72px */
+  height: 4.5em;
+  display: flex;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition:
+    background-color 0.3s cubic-bezier(0.165, 0.84, 0.44, 1),
+    color 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.video-facade:hover .video-facade_play {
+  background-color: var(--celeste);
+  color: var(--primary);
+}
+.video-facade:focus-visible {
+  outline: 2px dashed var(--primary);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+   Breakpoint: 991 (Webflow "medium")
+   --------------------------------------------------------------------------- */
+@media screen and (max-width: 991px) {
+  /* 0,2,1 on purpose: /trust-safety's row is
+     `.row.row-justify-center.row-md-justify-start`, and index.css's
+     `.row.row-justify-center{justify-content:center}` is an equal-specificity
+     rule that loads later, so a plain `.row.row-md-justify-start` loses.
+     In the original the @991 rule sits at byte 62957, after
+     `.row-justify-center` at 34055, so flex-start wins there. */
+  div.row.row-md-justify-start {
+    justify-content: flex-start;
+  }
+
+  .section.u-p-0 {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .header-shapes-contain {
+    justify-content: center;
+    align-items: flex-end;
+    width: 50%;
+    position: absolute;
+    inset: 0 0 0 auto;
+  }
+  .shape-contain.cc-sitters-bottom {
+    margin-top: -40%;
+  }
+
+  .tabs-wrapper {
+    align-items: stretch;
+  }
+  .tab-item {
+    background-color: var(--white);
+    border-radius: 32px;
+    overflow: hidden;
+  }
+  .tab-trigger {
+    background-color: var(--white);
+    justify-content: space-between;
+    width: 100%;
+    padding: 16px 32px;
+  }
+  .tab-trigger.cc-active {
+    background-color: var(--white);
+  }
+  .tab-trigger_icon {
+    order: 1;
+    display: flex;
+  }
+  .tab-content-mask {
+    display: flex;
+  }
+  .tab-content {
+    background-color: var(--white);
+    border-radius: 32px;
+    margin-top: 0.5em; /* 8px */
+    padding-top: 0;
+    display: flex;
+  }
+  .tab-content-image {
+    border-radius: 24px;
+  }
+
+  .container.cc-cta.cc-wide-cta {
+    justify-content: flex-start;
+    padding-bottom: 39%;
+  }
+  .cta-image-wrapper.cc-extra-wide {
+    justify-content: center;
+    align-items: flex-end;
+  }
+  .cta-image-contain {
+    width: 50%;
+    margin-right: -10%;
+  }
+  .cta-image-contain.cc-extra-wide {
+    width: 90%;
+    margin-right: 0;
+  }
+
+  .testimonials-contain {
+    flex-flow: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+  }
+
+  .trust-content {
+    gap: 1em;
+  } /* 16px */
+  .trust-card {
+    gap: 2em; /* 32px */
+    min-height: auto;
+    padding: 2em; /* 32px */
+  }
+  .trust-card_header {
+    gap: 1em;
+  } /* 16px */
+}
+
+/* ---------------------------------------------------------------------------
+   Breakpoint: 767 (Webflow "small")
+   --------------------------------------------------------------------------- */
+@media screen and (max-width: 767px) {
+  .header-shapes-contain {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 10%;
+    width: 100%;
+    margin-top: -13%;
+    position: relative;
+  }
+  .shape-contain.cc-sitters-top {
+    width: 80%;
+    margin-right: -20%;
+  }
+  .shape-contain.cc-sitters-bottom {
+    width: 40%;
+    margin-top: -33%;
+    margin-left: -10%;
+  }
+
+  .container.cc-narrow.cc-cta-2 {
+    width: 100%;
+  }
+  .container.cc-cta {
+    border-radius: 2rem; /* 32px */
+    min-height: auto;
+    padding: 2rem 2rem 11rem;
+  }
+  .container.cc-cta.cc-wide-cta {
+    padding-bottom: 41%;
+  }
+  .container.cc-cta.u-pb-2 {
+    padding-bottom: 2rem;
+  }
+
+  .cta-image-wrapper {
+    justify-content: space-between;
+    align-items: flex-end;
+    inset: auto 0 0;
+  }
+  .cta-image-contain {
+    margin-bottom: -18%;
+    margin-right: -14%;
+    position: absolute;
+    inset: auto 0 0 auto;
+  }
+  .cta-image-contain.cc-extra-wide {
+    width: 100%;
+    margin-bottom: 0;
+    margin-left: auto;
+  }
+  .shape-contain.cc-cta {
+    margin-bottom: -24%;
+    margin-left: -10%;
+    display: block;
+  }
+
+  .slider-arrows-wrapper {
+    width: 100%;
+    margin-top: 1rem; /* 16px */
+  }
+
+  .trust-content {
+    flex-direction: column;
+  }
+  .u-aspect-9x16 {
+    border-radius: 1em;
+  } /* 16px */
+  .trust-card_header {
+    max-width: 86%;
+  }
+  .trust-bar_header {
+    font-size: 1.5em;
+  } /* 24px */
+}
+
+/* ---------------------------------------------------------------------------
+   Breakpoint: 479 (Webflow "tiny")
+   --------------------------------------------------------------------------- */
+@media screen and (max-width: 479px) {
+  .buttons-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .header-shapes-contain {
+    justify-content: flex-start;
+    width: 100%;
+    margin-top: -5%;
+    margin-right: 0;
+  }
+  .shape-contain.cc-sitters-top {
+    width: 80%;
+  }
+  .shape-contain.cc-sitters-bottom {
+    width: 50%;
+    margin-top: 0;
+    margin-bottom: 11%;
+    margin-left: -18%;
+  }
+
+  .tab-trigger {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  .tab-trigger.cc-active {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+  }
+  .tab-content {
+    gap: 1em; /* 16px */
+    padding: 1em;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+  }
+  .tab-content-image {
+    border-radius: 12px;
+    padding-top: 100%;
+  }
+
+  .container.cc-cta {
+    padding-bottom: 13.3rem;
+  } /* 212.8px */
+  .cta-image-contain {
+    width: 80%;
+    margin-bottom: -40%;
+    margin-right: -35%;
+  }
+  .cta-image-contain.cc-extra-wide {
+    margin-right: -11%;
+  }
+  .shape-contain.cc-cta {
+    width: 60%;
+    margin-bottom: -8%;
+    margin-left: -16%;
+  }
+
+  .trust-card_icon {
+    width: 50%;
+  }
+  .trust-card_header {
+    max-width: 100%;
+  }
+  .trust-bar_header {
+    font-size: 1.25em;
+  } /* 20px */
+}
+
+/* ============================================================================
+   §8.5 Site-wide inline <style> embed — ported last, as in the original,
+   because its .tab-content-mask / .tab-trigger_icon rules depend on being
+   after the stylesheet. The nav-specific rules in that embed belong to the
+   chrome (Nav) owner and are deliberately not duplicated here.
+   ============================================================================ */
+
+/* Disable click action */
+.tab-content.cc-card {
+  pointer-events: none;
+}
+/* Re-enable inside a pointer-events:none parent */
+.tab-content.cc-card.cc-active {
+  pointer-events: auto;
+}
+
+/* Display icon on active tab */
+.tab-trigger.cc-active .tab-trigger_icon {
+  display: block;
+}
+
+@keyframes slideInFromBottom {
+  0% {
+    transform: translateY(20%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+/* Replays on every switch because `display` flips when a card activates. */
+.tab-content.cc-card {
+  animation: slideInFromBottom 0.5s ease;
+}
+
+/* Enable rounded corners iOS */
+.container.cc-cta,
+.u-aspect-9x16,
+.tab-content-image {
+  isolation: isolate;
+}
+
+/* The accordion opener. Declared twice in the original — once in the global
+   embed without a delay, once in the per-page .w-embed after the tabs row
+   with `transition-delay:100ms`. The second wins, which is what makes
+   open/close asymmetric: 100ms delay + 300ms opening, no delay closing. */
+.tab-trigger.cc-active + .tab-content-mask {
+  max-height: 800px;
+}
+.tab-trigger.cc-active + .tab-content-mask {
+  max-height: 800px;
+  transition-delay: 100ms;
+}
+
+/* Testimonials slider colour loop (no slides render on these routes). */
+.swiper-slide:nth-child(5n + 2) {
+  background-color: #94954c;
+  color: #f8f6f5;
+}
+.swiper-slide:nth-child(5n + 3) {
+  background-color: #fbad9c;
+  color: #00373e;
+}
+.swiper-slide:nth-child(5n + 4) {
+  background-color: #ac9e88;
+  color: #00373e;
+}
+.swiper-slide:nth-child(5n + 5) {
+  background-color: #fbd3b6;
+  color: #00373e;
+}
+
+@media screen and (min-width: 992px) {
+  .swiper-contain {
+    clip-path: inset(-100vw -100vw -100vw 0);
+  }
+}
+
+/* Not in the original (spec §8.4 confirms no prefers-reduced-motion block
+   exists upstream) — matches the reduced-motion handling index.css already
+   ships for the homepage. */
+@media (prefers-reduced-motion: reduce) {
+  .tab-content.cc-card {
+    animation: none;
+  }
+}

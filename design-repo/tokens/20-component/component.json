@@ -1,0 +1,94 @@
+{
+  "id": "tokens.component",
+  "designSystem": "marketing",
+  "note": "Component-scoped overrides that are genuinely component-specific, not reusable semantics.",
+  "overrides": {
+    "btn": {
+      "radius": "radius.pill",
+      "padding": "0.875em 1.25em = 14px 20px",
+      "fontSize": "16px",
+      "weight": 600,
+      "border": "1px solid transparent",
+      "transition": "color/background-color/border-color 300ms ease.outQuart"
+    },
+    "btn.cc-white": {
+      "background": "color.white",
+      "borderColor": "color.btnBorder",
+      "hoverShadow": "elevation.whiteBtnHover",
+      "activeShadow": "elevation.whiteBtnActive",
+      "activeTransform": "scale(.95)",
+      "transitionedProperties": "colour trio ONLY \u2014 box-shadow and transform snap"
+    },
+    "btn.cc-light": {
+      "background": "color.celeste",
+      "hoverBackground": "color.peach"
+    },
+    "btn (dark default)": {
+      "background": "color.primary",
+      "color": "color.celeste",
+      "hoverBackground": "color.peach",
+      "hoverColor": "color.primary"
+    },
+    "buttonPrimary": {
+      "background": "color.primary",
+      "color": "color.celeste",
+      "radius": "999px",
+      "padding": "32px",
+      "lineHeight": 0,
+      "maxHeight": "64px",
+      "transition": "NONE DECLARED \u2014 hover and :active are instant"
+    },
+    "trustBar": {
+      "background": "color.peach",
+      "radius": "radius.trustBar",
+      "padding": "3.5em 3vw",
+      "le991": "2em",
+      "logoHeight": "1.5em = 24px"
+    },
+    "trustCard": {
+      "background": "color.primary",
+      "color": "color.white",
+      "radius": "radius.card",
+      "minHeight": "30em = 480px",
+      "padding": "3em = 48px",
+      "le991": "padding 2em, gap 2em, min-height auto"
+    },
+    "valuesWrap": {
+      "background": "color.white",
+      "radius": "radius.hero",
+      "padding": "4.5em 3.5em = 72px 56px",
+      "le479": "radius 2.5em, padding 3em 1.5em"
+    },
+    "navMobileBtn": {
+      "background": "color.primary",
+      "radius": "50%",
+      "size": "48x48",
+      "lines": "3 x 24x2 white, .cc-middle margin-block 4px"
+    },
+    "navMenuCard": {
+      "le991Background": "color.peach",
+      "radius": "radius.footerCard",
+      "padding": "36px",
+      "gap": "20px"
+    },
+    "emptyCollection": {
+      "background": "literals.emptyCollection.background",
+      "padding": "10px",
+      "height": "44px",
+      "note": "Rendered on purpose where a CMS collection is genuinely empty"
+    },
+    "listingRow": {
+      "radius": "radius.listingPill",
+      "paddingInline": "4em",
+      "weight": 500,
+      "hover": "background color.primary / colour color.white",
+      "cascadeNote": "must win on SPECIFICITY (a.faq-item, .faq-item.w-inline-block) not source order \u2014 see docs/CASCADE.md"
+    },
+    "tabTrigger": {
+      "radius": "radius.pill",
+      "padding": "12px 20px",
+      "le991": "background color.white, padding 16px 32px, width 100%",
+      "cascadeNote": "a.tab-trigger{display:flex} \u2014 a bare .tab-trigger{display:flex} LOSES to index.css's .w-inline-block{display:inline-block}"
+    }
+  }
+}

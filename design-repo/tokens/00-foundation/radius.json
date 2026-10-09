@@ -1,0 +1,55 @@
+{
+  "id": "tokens.foundation.radius",
+  "designSystem": "marketing",
+  "note": "Radius scale as actually observed, by component. Values are the computed px at >=992 unless a breakpoint is named.",
+  "tokens": {
+    "radius.hero": {
+      "$value": "72px",
+      "source": "4.5em on .container.cc-hero and .values-wrap",
+      "le767": "40px (2.5em)",
+      "measuredFrom": "CLONE_SPEC.md:207-207"
+    },
+    "radius.card": {
+      "$value": "32px",
+      "source": "2em on .card, .home-card-2, .trust-card, .b-radius-32, .u-aspect-* wrappers",
+      "le479": "16px on some aspect wrappers",
+      "measuredFrom": "CLONE_SPEC.md:208-209"
+    },
+    "radius.footerCard": {
+      "$value": "24px",
+      "source": "1.5em on .footer_card and .nav_menu-card",
+      "measuredFrom": "CLONE_SPEC.md:210-210"
+    },
+    "radius.trustBar": {
+      "$value": "40px",
+      "source": "2.5em on .trust-bar",
+      "measuredFrom": "CLONE_SPEC.md:211-211"
+    },
+    "radius.pill": {
+      "$value": "99em",
+      "computed": "1584px at 16px root",
+      "source": ".btn, .bullet-organic",
+      "measuredFrom": "CLONE_SPEC.md:212-212"
+    },
+    "radius.pillPx": {
+      "$value": "999px",
+      "source": ".button-primary",
+      "measuredFrom": "CLONE_SPEC.md:215-215"
+    },
+    "radius.tag": {
+      "$value": "20px",
+      "source": ".eyebrow.tag",
+      "measuredFrom": "CLONE_SPEC.md:218-218"
+    },
+    "radius.circle": {
+      "$value": "50%",
+      "source": ".nav_mobile-btn (48x48)",
+      "measuredFrom": "CLONE_SPEC.md:216-216"
+    },
+    "radius.listingPill": {
+      "$value": "128px",
+      "source": "8em on .faq-item.cc-listing (/careers job rows)",
+      "measuredFrom": "spec/SPEC_faq_contact_careers.md:774-780"
+    }
+  }
+}

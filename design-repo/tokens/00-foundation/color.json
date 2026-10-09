@@ -1,0 +1,110 @@
+{
+  "id": "tokens.foundation.color",
+  "designSystem": "marketing",
+  "note": "Marketing-site foundation palette. These are the ONLY 9 custom properties declared on :root in the compiled Webflow stylesheet and mirrored verbatim in the clone. Nothing may be added here without a histogram/stylesheet citation.",
+  "measuredFrom": "src/index.css:54-65",
+  "tokens": {
+    "color.primary": {
+      "$value": "#00373e",
+      "rgb": "rgb(0,55,62)",
+      "usage": "body text, dark hero surface, dark button fill, trust/benefit card fill",
+      "measuredFrom": "CLONE_SPEC.md:57-57"
+    },
+    "color.white": {
+      "$value": "#ffffff",
+      "usage": "card surfaces, dark-surface text, values-card fill",
+      "measuredFrom": "CLONE_SPEC.md:58-58"
+    },
+    "color.celeste": {
+      "$value": "#cafff2",
+      "rgb": "rgb(202,255,242)",
+      "usage": "light button fill, tag pill fill, dark-button label, ::selection text",
+      "measuredFrom": "CLONE_SPEC.md:59-59"
+    },
+    "color.peach": {
+      "$value": "#fbd3b6",
+      "rgb": "rgb(251,211,182)",
+      "usage": "press/trust bar fill, mobile nav card, .btn hover fill, footer-right blob",
+      "measuredFrom": "CLONE_SPEC.md:60-60"
+    },
+    "color.ivory": {
+      "$value": "#f8f6f5",
+      "rgb": "rgb(248,246,245)",
+      "usage": "page background (.page-wrapper) on every marketing route",
+      "measuredFrom": "CLONE_SPEC.md:61-61"
+    },
+    "color.olive": {
+      "$value": "#94954c",
+      "rgb": "rgb(148,149,76)",
+      "usage": "hero middle-left stone, footer-left blob, careers hero bottom blob",
+      "measuredFrom": "CLONE_SPEC.md:62-62"
+    },
+    "color.coral": {
+      "$value": "#fbad9c",
+      "rgb": "rgb(251,173,156)",
+      "usage": "declared and UNUSED on the homepage; first live use is the /parents hero top shape and the /careers hero top shape, plus .tab-trigger_icon",
+      "measuredFrom": "CLONE_SPEC.md:63-63"
+    },
+    "color.sandstone": {
+      "$value": "#ac9e88",
+      "rgb": "rgb(172,158,136)",
+      "usage": "declared and unused on the homepage; live use is the /trust-safety hero bottom blob and one blog CMS tag colour token",
+      "measuredFrom": "CLONE_SPEC.md:64-64"
+    },
+    "color.btnBorder": {
+      "$value": "#d6cfc4",
+      "usage": "1px border on .btn.cc-white only",
+      "measuredFrom": "CLONE_SPEC.md:75-75"
+    }
+  },
+  "literals": {
+    "note": "Measured literal colours that are NOT :root custom properties. Kept separate so nobody promotes them to brand tokens.",
+    "overlay.mobileNav": {
+      "$value": "rgba(253,249,249,0.9)",
+      "measuredFrom": "CLONE_SPEC.md:80-80"
+    },
+    "shadow.whiteBtnHover.a": {
+      "$value": "rgba(27,30,31,0.08)",
+      "measuredFrom": "CLONE_SPEC.md:76-76"
+    },
+    "shadow.whiteBtnHover.b": {
+      "$value": "rgba(27,30,31,0.04)",
+      "measuredFrom": "CLONE_SPEC.md:76-76"
+    },
+    "focus.whiteBtnRing": {
+      "$value": "rgba(13,80,88,0.37)",
+      "measuredFrom": "CLONE_SPEC.md:78-78"
+    },
+    "focus.buttonPrimaryRing": {
+      "$value": "#2e8acc",
+      "measuredFrom": "CLONE_SPEC.md:79-79"
+    },
+    "emptyCollection.background": {
+      "$value": "#dddddd",
+      "note": "Webflow .w-dyn-empty grey box, rendered on purpose where a CMS collection is genuinely empty",
+      "measuredFrom": "src/styles/faq-contact-careers.css:1-584"
+    },
+    "selection.background": {
+      "$value": "#00373e",
+      "measuredFrom": "CLONE_SPEC.md:82-82"
+    },
+    "selection.text": {
+      "$value": "#cafff2",
+      "measuredFrom": "CLONE_SPEC.md:82-82"
+    },
+    "placeholder.input": {
+      "$value": "rgba(0,55,62,0.37)",
+      "measuredFrom": "CLONE_SPEC.md:83-83"
+    }
+  },
+  "gradients": {
+    "count": 0,
+    "note": "There are no gradients anywhere on the marketing site. Two flat SVGs are used as background-image (bullet-organic.svg, join-bg.svg); nothing else.",
+    "measuredFrom": "CLONE_SPEC.md:86-86"
+  },
+  "backdropFilter": {
+    "count": 0,
+    "note": "Every element computes backdrop-filter: none.",
+    "measuredFrom": "CLONE_SPEC.md:87-87"
+  }
+}

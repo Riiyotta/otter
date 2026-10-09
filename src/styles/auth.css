@@ -1,0 +1,470 @@
+/* ============================================================
+   app.withotter.com auth screens — /log-in, /sign-up, /welcome
+   Source of truth: spec/SPEC_auth.md (+ spec/ASSETS_auth.md)
+
+   This is a DIFFERENT design system from the marketing site: Mantine v7,
+   not Webflow/Tailwind. Nothing here reuses the marketing container,
+   breakpoints or spacing. Plain CSS only — no @layer, no @tailwind.
+
+   CASCADE: Vite emits page stylesheets BEFORE index.css and PostCSS flattens
+   Tailwind's @layer, so index.css wins ties at equal specificity. Every rule
+   below is therefore scoped under `.auth-screen` (specificity >= 0,2,0 where it
+   has to beat an index.css element rule), which also prevents leakage into the
+   marketing pages.
+
+   INERT CLONE: layout + styling only. No form action/method, no endpoint, no
+   submission, autocomplete="off" everywhere.
+   ============================================================ */
+
+.auth-screen {
+  /* The handful of Mantine tokens these three screens actually use. The runtime
+     bundle injects ~200 --mantine-color-* props; the rest are unused here. */
+  --auth-surface-shell: #f8f6f5; /* cloud-0..2 / surface-1 */
+  --auth-surface-white: #ffffff;
+  --auth-river: #00373e; /* river-8/9, text-4, --mantine-color-black */
+  --auth-aqua: #cafff2; /* aqua-6..9 */
+  --auth-moss: #93954c; /* moss-6 — anchors, button hover */
+  --auth-border-rest: #f1eceb;
+  --auth-border-hover: #f7f5f3;
+  --auth-label-placeholder: #b2babf; /* text-0 */
+  --auth-label-floated: #667680; /* text-1 */
+  --auth-btn-disabled-bg: #aebdbe;
+  --auth-btn-disabled-fg: #fffffa;
+  --auth-error: #f56d58; /* statusNegative-2 */
+
+  --auth-space-xs: 4px;
+  --auth-space-sm: 8px;
+  --auth-space-md: 16px;
+  --auth-space-lg: 32px;
+  --auth-space-xl: 48px;
+
+  --auth-radius-sm: 12px;
+  --auth-radius-md: 16px;
+  --auth-radius-lg: 24px;
+
+  /* ._root_1td3m_1 — Mantine AppShell root. This is the visible page bg; the
+     global body #F5F9F9 is fully covered and never painted. */
+  min-height: 100vh;
+  overflow-x: hidden; /* clips the oversized /log-in illustration at 390 */
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+  background-color: var(--auth-surface-shell);
+  font-family: Jokker, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.55; /* --mantine-line-height, NOT the marketing 1.5 */
+  color: var(--auth-river);
+}
+
+.auth-screen .auth-main {
+  padding-top: 0; /* --app-shell-header-offset: 0 on /log-in and /welcome */
+}
+.auth-screen--with-header .auth-main {
+  padding-top: 96px; /* = header height on /sign-up */
+}
+
+/* Outer Mantine Container (._content_1td3m_16), default size md. */
+.auth-screen .auth-content {
+  box-sizing: border-box;
+  max-width: 960px;
+  margin-inline: auto;
+  padding: var(--auth-space-xl) var(--auth-space-md) 0;
+  /* The original sets `height:100vh` here, which on /sign-up stacks with main's
+     96px padding-top and overflows the viewport by exactly 96px (SPEC §5.4).
+     DEVIATION: min-height + border-box so the clone does not ship a stray
+     scrollbar. Geometry is otherwise identical. */
+  min-height: 100vh;
+}
+.auth-screen--with-header .auth-content {
+  min-height: calc(100vh - 96px);
+}
+
+/* Inner Mantine Container, data-size="xs" → content column is exactly
+   508px at 1440/1024 and 326px at 390. No Mantine breakpoint fires on these
+   screens; the column width is the only responsive change, and it falls out of
+   max-width + padding alone. */
+.auth-screen .auth-column {
+  box-sizing: border-box;
+  max-width: 540px;
+  margin-inline: auto;
+  padding: 0 var(--auth-space-md);
+}
+
+/* ---------- Stack / Center / Group primitives ---------- */
+.auth-screen .auth-stack {
+  display: flex;
+  flex-direction: column;
+}
+.auth-screen .auth-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.auth-screen .auth-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--auth-space-md);
+}
+
+/* ---------- Type scale (§4) ---------- */
+/* Fixed at every width — there is no responsive type on these screens. */
+.auth-screen .auth-h1 {
+  /* DELIBERATE DEVIATION FROM THE LIVE SITE — DO NOT "FIX".
+     The original declares font-family:"Reckless Neue" with NO fallback, and all
+     six of its @font-face files 404 (Vercel SPA rewrite), so document.fonts
+     reports "error" and the live h1 renders in the browser's default SERIF.
+     Our fonts are vendored and declared in index.css, so this h1 renders in the
+     real Reckless Neue. It will NOT match a screenshot of the original — that
+     is design intent reproduced, not a bug reintroduced. */
+  margin: 0;
+  font-family: 'Reckless Neue', serif;
+  font-size: 48px;
+  font-weight: 700; /* only the 900 file exists; the browser synthesises */
+  line-height: 120%; /* 57.6px */
+  letter-spacing: -0.96px;
+  color: var(--auth-river);
+  text-align: center;
+}
+.auth-screen .auth-h3 {
+  margin: 0;
+  font-family: Jokker, sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: normal;
+  color: var(--auth-river);
+}
+.auth-screen .auth-text-large {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 22.4px;
+  color: var(--auth-river);
+  word-wrap: break-word;
+}
+.auth-screen .auth-text-center {
+  text-align: center;
+}
+
+/* ---------- Anchors (§4.3, §8.4) ---------- */
+.auth-screen .auth-anchor {
+  color: var(--auth-moss);
+  font-weight: 400;
+  line-height: 1.55;
+  text-decoration: none;
+  appearance: none;
+  border: none;
+  display: inline;
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+  cursor: pointer;
+  /* The original's `transition: all` has a unitless duration → invalid → 0s.
+     So there is deliberately no transition declared here. */
+}
+/* Header links: data-underline="hover" in markup, but measured computed style
+   is underlined at rest too (§4.3). Reproduced as measured. */
+.auth-screen .auth-anchor--header {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24.8px;
+  text-decoration: underline;
+}
+/* "Apply now" carries inline font-weight:600 + underline in the original, so it
+   is permanently underlined. */
+.auth-screen .auth-anchor--inline {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24.8px;
+  text-decoration: underline;
+}
+
+/* ---------- Images ---------- */
+.auth-screen .auth-img {
+  display: block;
+  flex: 0;
+  object-fit: cover;
+  width: 100%;
+  border-radius: 0;
+}
+/* Hard 400px at every width (inline `calc(25rem * var(--mantine-scale))`).
+   At 390 this overflows the 326px column to x = -5 and is clipped by
+   overflow-x:hidden on the shell — that quirk is the original's behaviour. */
+.auth-screen .auth-illo-children {
+  /* Hard 400x253.5 from the 2804x1777 artboard. The height MUST be explicit:
+     Tailwind preflight is disabled project-wide, so there is no
+     `img { height: auto }` and the SVG's height="1777" attribute would
+     otherwise win over a width-only rule. */
+  width: 400px;
+  height: 253.5px;
+}
+/* Hard 160px → 160×184.5 from the 170×196 artboard. */
+.auth-screen .auth-illo-care-team {
+  /* Explicit height for the same preflight reason as above. */
+  width: 160px;
+  height: 184.5px;
+}
+
+/* ---------- Input (§6.4, §6.5, §7) ---------- */
+.auth-screen .auth-input-root {
+  position: relative;
+}
+.auth-screen .auth-input-wrapper {
+  display: flex;
+  width: 100%;
+}
+.auth-screen .auth-input {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  font-family: Jokker, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  height: auto;
+  min-height: 36px;
+  background-color: var(--auth-surface-white);
+  color: #000; /* pure black, not the brand teal */
+  padding: 21px 14px 6px; /* [data-label] state — the one that applies */
+  border: 2px solid var(--auth-border-rest);
+  border-radius: var(--auth-radius-sm);
+  outline: 3px solid transparent;
+  overflow: clip;
+  transition: border-color 0.2s ease, outline-color 0.2s ease,
+    background-color 0.2s ease, color 0.2s ease;
+}
+.auth-screen .auth-input:hover {
+  border-color: var(--auth-border-hover);
+}
+.auth-screen .auth-input:focus {
+  border-color: var(--auth-river);
+  outline-color: rgba(0, 55, 62, 0.2);
+}
+/* :focus-visible is identical to :focus on these inputs — no distinct rule. */
+.auth-screen .auth-input[data-empty] {
+  color: transparent;
+}
+.auth-screen .auth-input:disabled {
+  background-color: rgba(175, 184, 193, 0.2);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.auth-screen .auth-input[data-error] {
+  border-color: var(--auth-error);
+}
+.auth-screen .auth-input[data-error]:focus {
+  outline-color: rgba(245, 109, 88, 0.2);
+}
+/* NB: the original also ships `._input_[data-error] ._label_` — a descendant
+   selector on an <input>, so it can never match. Its #CC3F29 is dead CSS and is
+   deliberately not resurrected here. */
+
+/* Floating label: FLOATED is the base state, the placeholder position is a
+   class added by React while empty+unfocused. 16px/600/#B2BABF at top:16px →
+   11px/600/#667680 at top:10px over `all .2s ease`. */
+.auth-screen .auth-input-label {
+  z-index: 101;
+  position: absolute;
+  display: inline-block;
+  top: 10px;
+  left: 16px;
+  color: var(--auth-label-floated);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 15px;
+  word-break: break-word;
+  pointer-events: none;
+  cursor: text;
+  transition: all 0.2s ease;
+}
+.auth-screen .auth-input-label--as-placeholder {
+  top: 16px;
+  color: var(--auth-label-placeholder);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* Error message definition (§6.5). UNMEASURED in the original — it only renders
+   after a submit, which this clone never performs. Ported, not wired. */
+.auth-screen .auth-input-error {
+  margin-top: var(--auth-space-sm);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16.8px;
+  color: var(--auth-error);
+}
+
+/* ---------- Button (§8) — only primary/large is used ---------- */
+.auth-screen .auth-btn {
+  box-sizing: border-box;
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 56px;
+  padding: 16px 24px;
+  font-family: Jokker, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: normal;
+  text-align: center;
+  background-color: var(--auth-river);
+  color: var(--auth-aqua);
+  border: 1px solid rgba(0, 0, 0, 0.19);
+  border-radius: 999px;
+  box-shadow: none;
+  overflow: hidden;
+  user-select: none;
+  vertical-align: middle;
+  cursor: pointer;
+  outline-color: var(--auth-aqua);
+  transition: all 0.3s;
+}
+.auth-screen .auth-btn:hover:not(:disabled) {
+  background-color: var(--auth-moss);
+  color: #fff;
+}
+.auth-screen .auth-btn:active:not(:disabled) {
+  background-color: var(--auth-moss);
+  color: #fff;
+  transform: scale(0.92);
+}
+.auth-screen .auth-btn:focus-visible {
+  outline: 3px solid var(--auth-aqua);
+  outline-offset: 0px;
+}
+.auth-screen .auth-btn:disabled {
+  background-color: var(--auth-btn-disabled-bg);
+  color: var(--auth-btn-disabled-fg);
+  cursor: not-allowed;
+  transform: none;
+}
+.auth-screen .auth-btn-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  overflow: visible;
+  transition: transform 0.15s ease, opacity 0.1s ease;
+}
+.auth-screen .auth-btn-label {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 1;
+}
+/* No spinner: Mantine's Loader CSS is absent from the original's bundle
+   entirely, and the loading state is unreachable here because nothing submits.
+   The blurred-white-sweep overlay is intentionally not wired. */
+
+/* ---------- /sign-up header (§5.3) ---------- */
+.auth-screen .auth-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 96px;
+  z-index: 100;
+  box-sizing: border-box;
+  background: var(--auth-surface-white);
+  border: none;
+  box-shadow: 0 1px 5px rgba(31, 28, 27, 0.06);
+}
+.auth-screen .auth-header-group {
+  box-sizing: border-box;
+  width: 100%;
+  height: 92px;
+  padding: 32px 22px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--auth-space-md);
+}
+/* No burger at 390: the header is identical at 1440 / 1024 / 390. */
+.auth-screen .auth-header-side {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+.auth-screen .auth-header-side--logo {
+  gap: 12px;
+}
+.auth-screen .auth-header-side--links {
+  gap: var(--auth-space-md);
+}
+.auth-screen .auth-header-logo {
+  display: block;
+  width: auto;
+  height: 28px; /* → 79.5 × 28 as measured */
+}
+
+/* ---------- /log-in ---------- */
+.auth-screen .auth-login-stack {
+  gap: var(--auth-space-md);
+}
+.auth-screen .auth-login-head {
+  gap: var(--auth-space-md);
+  margin-block: 24px;
+}
+/* Mantine Center whose own height collapses to 0, so the logo escapes upward.
+   Flexbox centres the item's MARGIN box, so a 33.8px logo with margin-top:-48px
+   lands at top = +31.1px relative to the shell — matching the measurement. */
+.auth-screen .auth-login-logo-center {
+  height: 0;
+}
+.auth-screen .auth-login-logo {
+  display: block;
+  width: 96px;
+  height: auto;
+  margin-top: -48px;
+}
+.auth-screen .auth-login-form-stack {
+  gap: var(--auth-space-md);
+}
+.auth-screen .auth-login-form-stack .auth-btn {
+  margin-top: var(--auth-space-sm);
+}
+
+/* ---------- /sign-up ---------- */
+.auth-screen .auth-signup-stack {
+  gap: var(--auth-space-lg);
+}
+.auth-screen .auth-signup-head,
+.auth-screen .auth-signup-fields {
+  gap: var(--auth-space-md);
+}
+/* The two name fields stay two-up even at 390 → (326 − 16)/2 = 155px each. */
+.auth-screen .auth-signup-names > .auth-input-root {
+  max-width: calc(50% - 8px);
+  flex: 1 1 calc(50% - 8px);
+}
+
+/* ---------- /welcome ---------- */
+.auth-screen .auth-welcome-stack {
+  gap: var(--auth-space-lg);
+  align-items: stretch;
+  padding: 0 var(--auth-space-sm); /* → 492px inner column at 1440/1024 */
+}
+.auth-screen .auth-welcome-hero {
+  gap: var(--auth-space-sm);
+  align-items: center;
+  justify-content: center;
+}
+.auth-screen .auth-welcome-illo-center {
+  margin-bottom: var(--auth-space-md); /* 16 + 8 gap = the measured 24px to h1 */
+}
+.auth-screen .auth-welcome-actions {
+  gap: var(--auth-space-lg);
+}
+.auth-screen .auth-welcome-hero > * {
+  width: 100%; /* so the centred h1 / p wrap inside the 310px column at 390 */
+}

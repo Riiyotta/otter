@@ -1,0 +1,79 @@
+{
+  "id": "chrome.navbar",
+  "kind": "section",
+  "name": "Site navigation",
+  "category": "chrome",
+  "designSystem": "marketing",
+  "variants": [
+    "home",
+    "site"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "variant": {
+        "enum": [
+          "home",
+          "site"
+        ],
+        "note": "'home' ships EMPTY nav link containers (homepage only); 'site' populates the four content links."
+      },
+      "contentLinks": {
+        "type": "array",
+        "maxItems": 4,
+        "note": "Fixed on every 'site' route: Parents, Sitters, Trust & Safety, Blog. A PageSpec cannot change this set \u2014 it is chrome, not page content.",
+        "settable": false
+      }
+    },
+    "required": [
+      "variant"
+    ]
+  },
+  "constraints": {
+    "mustBeFirst": true,
+    "onePerPage": true,
+    "maxPerPage": 1,
+    "notSticky": "position:relative. The nav scrolls away with the page. No background change, no blur, no shrink \u2014 re-verified at scrollY=1200.",
+    "skipLink": "a.nav_skip-link[href=\"#main\"] is required and must remain the first child."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "mobileNav.open",
+      "mobileNav.close",
+      "navCurrentIcon.reveal",
+      "none"
+    ],
+    "reducedMotionFallback": "instant-switch",
+    "note": "mobileNav.* only fire at <=991px. navCurrentIcon.reveal is gated behind the site's single min-width:992px query and only exists on 'site' variant routes (the homepage has no .nav_link-current-icon in its DOM).",
+    "openDurationMs": 600,
+    "closeDurationMs": 500,
+    "easing": "ease.outQuart",
+    "perPropertyDelays": true
+  },
+  "responsive": {
+    "desktop": "static 60px tall, margin 48px 0, transparent. Wordmark absolutely centred at 128px; Log in + Sign up at the left.",
+    "le991": "margin-top 2rem. Wordmark becomes position:relative and left-aligned. A 48x48 primary circle burger appears. .nav_menu becomes position:absolute inset 72px 0 auto and is revealed by the open animation.",
+    "le479": "Wordmark 112px. Button group gap drops to 1.25em.",
+    "mobilePanel": "peach card, radius 24px, padding 36px, column, gap 20px, over a fixed rgba(253,249,249,.9) overlay at z-index 98. Clicking the overlay closes the menu."
+  },
+  "assetRoles": [],
+  "observedOn": [
+    "/",
+    "/parents",
+    "/sitters",
+    "/trust-safety",
+    "/faq",
+    "/contact",
+    "/careers",
+    "/blog",
+    "/blog-posts/:slug",
+    "/terms-of-use",
+    "/privacy-policy"
+  ],
+  "measuredFrom": "CLONE_SPEC.md:282-303",
+  "notes": [
+    "The 'Sign up' CTA target differs per route and must NOT be normalised: the homepage links to https://app.withotter.com/sign-up, subpages link to https://app.withotter.com/sign-up/welcome. These paths genuinely differ in the source.",
+    "/log-in does NOT render this chrome \u2014 it is a separate design system with no header at all."
+  ]
+}

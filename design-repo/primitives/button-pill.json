@@ -1,0 +1,51 @@
+{
+  "id": "primitive.button-pill",
+  "kind": "primitive",
+  "name": "Pill button (.btn)",
+  "designSystem": "marketing",
+  "props": {
+    "variant": {
+      "enum": [
+        "dark",
+        "cc-light",
+        "cc-white"
+      ],
+      "default": "dark"
+    },
+    "label": {
+      "type": "string",
+      "maxWords": 5,
+      "measuredLongest": "\"Create a free profile\" = 4 words"
+    },
+    "href": {
+      "type": "string",
+      "note": "either an internal route, a same-page #anchor, or one of the two allowed app-host URLs"
+    },
+    "newTab": {
+      "type": "boolean",
+      "note": "true for every app.withotter.com link in the real source"
+    }
+  },
+  "measuredFrom": "CLONE_SPEC.md:212-212",
+  "states": {
+    "hover": {
+      "dark": "background color.peach, colour color.primary",
+      "cc-light": "background color.peach",
+      "cc-white": "background unchanged #fff, border-color #d6cfc4, box-shadow elevation.whiteBtnHover"
+    },
+    "active": {
+      "cc-white": "transform scale(.95) + elevation.whiteBtnActive \u2014 NO TRANSITION, instant"
+    },
+    "focus": {
+      "cc-white": "outline 3px solid rgba(13,80,88,.37)"
+    },
+    "focusVisible": {
+      "all": "outline 2px dashed color.primary, offset 2px"
+    },
+    "transition": "color, background-color, border-color only \u2014 300ms ease.outQuart. box-shadow and transform are deliberately NOT transitioned."
+  },
+  "notes": [
+    "Radius 99em (computes to 1584px). Padding .875em 1.25em = 14px 20px. Font 16px/600. Border 1px solid transparent; cc-white overrides border-color to #d6cfc4.",
+    "Measured widths are copy-driven: 201.08x46 for 'Create a free profile', 100.04x46 for 'Sign up', 130.98x46 for 'Get started'."
+  ]
+}

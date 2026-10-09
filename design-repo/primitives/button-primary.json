@@ -1,0 +1,30 @@
+{
+  "id": "primitive.button-primary",
+  "kind": "primitive",
+  "name": "Square block button (.button-primary)",
+  "designSystem": "marketing",
+  "props": {
+    "label": {
+      "type": "string",
+      "maxWords": 4,
+      "measuredLongest": "\"Join Otter\" = 2 words"
+    },
+    "href": {
+      "type": "string"
+    },
+    "newTab": {
+      "type": "boolean"
+    }
+  },
+  "measuredFrom": "CLONE_SPEC.md:215-215",
+  "states": {
+    "hover": "colour color.primary, background color.peach",
+    "active": "transform scale(.95)",
+    "focus": "outline 3px solid #2e8acc",
+    "transition": "NONE DECLARED. Hover and :active are instant. Do not add one."
+  },
+  "notes": [
+    "Radius 999px, padding 2rem = 32px, line-height 0, max-height 64px, background color.primary, colour color.celeste.",
+    "Measured 143.33 x 64 for 'Join Otter'. Observed exactly once site-wide: the homepage 'We want to help you grow' card."
+  ]
+}

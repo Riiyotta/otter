@@ -1,0 +1,119 @@
+{
+  "id": "conversion.cta-card",
+  "kind": "section",
+  "name": "Conversion card",
+  "category": "conversion",
+  "designSystem": "marketing",
+  "variants": [
+    "narrow",
+    "wide"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "variant": {
+        "enum": [
+          "narrow",
+          "wide"
+        ],
+        "note": "narrow = /parents, wrapped in section.section.u-p-0.u-mb-3 (zero padding, 48px bottom margin). wide = /sitters, a plain section.section with .cc-wide-cta on the inner container. A real structural difference between two otherwise identical templates."
+      },
+      "heading": {
+        "type": "string",
+        "maxWords": 14,
+        "measuredLongestRealInstance": "\"Experienced kidcare is right around the corner.\" = 7 words"
+      },
+      "cta": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxWords": 5,
+            "measuredLongestRealInstance": "\"Book kidcare\" = 2 words"
+          },
+          "href": {
+            "type": "string",
+            "enum": [
+              "https://app.withotter.com/sign-up/welcome"
+            ]
+          },
+          "variant": {
+            "const": "dark"
+          }
+        },
+        "required": [
+          "label",
+          "href",
+          "variant"
+        ]
+      },
+      "image": {
+        "type": "object",
+        "assetRoleEnumRef": "assets/asset-roles.json#/roles",
+        "allowedRoles": [
+          "photo.person"
+        ]
+      },
+      "blob": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "clipId": {
+            "enum": [
+              "footer-shape-right"
+            ]
+          },
+          "fill": {
+            "enum": [
+              "color.peach",
+              "color.celeste"
+            ]
+          }
+        },
+        "required": [
+          "clipId",
+          "fill"
+        ]
+      }
+    },
+    "required": [
+      "variant",
+      "heading",
+      "cta",
+      "image",
+      "blob"
+    ]
+  },
+  "constraints": {
+    "maxPerPage": 1,
+    "onePerPage": true,
+    "allowedTemplates": [
+      "audience-landing"
+    ],
+    "variantKeyed": true,
+    "note": "Structural rules key on (section, variant), so /parents' narrow and /sitters' wide are both legitimate for the same template."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. Global .btn hover transitions only."
+  },
+  "responsive": {
+    "desktop": "narrow 480px tall at 1440; wide 640px tall.",
+    "le991": "image column and copy column reflow per their col spans.",
+    "le479": "stacks; narrow measures 422px tall, wide 465px."
+  },
+  "assetRoles": [
+    "photo.person",
+    "blob.fill"
+  ],
+  "observedOn": [
+    "/parents",
+    "/sitters"
+  ],
+  "measuredFrom": "spec/SPEC_parents_sitters_trust.md:531-591"
+}

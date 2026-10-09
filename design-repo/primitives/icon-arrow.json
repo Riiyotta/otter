@@ -1,0 +1,16 @@
+{
+  "id": "primitive.icon-arrow",
+  "kind": "primitive",
+  "name": "Up-right arrow glyph",
+  "designSystem": "marketing",
+  "props": {
+    "size": {
+      "type": "string"
+    }
+  },
+  "measuredFrom": "src/pages/Careers.jsx:356-360",
+  "notes": [
+    "public/img/up-right.svg, inside .faq-icon-wrapper.cc-listing on the /careers job rows.",
+    "CASCADE: the row that holds it is .faq-item.cc-listing.w-inline-block. The listing override must win on SPECIFICITY (a.faq-item / .faq-item.w-inline-block), not source order \u2014 see docs/CASCADE.md."
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "component.auth-shell",
+  "kind": "component",
+  "name": "Auth screen shell",
+  "designSystem": "auth",
+  "composes": [],
+  "geometry": {
+    "shell": "min-height 100vh; overflow-x hidden; flex column; min-width 300px; background auth.surface.shell",
+    "outerContainer": "max-width 960px; padding 48px 16px 0",
+    "contentColumn": "max-width 540px; padding-inline 16px -> 508px content at 1440/1024, 326px at 390",
+    "panel": "NONE \u2014 there is no card, panel, border or shadow. Content sits flat on the shell background."
+  },
+  "measuredFrom": "src/styles/auth.css:47-92",
+  "responsive": {
+    "all": "identical layout at 1440 / 1024 / 390 apart from the content column width (508px -> 326px). No type scale change at all."
+  },
+  "notes": [
+    "Line-height 1.55, not the marketing 1.5. Spacing scale 4/8/16/32/48. Radii 12/16/24.",
+    "No Mantine breakpoint fires on this screen; the only responsive change is the content column narrowing, which falls out of max-width + padding alone.",
+    "At 390 the 400px-wide illustration overflows the 326px column to x = -5 and is clipped by overflow-x:hidden. That is the original's behaviour, reproduced on purpose."
+  ]
+}

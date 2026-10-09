@@ -1,0 +1,19 @@
+{
+  "id": "component.empty-collection",
+  "kind": "component",
+  "name": "Webflow empty-collection box",
+  "designSystem": "marketing",
+  "composes": [],
+  "geometry": {
+    "background": "#dddddd",
+    "padding": "10px",
+    "height": "44px",
+    "label": "the single string 'No items found.'"
+  },
+  "measuredFrom": "src/pages/Faq.jsx:12-21",
+  "notes": [
+    "THIS IS NOT MISSING CONTENT. The live original renders these visible grey boxes because the CMS collections are genuinely empty, and the clone reproduces them on purpose.",
+    "Observed at: the testimonials slider and 'Common questions' on /parents and /sitters, and BOTH collections on /faq \u2014 so /faq genuinely has no FAQ content and no accordion is rendered on it.",
+    "A generator MUST NOT invent FAQ or testimonial copy to fill these. The content contract exposes no item array for them."
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "id": "content.image-copy-split",
+  "kind": "section",
+  "name": "Image + copy split",
+  "category": "content",
+  "designSystem": "marketing",
+  "variants": [
+    "default"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "heading": {
+        "type": "string",
+        "maxWords": 10,
+        "measuredLongestRealInstance": "\"Kidcare that fills the gap\" = 5 words"
+      },
+      "body": {
+        "type": "string",
+        "maxWords": 40,
+        "measuredLongestRealInstance": "28 words measured"
+      },
+      "image": {
+        "type": "object",
+        "assetRoleEnumRef": "assets/asset-roles.json#/roles",
+        "allowedRoles": [
+          "illustration.editorial"
+        ]
+      }
+    },
+    "required": [
+      "heading",
+      "body",
+      "image"
+    ]
+  },
+  "constraints": {
+    "maxPerPage": 1,
+    "onePerPage": true,
+    "allowedTemplates": [
+      "careers"
+    ]
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. Global .btn hover transitions only."
+  },
+  "responsive": {
+    "desktop": "image col-lg-6 inside a .u-aspect-9x16 (radius 32px) and copy col-lg-6; measured 580x324.797.",
+    "le991": "image 440.797x246.844.",
+    "le767": "the copy column carries .col-sm-first (order:-1), so the COPY MOVES ABOVE THE IMAGE on mobile.",
+    "le479": "aspect wrapper radius drops to 16px; image 351x196.547."
+  },
+  "assetRoles": [
+    "illustration.editorial"
+  ],
+  "observedOn": [
+    "/careers"
+  ],
+  "measuredFrom": "spec/SPEC_faq_contact_careers.md:569-578"
+}

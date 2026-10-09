@@ -1,0 +1,21 @@
+{
+  "id": "component.job-listing-row",
+  "kind": "component",
+  "name": "Job listing pill row",
+  "designSystem": "marketing",
+  "composes": [
+    "primitive.icon-arrow"
+  ],
+  "geometry": {
+    "radius": "radius.listingPill (8em = 128px)",
+    "paddingInline": "4em",
+    "weight": 500,
+    "hover": "background surface.inverse / colour text.onInverse, 300ms ease.outQuart"
+  },
+  "measuredFrom": "src/styles/faq-contact-careers.css:229-241",
+  "notes": [
+    "Reuses the FAQ accordion's .faq-item markup as an <a>, overridden into a pill by .cc-listing.",
+    "No department grouping, no ATS iframe, no empty state on the live page \u2014 3 roles published as a flat Webflow collection list, each an outbound link opening in a new tab.",
+    "CASCADE: .faq-item is also .w-inline-block here. The display fix must win on SPECIFICITY (a.faq-item, .faq-item.w-inline-block). The earlier bug rendered the pills inline-block at 160px instead of 120px with the arrow on the wrong side."
+  ]
+}

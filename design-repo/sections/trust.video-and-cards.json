@@ -1,0 +1,127 @@
+{
+  "id": "trust.video-and-cards",
+  "kind": "section",
+  "name": "Video facade + trust cards",
+  "category": "trust",
+  "designSystem": "marketing",
+  "variants": [
+    "default"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "heading": {
+        "type": "string",
+        "maxWords": 12,
+        "measuredLongestRealInstance": "\"High-quality childcare, without question\" = 4 words"
+      },
+      "lede": {
+        "type": "string",
+        "maxWords": 56,
+        "measuredLongestRealInstance": "41 words measured"
+      },
+      "video": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "poster": {
+            "type": "object",
+            "assetRoleEnumRef": "assets/asset-roles.json#/roles",
+            "allowedRoles": [
+              "media.videoPoster"
+            ]
+          },
+          "clickToPlay": {
+            "const": true,
+            "note": "HARD CONSTRAINT, LOCKED TRUE. The original ships 0 iframes, 0 <video> elements and 0 third-party requests on load. The iframe is injected only after a user click. A generated instance must never autoplay or embed on load."
+          },
+          "title": {
+            "type": "string",
+            "maxWords": 8,
+            "measuredLongestRealInstance": "\"Trust and Safety at Otter\" = 5 words",
+            "note": "accessible label for the play button and the injected iframe"
+          }
+        },
+        "required": [
+          "poster",
+          "clickToPlay",
+          "title"
+        ]
+      },
+      "cards": {
+        "type": "array",
+        "minItems": 4,
+        "maxItems": 4,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "heading": {
+              "type": "string",
+              "maxWords": 6,
+              "measuredLongestRealInstance": "\"Universal background check\" = 3 words"
+            },
+            "body": {
+              "type": "string",
+              "maxWords": 52,
+              "measuredLongestRealInstance": "37 words measured"
+            },
+            "icon": {
+              "type": "object",
+              "assetRoleEnumRef": "assets/asset-roles.json#/roles",
+              "allowedRoles": [
+                "icon.feature"
+              ]
+            }
+          },
+          "required": [
+            "heading",
+            "body",
+            "icon"
+          ]
+        }
+      }
+    },
+    "required": [
+      "heading",
+      "lede",
+      "video",
+      "cards"
+    ]
+  },
+  "constraints": {
+    "maxPerPage": 1,
+    "onePerPage": true,
+    "allowedTemplates": [
+      "trust-safety"
+    ],
+    "mustBeInsideMain": true,
+    "singleSection": "/trust-safety's whole main is ONE section: the video block plus the 4 cards. It has no tabs, no CTA card, no testimonials slider and no Common questions (0 .swiper, 0 .w-dyn-empty)."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. Global .btn hover transitions only."
+  },
+  "responsive": {
+    "desktop": "2 rows of 2 cards (col-lg-5), not one 4-up wrap. Video box is .u-aspect-9x16 with an inline padding-top of 56.27659574468085%. Section 2096px tall.",
+    "le991": "cards go col-md-6; card padding 2em, gap 2em, min-height auto.",
+    "le767": "cards go col-sm-12 -> 1-up; video radius drops to 16px.",
+    "le479": "section 2448px tall."
+  },
+  "assetRoles": [
+    "media.videoPoster",
+    "icon.feature"
+  ],
+  "observedOn": [
+    "/trust-safety"
+  ],
+  "measuredFrom": "spec/SPEC_parents_sitters_trust.md:757-867",
+  "notes": [
+    "The iframe interior was explicitly not measurable; only the outer box is spec-exact.",
+    "One icon carries width=\"96\" as an HTML attribute, so it renders narrower than the 104px CSS cap \u2014 a direct consequence of preflight being disabled."
+  ]
+}

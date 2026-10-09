@@ -1,0 +1,596 @@
+{
+  "$comment": "The citation ledger: which real file and line range backs each decision in this design-repo. Each entry carries KEYWORDS that must literally appear inside the cited range, which is what catches the dangerous half of citation drift -- a range that resolves fine but describes the wrong code. extraction/verify_all.py checks both halves.",
+  "version": "1.0.0",
+  "degradesGracefully": "These citations point at the SIBLING source project, which is build-time evidence and is NOT shipped inside design-repo/. When no sibling source tree is present -- a standalone copy, or an extracted zip -- verify_all.py WARNS and skips resolution rather than failing. registry.manifest.json's entryPoints therefore list only files inside design-repo/; this ledger is where external evidence is recorded instead.",
+  "sourceProject": {
+    "framework": "React 18 + Vite 5 + Tailwind CSS v3",
+    "router": "react-router-dom 6",
+    "note": "Versions read from the real package.json at build time. A design-repo is a snapshot, not a living mirror: re-diff this against current source if the project has moved on.",
+    "measuredFrom": "package.json:11-22"
+  },
+  "citationCount": 66,
+  "citations": [
+    {
+      "claim": "marketing colour palette: the 9 :root custom properties, verbatim",
+      "measuredFrom": "src/index.css:54-65",
+      "keywords": [
+        "--primary: #00373e",
+        "--sandstone: #ac9e88",
+        "--out-quart"
+      ]
+    },
+    {
+      "claim": "the same 9 tokens as recorded by recon, with their usage notes",
+      "measuredFrom": "CLONE_SPEC.md:57-65",
+      "keywords": [
+        "--primary",
+        "--sandstone",
+        "page background"
+      ]
+    },
+    {
+      "claim": "the white-button border colour, the one literal not on :root",
+      "measuredFrom": "CLONE_SPEC.md:75-75",
+      "keywords": [
+        "#d6cfc4",
+        "btn.cc-white"
+      ]
+    },
+    {
+      "claim": "self-hosted fonts: 5 Jokker faces + 1 Reckless Neue Heavy, woff, font-display swap",
+      "measuredFrom": "src/index.css:8-49",
+      "keywords": [
+        "Jokker-Regular.woff",
+        "RecklessNeue-Heavy.woff",
+        "font-display: swap"
+      ]
+    },
+    {
+      "claim": "responsive type scale per breakpoint",
+      "measuredFrom": "CLONE_SPEC.md:166-175",
+      "keywords": [
+        "80px (5rem)",
+        "`.paragraph-1-5`",
+        "`.eyebrow`"
+      ]
+    },
+    {
+      "claim": "Webflow max-width breakpoints, mirrored in the Tailwind config",
+      "measuredFrom": "tailwind.config.js:17-21",
+      "keywords": [
+        "medium: { max: '991px' }",
+        "small: { max: '767px' }",
+        "tiny: { max: '479px' }"
+      ]
+    },
+    {
+      "claim": "preflight and container core plugins deliberately disabled",
+      "measuredFrom": "tailwind.config.js:3-12",
+      "keywords": [
+        "preflight: false",
+        "container: false",
+        "Preflight is off"
+      ]
+    },
+    {
+      "claim": "container primitive and its measured widths at 1440/1024/390",
+      "measuredFrom": "CLONE_SPEC.md:106-118",
+      "keywords": [
+        "max-width: 90rem",
+        "1296px wide",
+        "921.6px"
+      ]
+    },
+    {
+      "claim": "12-column grid: the 40px gutter comes from negative row margins over column padding",
+      "measuredFrom": "CLONE_SPEC.md:123-131",
+      "keywords": [
+        "margin-left:-20px",
+        "padding-left:20px",
+        "flex-basis:100%"
+      ]
+    },
+    {
+      "claim": "section vertical rhythm, 80/64/48",
+      "measuredFrom": "CLONE_SPEC.md:135-139",
+      "keywords": [
+        "padding-block: 5rem",
+        "4rem",
+        "3rem"
+      ]
+    },
+    {
+      "claim": "radii by component",
+      "measuredFrom": "CLONE_SPEC.md:207-218",
+      "keywords": [
+        "4.5em",
+        "99em",
+        "**50%**"
+      ]
+    },
+    {
+      "claim": "the 7 clip-path blob ids and their verbatim path data",
+      "measuredFrom": "src/components/ClipPathDefs.jsx:4-41",
+      "keywords": [
+        "stone-hero_top-right",
+        "footer-shape-right",
+        "clipPathUnits"
+      ]
+    },
+    {
+      "claim": "the only scroll reveal on the whole site: slideInBottom, 1000ms, outQuart, 20% offset, fires once",
+      "measuredFrom": "CLONE_SPEC.md:462-492",
+      "keywords": [
+        "SCROLL_INTO_VIEW",
+        "cc-tabas-header",
+        "scrollOffsetValue"
+      ]
+    },
+    {
+      "claim": "mobile nav open: ~600ms, outQuart, independent per-property delays",
+      "measuredFrom": "CLONE_SPEC.md:493-524",
+      "keywords": [
+        "mobile-nav-open",
+        "outQuart",
+        "rotateZ"
+      ]
+    },
+    {
+      "claim": "mobile nav close: ~500ms, asymmetric delays",
+      "measuredFrom": "CLONE_SPEC.md:525-549",
+      "keywords": [
+        "mobile-nav-close",
+        "MOUSE_SECOND_CLICK"
+      ]
+    },
+    {
+      "claim": "the single .btn transition: colour trio only, 300ms outQuart",
+      "measuredFrom": "CLONE_SPEC.md:554-559",
+      "keywords": [
+        "transition: color .3s",
+        "background-color",
+        "border-color"
+      ]
+    },
+    {
+      "claim": "states that deliberately have NO transition",
+      "measuredFrom": "CLONE_SPEC.md:564-572",
+      "keywords": [
+        "box-shadow is NOT in the transition list",
+        "no transition, inst",
+        "no transition declared"
+      ]
+    },
+    {
+      "claim": "tabs widget motion, including the asymmetric accordion timing below 992px",
+      "measuredFrom": "spec/SPEC_parents_sitters_trust.md:882-896",
+      "keywords": [
+        "slideInFromBottom",
+        "transition-delay:100ms",
+        "max-height"
+      ]
+    },
+    {
+      "claim": "exactly one live IX2 interaction per PST route; the homepage reveal does NOT run there",
+      "measuredFrom": "spec/SPEC_parents_sitters_trust.md:872-881",
+      "keywords": [
+        "data-w-id",
+        "no inline `style=\"opacity:0\"`",
+        "Do not add a reveal"
+      ]
+    },
+    {
+      "claim": "no prefers-reduced-motion block exists in the original",
+      "measuredFrom": "spec/SPEC_parents_sitters_trust.md:904-906",
+      "keywords": [
+        "prefers-reduced-motion",
+        "not** in the original"
+      ]
+    },
+    {
+      "claim": "PST section maps in DOM order for all three routes",
+      "measuredFrom": "spec/SPEC_parents_sitters_trust.md:46-83",
+      "keywords": [
+        "hero",
+        "testimonials slider",
+        "Common questions"
+      ]
+    },
+    {
+      "claim": "/trust-safety has no tabs, no CTA card, no testimonials and no Common questions",
+      "measuredFrom": "spec/SPEC_parents_sitters_trust.md:81-81",
+      "keywords": [
+        "0 `.swiper`",
+        "0 `.w-dyn-empty`"
+      ]
+    },
+    {
+      "claim": "the /parents vs /sitters CTA structural difference",
+      "measuredFrom": "spec/SPEC_parents_sitters_trust.md:70-70",
+      "keywords": [
+        "u-p-0",
+        "cc-wide-cta"
+      ]
+    },
+    {
+      "claim": "/faq: both CMS collections genuinely empty, no accordion on the route",
+      "measuredFrom": "spec/SPEC_faq_contact_careers.md:199-217",
+      "keywords": [
+        "accordion does not exist",
+        "w-dyn-empty"
+      ]
+    },
+    {
+      "claim": "/faq section map",
+      "measuredFrom": "spec/SPEC_faq_contact_careers.md:218-256",
+      "keywords": [
+        "For parents",
+        "For sitters",
+        "row-justify-around"
+      ]
+    },
+    {
+      "claim": "/contact section map and the hero image hidden below 767",
+      "measuredFrom": "spec/SPEC_faq_contact_careers.md:342-367",
+      "keywords": [
+        "Contact us",
+        "col-sm-hide",
+        "display:none"
+      ]
+    },
+    {
+      "claim": "/careers section map: 8 content sections with measured y-offsets",
+      "measuredFrom": "spec/SPEC_faq_contact_careers.md:541-551",
+      "keywords": [
+        "jobs",
+        "Current Positions",
+        "Benefits"
+      ]
+    },
+    {
+      "claim": "/careers job rows: 3 published roles, flat collection, no ATS iframe, no empty state",
+      "measuredFrom": "spec/SPEC_faq_contact_careers.md:692-700",
+      "keywords": [
+        "cc-listing",
+        "no department grouping",
+        "Greenhouse"
+      ]
+    },
+    {
+      "claim": "the .faq-item.cc-listing pill radius",
+      "measuredFrom": "src/styles/faq-contact-careers.css:229-241",
+      "keywords": [
+        "cc-listing",
+        "border-radius",
+        "8em"
+      ]
+    },
+    {
+      "claim": "blog index structure: featured + 9, no filter/tabs/search",
+      "measuredFrom": "spec/SPEC_blog_legal.md:135-193",
+      "keywords": [
+        "Load more",
+        "w-dyn-list"
+      ]
+    },
+    {
+      "claim": "blog cards have no hover state and no transition",
+      "measuredFrom": "spec/SPEC_blog_legal.md:220-328",
+      "keywords": [
+        "post card component"
+      ]
+    },
+    {
+      "claim": "the blog-post template's slots, and the ones that do NOT exist",
+      "measuredFrom": "spec/SPEC_blog_legal.md:483-498",
+      "keywords": [
+        "do NOT",
+        "author",
+        "time"
+      ]
+    },
+    {
+      "claim": "legal routes: no TOC, no jump links, effectively no anchors",
+      "measuredFrom": "spec/SPEC_blog_legal.md:704-715",
+      "keywords": [
+        "Table of contents",
+        "Last updated"
+      ]
+    },
+    {
+      "claim": "auth screens are a separate design system, not a third-party widget",
+      "measuredFrom": "spec/SPEC_auth.md:57-80",
+      "keywords": [
+        "NOT a third-party hosted auth widget",
+        "Shared vs new design system"
+      ]
+    },
+    {
+      "claim": "auth tokens: Mantine primitives the three screens actually use",
+      "measuredFrom": "src/styles/auth.css:19-58",
+      "keywords": [
+        "--auth-surface-shell",
+        "--auth-radius-lg",
+        "1.55"
+      ]
+    },
+    {
+      "claim": "auth content column: 508px inside 540px; no Mantine breakpoint fires here",
+      "measuredFrom": "src/styles/auth.css:83-92",
+      "keywords": [
+        "508px",
+        "326px",
+        "No Mantine breakpoint"
+      ]
+    },
+    {
+      "claim": "auth type roles, identical at all three widths",
+      "measuredFrom": "spec/SPEC_auth.md:303-320",
+      "keywords": [
+        "Screen title (log-in)",
+        "20px",
+        "1.55"
+      ]
+    },
+    {
+      "claim": "auth motion: nothing animates on load; only control transitions exist",
+      "measuredFrom": "spec/SPEC_auth.md:703-716",
+      "keywords": [
+        "0.2s",
+        "0.3s",
+        "No stagger"
+      ]
+    },
+    {
+      "claim": "/log-in is deliberately inert: no action, no method, no endpoint, autocomplete off",
+      "measuredFrom": "src/pages/LogIn.jsx:6-12",
+      "keywords": [
+        "INERT",
+        "no action and no method",
+        "preventDefault"
+      ]
+    },
+    {
+      "claim": "the /log-in DOM outline with its real copy",
+      "measuredFrom": "spec/SPEC_auth.md:739-782",
+      "keywords": [
+        "Welcome back!",
+        "Phone Number",
+        "Continue"
+      ]
+    },
+    {
+      "claim": "/sign-up and /welcome are NOT local routes; only /log-in is rebuilt",
+      "measuredFrom": "src/App.jsx:51-56",
+      "keywords": [
+        "Sign-up and welcome stay",
+        "external links",
+        "log-in"
+      ]
+    },
+    {
+      "claim": "the real router: 12 route patterns plus a catch-all",
+      "measuredFrom": "src/App.jsx:19-57",
+      "keywords": [
+        "path=\"/\"",
+        "blog-posts/:slug",
+        "path=\"*\""
+      ]
+    },
+    {
+      "claim": "blog article bodies are original placeholder prose, NOT the original articles",
+      "measuredFrom": "src/data/posts.js:4-10",
+      "keywords": [
+        "PLACEHOLDER PROSE",
+        "None of it is transcribed"
+      ]
+    },
+    {
+      "claim": "the 10 real post slugs, titles, tags and covers are genuine",
+      "measuredFrom": "src/data/posts.js:11-17",
+      "keywords": [
+        "verbatim",
+        "SPEC_blog_legal",
+        "cover"
+      ]
+    },
+    {
+      "claim": "/trust-safety video is a click-to-play facade; no iframe or video on load",
+      "measuredFrom": "src/components/pst/VideoFacade.jsx:3-20",
+      "keywords": [
+        "click-to-play facade",
+        "<video> element",
+        "only after a click"
+      ]
+    },
+    {
+      "claim": "empty CMS collections render visible grey boxes on purpose",
+      "measuredFrom": "src/pages/Faq.jsx:3-13",
+      "keywords": [
+        "genuinely empty",
+        "No items found",
+        "No FAQ copy is invented"
+      ]
+    },
+    {
+      "claim": "the .u-mb-0 font-weight:400 quirk and the synthesised lighter face",
+      "measuredFrom": "src/pages/Sitters.jsx:65-68",
+      "keywords": [
+        "u-mb-0",
+        "font-weight:400",
+        "browser still"
+      ]
+    },
+    {
+      "claim": "the same quirk on the /blog h1",
+      "measuredFrom": "src/pages/Blog.jsx:27-31",
+      "keywords": [
+        "font-weight:400",
+        "synthesises a lighter face",
+        "not a bug to fix"
+      ]
+    },
+    {
+      "claim": "CSS cascade: page stylesheets are emitted BEFORE index.css, and @layer is flattened",
+      "measuredFrom": "src/styles/auth.css:9-13",
+      "keywords": [
+        "BEFORE index.css",
+        "flattens",
+        "specificity"
+      ]
+    },
+    {
+      "claim": "the same cascade fact, and the pagination pill it decides",
+      "measuredFrom": "src/styles/blog.css:169-179",
+      "keywords": [
+        "CASCADE GOTCHA",
+        "@layer",
+        "specificity"
+      ]
+    },
+    {
+      "claim": "the tab-trigger display fix that must win on specificity, not source order",
+      "measuredFrom": "src/styles/parents-sitters-trust.css:115-132",
+      "keywords": [
+        "tab-trigger",
+        "w-inline-block",
+        "Specificity bump"
+      ]
+    },
+    {
+      "claim": "the faq-item display fix, same cascade reason",
+      "measuredFrom": "src/styles/faq-contact-careers.css:171-176",
+      "keywords": [
+        "CASCADE",
+        "w-inline-block",
+        "index.css"
+      ]
+    },
+    {
+      "claim": "footer link columns: three lists, the third all external",
+      "measuredFrom": "spec/SPEC_parents_sitters_trust.md:322-345",
+      "keywords": [
+        "footer_link-list",
+        "Instagram",
+        "Trust & Safety"
+      ]
+    },
+    {
+      "claim": "the four footer social links",
+      "measuredFrom": "src/components/Footer.jsx:27-32",
+      "keywords": [
+        "instagram.com",
+        "linkedin.com",
+        "twitter.com"
+      ]
+    },
+    {
+      "claim": "the extra empty div.container the footer renders for DOM parity",
+      "measuredFrom": "src/components/Footer.jsx:60-65",
+      "keywords": [
+        "empty, zero-height",
+        "kept for exact parity",
+        "cc-footer-container"
+      ]
+    },
+    {
+      "claim": "the load-more pill is rendered but deliberately inert",
+      "measuredFrom": "src/components/blog/LoadMore.jsx:7-11",
+      "keywords": [
+        "INERT",
+        "nothing to",
+        "aria-disabled"
+      ]
+    },
+    {
+      "claim": "press bar: 4 real third-party marks, DOM order and rendered sizes",
+      "measuredFrom": "CLONE_SPEC.md:418-427",
+      "keywords": [
+        "Forbes magazine",
+        "The New York Times",
+        "mom.com"
+      ]
+    },
+    {
+      "claim": "homepage DOM order and the measured hero geometry",
+      "measuredFrom": "CLONE_SPEC.md:305-334",
+      "keywords": [
+        "u-pt-0 u-pb-2",
+        "cc-hero",
+        "min-height:800px"
+      ]
+    },
+    {
+      "claim": "the beta banner, including the height-attribute-driven illustration",
+      "measuredFrom": "CLONE_SPEC.md:336-352",
+      "keywords": [
+        "hp-banner",
+        "Playdate.svg",
+        "height=\"180\""
+      ]
+    },
+    {
+      "claim": "how-it-works: the illustrated header plus 3 numbered cards",
+      "measuredFrom": "CLONE_SPEC.md:355-387",
+      "keywords": [
+        "how-it-works",
+        "row-reverse",
+        "bullet-organic"
+      ]
+    },
+    {
+      "claim": "the wide join card and the site's only .button-primary",
+      "measuredFrom": "CLONE_SPEC.md:388-401",
+      "keywords": [
+        "home-card-lg",
+        "join-bg.svg",
+        "button-primary"
+      ]
+    },
+    {
+      "claim": "the press bar section",
+      "measuredFrom": "CLONE_SPEC.md:403-427",
+      "keywords": [
+        "trust-bar",
+        "As featured in",
+        "featured-logo"
+      ]
+    },
+    {
+      "claim": "the footer's two cards and their corner blobs",
+      "measuredFrom": "CLONE_SPEC.md:436-456",
+      "keywords": [
+        "footer_card",
+        "footer-shape-left",
+        "u-bg-peach"
+      ]
+    },
+    {
+      "claim": "third-party scripts present on the original and deliberately NOT ported",
+      "measuredFrom": "CLONE_SPEC.md:624-626",
+      "keywords": [
+        "Facebook Pixel",
+        "Amplitude",
+        "Google Tag Manager"
+      ]
+    },
+    {
+      "claim": "terms-of-use link repairs, including the one left deliberately inert",
+      "measuredFrom": "src/pages/TermsOfUse.jsx:11-24",
+      "keywords": [
+        "LEFT INERT",
+        "binding-arbitration",
+        "Flagged for content review"
+      ]
+    },
+    {
+      "claim": "privacy-policy: the one orphaned anchor, fixed deliberately",
+      "measuredFrom": "src/pages/PrivacyPolicy.jsx:11-27",
+      "keywords": [
+        "DELIBERATE DEVIATION",
+        "orphaned",
+        "no TOC"
+      ]
+    }
+  ]
+}

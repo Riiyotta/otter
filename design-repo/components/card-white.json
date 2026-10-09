@@ -1,0 +1,21 @@
+{
+  "id": "component.card-white",
+  "kind": "component",
+  "name": "White surface card",
+  "designSystem": "marketing",
+  "composes": [
+    "primitive.eyebrow",
+    "primitive.button-pill"
+  ],
+  "geometry": {
+    "background": "surface.card",
+    "radius": "radius.card",
+    "padding": "32px",
+    "le479": "padding 32px 32px 32px 24px",
+    "overflow": "hidden"
+  },
+  "measuredFrom": "CLONE_SPEC.md:357-359",
+  "notes": [
+    "The generic .card. Observed once: the homepage 'Now in Beta' banner."
+  ]
+}

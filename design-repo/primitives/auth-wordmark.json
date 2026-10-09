@@ -1,0 +1,16 @@
+{
+  "id": "primitive.auth-wordmark",
+  "kind": "primitive",
+  "name": "Otter wordmark (auth host)",
+  "designSystem": "auth",
+  "props": {
+    "idSuffix": {
+      "type": "string",
+      "note": "the inline SVG's gradient/clip ids are suffixed per screen to stay unique"
+    }
+  },
+  "measuredFrom": "src/components/auth/AuthWordmark.jsx:1-32",
+  "notes": [
+    "LICENSING: same real registered wordmark as the marketing nav. assetRole brand.wordmark, pinned to must-not-reproduce-real-mark."
+  ]
+}

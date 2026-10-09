@@ -1,0 +1,26 @@
+{
+  "id": "component.home-card",
+  "kind": "component",
+  "name": "Home process card (.home-card-2)",
+  "designSystem": "marketing",
+  "composes": [
+    "primitive.bullet-number"
+  ],
+  "geometry": {
+    "background": "surface.card",
+    "radius": "radius.card",
+    "minHeight": "25rem = 400px",
+    "padding": "2.5em = 40px",
+    "gap": "16px",
+    "measured1440": "373.3 x 408"
+  },
+  "measuredFrom": "CLONE_SPEC.md:369-377",
+  "responsive": {
+    "desktop": "3-up via .col inside .row.how-it-works",
+    "le991": ".row.how-it-works becomes flex-direction:column -> 1-up stacked",
+    "le479": "same, min-height auto"
+  },
+  "notes": [
+    "At <=991 becomes flex-direction:column, align-items:flex-start, min-height:auto, gap 0."
+  ]
+}

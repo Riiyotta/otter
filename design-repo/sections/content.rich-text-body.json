@@ -1,0 +1,113 @@
+{
+  "id": "content.rich-text-body",
+  "kind": "section",
+  "name": "Rich-text article body",
+  "category": "content",
+  "designSystem": "marketing",
+  "variants": [
+    "default"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "blocks": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "type": {
+                  "const": "p"
+                },
+                "text": {
+                  "type": "string",
+                  "maxWords": 120
+                }
+              },
+              "required": [
+                "type",
+                "text"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "type": {
+                  "const": "h3"
+                },
+                "text": {
+                  "type": "string",
+                  "maxWords": 14
+                }
+              },
+              "required": [
+                "type",
+                "text"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "type": {
+                  "const": "ul"
+                },
+                "items": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "maxWords": 40
+                  }
+                }
+              },
+              "required": [
+                "type",
+                "items"
+              ]
+            }
+          ],
+          "note": "Three independent block schemas, each fully closed. Using oneOf rather than a shared base + patches, because draft-07's additionalProperties:false on a shared base cannot see properties a sibling allOf branch adds."
+        }
+      }
+    },
+    "required": [
+      "blocks"
+    ]
+  },
+  "constraints": {
+    "maxPerPage": 1,
+    "onePerPage": true,
+    "allowedTemplates": [
+      "blog-post"
+    ],
+    "mustBeInsideMain": true,
+    "contentProvenance": "The real article bodies are NOT in the clone. src/data/posts.js carries original placeholder prose written for the clone, deliberately not the original articles. Titles, covers and tags ARE genuine. A generator must not mistake the placeholders for source content and must not attempt to 'restore' the originals.",
+    "noInlineCta": "There is no inline body CTA slot on the original."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. Global .btn hover transitions only."
+  },
+  "responsive": {
+    "desktop": "col-lg-8 inside .container.cc-narrow. Paragraphs 16px/24px weight 500 with a 16px gap at every breakpoint.",
+    "le991": "col-md-12 -> full width.",
+    "le479": "same; no type-scale change on body prose."
+  },
+  "assetRoles": [],
+  "observedOn": [
+    "/blog-posts/:slug"
+  ],
+  "measuredFrom": "spec/SPEC_blog_legal.md:528-601",
+  "notes": [
+    "DEVIATION recorded in the clone: the original fakes lists with <br> + ' - ' inside a <p>; the clone authors real <ul>. The vertical rhythm of those passages therefore differs from source."
+  ]
+}

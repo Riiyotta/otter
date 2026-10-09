@@ -1,0 +1,28 @@
+{
+  "id": "primitive.tag-pill",
+  "kind": "primitive",
+  "name": "Blog CMS tag pill (.tag)",
+  "designSystem": "marketing",
+  "props": {
+    "name": {
+      "type": "string",
+      "maxWords": 3,
+      "measuredLongest": "\"Otter news\" = 2 words"
+    },
+    "color": {
+      "enum": [
+        "midnight",
+        "sandstone",
+        "coral",
+        "celeste",
+        "peach",
+        "olive"
+      ],
+      "note": "the CMS colour token recorded per tag; not a free-form colour"
+    }
+  },
+  "measuredFrom": "src/data/posts.js:51-55",
+  "notes": [
+    "1-3 pills per post header. On /blog's featured card they are hidden behind a single static celeste pill reading 'Featured'."
+  ]
+}

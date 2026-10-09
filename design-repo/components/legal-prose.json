@@ -1,0 +1,19 @@
+{
+  "id": "component.legal-prose",
+  "kind": "component",
+  "name": "Legal document prose",
+  "designSystem": "marketing",
+  "composes": [
+    "primitive.link-inline"
+  ],
+  "geometry": {
+    "structure": "title + intro + ordered section list",
+    "splitter": ".splitter \u2014 1px primary rule with 3em margin-block"
+  },
+  "measuredFrom": "spec/SPEC_blog_legal.md:634-662",
+  "notes": [
+    "No table of contents, no jump-link list, no anchor nav. /privacy-policy has exactly ONE id in the whole document.",
+    "scroll-behavior stays auto \u2014 no smooth scroll on these routes.",
+    "CONTENT: operative legal text. See assets/asset-roles.json role legal.operativeText \u2014 pinned to must-not-fabricate. A generator must never write, paraphrase or summarise legal clauses into this component."
+  ]
+}

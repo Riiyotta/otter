@@ -1,0 +1,26 @@
+{
+  "id": "primitive.eyebrow",
+  "kind": "primitive",
+  "name": "Eyebrow label",
+  "designSystem": "marketing",
+  "props": {
+    "variant": {
+      "enum": [
+        "plain",
+        "tag"
+      ],
+      "default": "plain"
+    },
+    "text": {
+      "type": "string",
+      "maxWords": 5,
+      "measuredLongest": "\"Taking Care of Our Team\" = 5 words"
+    }
+  },
+  "measuredFrom": "CLONE_SPEC.md:191-192",
+  "notes": [
+    "14px/19.6px, weight 600, letter-spacing 0.49px, text-transform uppercase. Authored in mixed case; uppercasing is CSS.",
+    "variant 'tag' adds padding 5.6px 11.2px 4.2px, radius 20px, background color.celeste.",
+    "KNOWN QUIRK: h2.eyebrow.u-mb-0 (the press bar's 'As featured in') computes weight 400, because .u-mb-0 also declares font-weight:400 and wins. That is correct."
+  ]
+}

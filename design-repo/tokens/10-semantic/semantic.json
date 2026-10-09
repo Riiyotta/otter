@@ -1,0 +1,44 @@
+{
+  "id": "tokens.semantic",
+  "designSystem": "marketing",
+  "note": "Semantic roles built only from foundation tokens that exist in the measured palette. No role invents a colour.",
+  "roles": {
+    "surface.page": {
+      "ref": "color.ivory",
+      "observedOn": "every marketing route (.page-wrapper)"
+    },
+    "surface.card": {
+      "ref": "color.white",
+      "observedOn": ".card, .home-card-2, .footer_card.cc-right, .values-wrap, .tab-content.cc-card, .blog card"
+    },
+    "surface.inverse": {
+      "ref": "color.primary",
+      "observedOn": ".container.cc-hero, .footer_card.cc-left, .trust-card, .nav_mobile-btn, .faq-item.cc-listing:hover"
+    },
+    "surface.accentWarm": {
+      "ref": "color.peach",
+      "observedOn": ".trust-bar, .nav_menu-card, .btn:hover"
+    },
+    "surface.accentCool": {
+      "ref": "color.celeste",
+      "observedOn": ".btn.cc-light, .eyebrow.tag"
+    },
+    "surface.emptyState": {
+      "ref": "literals.emptyCollection.background",
+      "observedOn": ".w-dyn-empty on /faq, /parents, /sitters"
+    },
+    "text.primary": {
+      "ref": "color.primary"
+    },
+    "text.onInverse": {
+      "ref": "color.white"
+    },
+    "text.onDarkButton": {
+      "ref": "color.celeste"
+    },
+    "border.default": {
+      "ref": "color.btnBorder",
+      "observedOn": ".btn.cc-white only"
+    }
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "id": "form.contact",
+  "kind": "section",
+  "name": "Contact form",
+  "category": "form",
+  "designSystem": "marketing",
+  "variants": [
+    "default"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "srHeading": {
+        "const": "Form",
+        "note": "h2.u-sr-only \u2014 visually hidden, keep for a11y"
+      },
+      "fields": {
+        "type": "array",
+        "minItems": 5,
+        "maxItems": 5,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "text",
+                "email",
+                "tel",
+                "textarea"
+              ]
+            },
+            "label": {
+              "type": "string",
+              "maxWords": 4,
+              "measuredLongestRealInstance": "\"Phone number\" = 2 words"
+            },
+            "required": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "kind",
+            "label",
+            "required"
+          ]
+        }
+      },
+      "requiredNote": {
+        "const": "*Required"
+      },
+      "successBlock": {
+        "const": true,
+        "note": "the custom .form-success / .w-form-done block, hidden by default"
+      },
+      "errorBlock": {
+        "const": true,
+        "note": "the .form-error / .w-form-fail block, ported and kept in the DOM but hidden by default"
+      },
+      "contactBlocks": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "heading": {
+              "type": "string",
+              "maxWords": 4,
+              "measuredLongestRealInstance": "\"Press\" = 1 word"
+            },
+            "mailto": {
+              "type": "string",
+              "pattern": "^mailto:"
+            }
+          },
+          "required": [
+            "heading",
+            "mailto"
+          ]
+        }
+      }
+    },
+    "required": [
+      "srHeading",
+      "fields",
+      "requiredNote",
+      "successBlock",
+      "errorBlock",
+      "contactBlocks"
+    ]
+  },
+  "constraints": {
+    "maxPerPage": 1,
+    "onePerPage": true,
+    "allowedTemplates": [
+      "contact"
+    ],
+    "mustBeInsideMain": true,
+    "noEndpoint": "The original's <form> has method=\"get\" and NO action \u2014 Webflow's default. The clone prevents submission and makes no network call. A generated instance must not add an action, a method change, a fetch or any third-party form endpoint."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. Global .btn hover transitions only."
+  },
+  "responsive": {
+    "desktop": "form in a col-lg-7, contact-info blocks in a col-lg-4, inside .row.row-justify-between.",
+    "le991": "both columns go col-md-12 -> stacked.",
+    "le479": "form column measures 391x716, info column 391x192."
+  },
+  "assetRoles": [],
+  "observedOn": [
+    "/contact"
+  ],
+  "measuredFrom": "spec/SPEC_faq_contact_careers.md:368-398"
+}

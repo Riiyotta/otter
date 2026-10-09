@@ -1,0 +1,98 @@
+{
+  "id": "values.principle-cards",
+  "kind": "section",
+  "name": "Values / principles cards",
+  "category": "values",
+  "designSystem": "marketing",
+  "variants": [
+    "default"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "srHeading": {
+        "const": "Values",
+        "note": "h2.u-sr-only preceding the container"
+      },
+      "cards": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "heading": {
+              "type": "string",
+              "maxWords": 6,
+              "measuredLongestRealInstance": "\"Our operating principles\" = 3 words"
+            },
+            "items": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "label": {
+                    "type": "string",
+                    "maxWords": 6,
+                    "measuredLongestRealInstance": "\"Always do the right thing\" = 5 words"
+                  },
+                  "icon": {
+                    "type": "object",
+                    "assetRoleEnumRef": "assets/asset-roles.json#/roles",
+                    "allowedRoles": [
+                      "icon.values"
+                    ]
+                  }
+                },
+                "required": [
+                  "label",
+                  "icon"
+                ]
+              }
+            }
+          },
+          "required": [
+            "heading",
+            "items"
+          ]
+        }
+      }
+    },
+    "required": [
+      "srHeading",
+      "cards"
+    ]
+  },
+  "constraints": {
+    "maxPerPage": 1,
+    "onePerPage": true,
+    "allowedTemplates": [
+      "careers"
+    ],
+    "note": "Uses the FULL .container, not .cc-narrow."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. Global .btn hover transitions only."
+  },
+  "responsive": {
+    "desktop": "2 x col-lg-5 inside .row.row-justify-center; .values-wrap 516.656x624, radius 72px, padding 72px 56px. Each .values_item on a 104px pitch.",
+    "le991": "cards go col-md-12 -> stacked; 360.656x740 at 1024.",
+    "le479": ".values-wrap radius 40px, padding 48px 24px, 351x424; .icon-wrap-72 shrinks to 56x56; item pitch 88px."
+  },
+  "assetRoles": [
+    "icon.values"
+  ],
+  "observedOn": [
+    "/careers"
+  ],
+  "measuredFrom": "spec/SPEC_faq_contact_careers.md:604-615"
+}

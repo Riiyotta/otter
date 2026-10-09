@@ -1,0 +1,63 @@
+/* ---------------------------------------------------------------------------
+   legal.css — /terms-of-use and /privacy-policy
+   ---------------------------------------------------------------------------
+   Plain CSS, imported from JS (outside Tailwind's layer machinery) — so no
+   @layer and no @tailwind directives in here. Ported rule-for-rule from the
+   compiled Webflow sheet (reference/assets/with-otter-*.shared.*.min.css),
+   same as the homepage build.
+
+   Spec: spec/SPEC_blog_legal.md §4.2 and §5.
+
+   These two routes reuse the ordinary marketing type scale almost entirely.
+   Everything they need already lives in src/index.css and is NOT duplicated
+   here:
+     .section (padding-block 5rem / 4rem ≤991 / 3rem ≤479)
+     .section.u-pb-0, .u-pb-0
+     .container (90% / max 90rem), .row, .row-justify-center
+     .col, .col-lg-8, .col-md-12
+     .section-header (flex column, gap 1.5em → 1em ≤991)
+     h1 (5rem Reckless Neue, ls -0.01em) + .u-mb-0 → margin-bottom:0 AND
+        font-weight:400. The legal <h1>s therefore compute Reckless Neue 400,
+        not 900. Only the 900 Heavy woff is self-hosted, so the browser
+        synthesises the lighter face. That IS the original's appearance —
+        do not "fix" it.
+     .h4 (2.5rem/1.1, mb .6em → 24px; 1.25rem/1.2, mb 12px ≤479) — the
+        section headings are h3.h4 and get their whole box from this class.
+     .eyebrow (.875em → 14px, w600, ls .035em, uppercase, lh 1.4)
+     p (mt 0, mb 1em → 16px), strong (w700), em, a (w500, no underline,
+        focus-visible 2px dashed)
+
+   Only two primitives were genuinely missing, both below.
+   --------------------------------------------------------------------------- */
+
+/* The 1px horizontal rule that opens every numbered section.
+   The single legal-specific primitive on these pages.
+   margin-block: 3em → 48px at the inherited 16px base. */
+.splitter {
+  background-color: var(--primary);
+  width: 100%;
+  height: 1px;
+  margin-top: 3em;
+  margin-bottom: 3em;
+}
+
+/* Used on the "Effective date:" eyebrow. 1em of the EYEBROW's own 14px
+   font-size, so this resolves to 14px — not 16px (spec §4.2). */
+.u-mb-1 {
+  margin-bottom: 1em;
+}
+
+/* ---------------------------------------------------------------------------
+   Section rhythm this produces, measured @1440 (spec §4.2):
+     div.splitter   mt 48  mb 48   h 1px   bg var(--primary)
+     h3.h4          mt 0   mb 24   40px/44px w600
+     p              mt 0   mb 16   16px/24px w500
+   → end of one section's text to the next heading:
+     16 (p mb) + 48 (splitter mt) + 1 + 48 (splitter mb) = 113px.
+   The intro block has no .splitter; the first rule sits above section 1.
+
+   No TOC, no jump-link list, no smooth scroll on these routes
+   (html keeps scroll-behavior:auto). Nothing here animates — the only two
+   live IX2 events on these pages are the mobile nav open/close pair, which
+   belong to the shared chrome, not to this page.
+   --------------------------------------------------------------------------- */

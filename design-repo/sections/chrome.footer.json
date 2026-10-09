@@ -1,0 +1,74 @@
+{
+  "id": "chrome.footer",
+  "kind": "section",
+  "name": "Site footer",
+  "category": "chrome",
+  "designSystem": "marketing",
+  "variants": [
+    "home",
+    "site"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "variant": {
+        "enum": [
+          "home",
+          "site"
+        ],
+        "note": "'home' leaves .footer_links-container empty (a 0-height spacer); 'site' renders three ul.footer_link-list columns."
+      },
+      "linkColumns": {
+        "type": "array",
+        "maxItems": 3,
+        "settable": false,
+        "note": "Fixed: column 1 Parents/Sitters/Trust & Safety, column 2 FAQ/Careers/Blog/Contact, column 3 the four social links (all target=_blank). Chrome, not page content."
+      }
+    },
+    "required": [
+      "variant"
+    ]
+  },
+  "constraints": {
+    "mustBeLast": true,
+    "onePerPage": true,
+    "maxPerPage": 1,
+    "fixedCopy": "The left card's heading, body, CTA label, the terms/privacy links and the copyright line are identical on every marketing route. A PageSpec cannot override them.",
+    "leadingEmptyContainer": "The footer renders an extra EMPTY, zero-height div.container immediately before div.container.cc-footer-container, matching the original's DOM. It is structural noise with no content contract and no settable fields, but it is part of the faithful markup \u2014 do not remove it as cleanup."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. CSS hover transitions on .btn (colour trio, 300ms ease.outQuart) are global chrome behaviour, not section motion."
+  },
+  "responsive": {
+    "desktop": "two cards side by side inside .container.cc-footer-container (flex-wrap, space-between, gap 40px). Left card min-width 20rem, right min-width 66.66%.",
+    "le991": "left card min-width 100% -> the two cards wrap to two full-width rows.",
+    "le767": ".footer_row becomes a column with 32px gap and the wordmark gets order:-1, sitting above the terms row. Link rows tighten to 12px gap.",
+    "le479": "left card padding drops to 1.5em; each link list becomes 50% wide."
+  },
+  "assetRoles": [
+    "blob.fill"
+  ],
+  "observedOn": [
+    "/",
+    "/parents",
+    "/sitters",
+    "/trust-safety",
+    "/faq",
+    "/contact",
+    "/careers",
+    "/blog",
+    "/blog-posts/:slug",
+    "/terms-of-use",
+    "/privacy-policy"
+  ],
+  "measuredFrom": "src/components/Footer.jsx:60-65",
+  "notes": [
+    "Two clip-path blobs: footer-shape-left filled olive on the dark card, footer-shape-right filled peach on the white card.",
+    "/log-in renders no footer."
+  ]
+}

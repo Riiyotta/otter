@@ -1,0 +1,97 @@
+{
+  "id": "banner.beta-card",
+  "kind": "section",
+  "name": "Beta announcement card",
+  "category": "banner",
+  "designSystem": "marketing",
+  "variants": [
+    "default"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "eyebrow": {
+        "type": "string",
+        "maxWords": 4,
+        "measuredLongestRealInstance": "\"Now in Beta\" = 3 words",
+        "note": "variant \"tag\" \u2014 celeste pill, rendered uppercase"
+      },
+      "heading": {
+        "type": "string",
+        "maxWords": 8,
+        "measuredLongestRealInstance": "\"Become a founding caregiver\" = 4 words"
+      },
+      "body": {
+        "type": "string",
+        "maxWords": 26,
+        "measuredLongestRealInstance": "17 words measured"
+      },
+      "cta": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxWords": 6,
+            "measuredLongestRealInstance": "\"Create a free profile\" = 4 words"
+          },
+          "href": {
+            "type": "string",
+            "enum": [
+              "https://app.withotter.com/sign-up"
+            ]
+          },
+          "variant": {
+            "const": "cc-white"
+          }
+        },
+        "required": [
+          "label",
+          "href",
+          "variant"
+        ]
+      },
+      "illustration": {
+        "type": "object",
+        "assetRoleEnumRef": "assets/asset-roles.json#/roles",
+        "allowedRoles": [
+          "illustration.brand"
+        ],
+        "note": "Playdate.svg, rendered 291.2x180 from its height=\"180\" attribute"
+      }
+    },
+    "required": [
+      "eyebrow",
+      "heading",
+      "body",
+      "cta",
+      "illustration"
+    ]
+  },
+  "constraints": {
+    "homeRouteOnly": true,
+    "onePerPage": true,
+    "maxPerPage": 1,
+    "mustPrecedeMain": true
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. CSS hover transitions on .btn (colour trio, 300ms ease.outQuart) are global chrome behaviour, not section motion."
+  },
+  "responsive": {
+    "desktop": "two columns in a .row.gap-24: a flex:0 auto illustration column and a flex:1 copy column, both align-self:center. Card 1296x254.2 at 1440.",
+    "le991": "card grows to 284.2px tall as copy wraps.",
+    "le479": "the two columns stack; the copy column takes order:1 so it sits below the illustration. Card padding 32px 32px 32px 24px, gap 16px."
+  },
+  "assetRoles": [
+    "illustration.brand"
+  ],
+  "observedOn": [
+    "/"
+  ],
+  "measuredFrom": "CLONE_SPEC.md:336-352"
+}

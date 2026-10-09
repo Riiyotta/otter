@@ -1,0 +1,222 @@
+{
+  "id": "assets.roles",
+  "version": "1.0.0",
+  "note": "Closed assetRole vocabulary. Every media-bearing field in schema/pagespec.schema.json references this enum; no section exposes a bare 'image'/'src' string.",
+  "generationPolicyEnum": [
+    "may-generate-new",
+    "must-reuse-exact",
+    "must-not-reproduce-real-mark",
+    "must-not-fabricate"
+  ],
+  "generationPolicyMeaning": {
+    "may-generate-new": "An AI generator may synthesise a new asset for this role, provided it respects the role's geometry and the licensing rules below.",
+    "must-reuse-exact": "The generator must reference one of the existing local files listed for this role. It may not synthesise a replacement.",
+    "must-not-reproduce-real-mark": "HARD BAN. This role covers a real third party's or the subject company's registered mark, or a real identifiable person. The generator must not emit the file, a copy, a recreation, or an imitation of it, and the section contract deliberately exposes no field for it.",
+    "must-not-fabricate": "HARD BAN on synthesis. This role covers operative or legally significant content. The generator must not write, paraphrase, summarise or 'restore' it. Only a human content/legal owner may supply it."
+  },
+  "pinnedPolicies": {
+    "note": "These roles are PINNED to a specific policy value, not merely constrained to the enum. verify_all.py enforces each pinned pairing exactly, and schema/tests/adversarial_test.py proves a mutation to a DIFFERENT-BUT-VALID enum member is rejected. Membership-in-a-closed-set is a weaker claim than 'this role must have this value', and these four roles carry real legal weight.",
+    "brand.wordmark": "must-not-reproduce-real-mark",
+    "press.logo": "must-not-reproduce-real-mark",
+    "photo.person": "must-not-reproduce-real-mark",
+    "legal.operativeText": "must-not-fabricate"
+  },
+  "sourceIsARealCompany": {
+    "value": true,
+    "statement": "withotter.com is a real, live company's website. The cloned project contains that company's real proprietary content. Nothing in this design-repo licenses reuse of it.",
+    "mustNeverBeReproducedOrFabricated": [
+      "Real third-party press logos \u2014 the press bar carries actual Forbes, The New York Times, Parents and mom.com marks (public/img/forbes.svg, NYT.svg, parents.svg, mom.svg). A generator must never emit these or imitations of them.",
+      "The Otter wordmark and brand illustrations \u2014 real brand assets.",
+      "Real people's photographs \u2014 several assets are photographs of actual people.",
+      "Operative legal text \u2014 src/data/legal/terms.js and privacy.js hold the site's real legal copy, ported verbatim. This is operative legal text requiring sign-off from whoever owns legal/content before any real deployment. A generator must never fabricate or paraphrase legal clauses."
+    ],
+    "doNotPublish": "This design-repo is not to be made public and nothing in it is to be published."
+  },
+  "roles": {
+    "brand.wordmark": {
+      "generationPolicy": "must-not-reproduce-real-mark",
+      "geometry": "inline SVG, viewBox 0 0 139 48; 128px wide in the nav, 112px at <=479",
+      "files": [
+        "inline SVG in src/components/OtterWordmark.jsx and src/components/auth/AuthWordmark.jsx"
+      ],
+      "exposedAsPageSpecField": false,
+      "reason": "Chrome-owned; the nav and footer always render it. A PageSpec cannot set it."
+    },
+    "press.logo": {
+      "generationPolicy": "must-not-reproduce-real-mark",
+      "geometry": "SVG rendered at 24px tall; intrinsic 120x32 / 188x32 / 238x32 / 96x32",
+      "files": [
+        "public/img/forbes.svg",
+        "public/img/parents.svg",
+        "public/img/NYT.svg",
+        "public/img/mom.svg"
+      ],
+      "exposedAsPageSpecField": false,
+      "reason": "The press-bar section exposes only an eyebrow and a logo COUNT. There is deliberately no field a generator can populate with a mark."
+    },
+    "photo.person": {
+      "generationPolicy": "must-not-reproduce-real-mark",
+      "geometry": "varies; always inside a 1:1 .u-aspect-1x1 with object-fit: contain, or a bare width-limited img",
+      "files": [
+        "public/img/hero1.webp",
+        "public/img/hero2.webp",
+        "public/img/Playing_Colored_01-1.webp",
+        "public/img/Parents.webp",
+        "public/img/Sitters.webp",
+        "public/img/FAQ.webp",
+        "public/img/holding-hands.webp",
+        "public/img/mom-on-phone.webp",
+        "public/img/Sign-up-2.webp",
+        "public/img/sitters-sign-up-2.webp",
+        "public/img/home-tabs-\u2013-book.webp",
+        "public/img/home-tabs-\u2013-heda-out.webp",
+        "public/img/Sitters---Find-&-Book-Jobs.webp",
+        "public/img/Sitters---Care-an-get-paid.webp",
+        "public/img/Contact-Hero.webp",
+        "public/img/Blog-Hero.webp",
+        "public/img/trust-video-poster.jpg",
+        "public/img/kazuend-ejlRp5ktpfY-unsplash.jpeg",
+        "public/img/kelly-sikkema-4l2Ml8-MLUg-unsplash.jpeg",
+        "public/img/kelly-sikkema-Z4GKcFAGck4-unsplash.jpeg",
+        "public/img/lucy-wolski-sljmgxyzmqM-unsplash.jpeg",
+        "public/img/marisa-howenstine-Cq9slNxV8YU-unsplash.jpeg",
+        "public/img/mark-zamora-mFqAeaZgWO8-unsplash.jpg",
+        "public/img/zelle-duda-uld7AdE36z4-unsplash.jpeg",
+        "public/img/shutterstock_1770121187.jpeg"
+      ],
+      "exposedAsPageSpecField": true,
+      "fieldShape": "{ assetRole: \"photo.person\", assetRef: \"<one of the listed local paths>\" }",
+      "aiGuidance": "A PageSpec may REFERENCE one of these existing local files by path. It must not generate a new photograph of a person, and must not describe, caption or re-render an identifiable person. Several of these are photographs of actual people."
+    },
+    "illustration.brand": {
+      "generationPolicy": "must-reuse-exact",
+      "geometry": "flat SVG; Playdate.svg renders 291.2x180 from its height=\"180\" attribute",
+      "files": [
+        "public/img/Playdate.svg",
+        "public/img/illo-care-team.svg",
+        "public/img/illo-children-of-different-ages.svg",
+        "public/img/bullet-organic.svg",
+        "public/img/join-bg.svg",
+        "public/img/up-right.svg"
+      ],
+      "exposedAsPageSpecField": true,
+      "fieldShape": "{ assetRole: \"illustration.brand\", assetRef: \"<one of the listed local paths>\" }",
+      "aiGuidance": "Reuse by path only. These are the real company's brand illustrations.",
+      "preflightNote": "Tailwind preflight is off, so there is no img{height:auto}. An illustration sized by CSS width alone needs an explicit height or its HTML height attribute wins."
+    },
+    "illustration.editorial": {
+      "generationPolicy": "must-reuse-exact",
+      "geometry": "webp, used as the careers image-copy split and the how-it-works illustration",
+      "files": [
+        "public/img/Illo-Sitter-and-Kid.webp",
+        "public/img/Illo-Sitter---Parents.webp"
+      ],
+      "exposedAsPageSpecField": true,
+      "fieldShape": "{ assetRole: \"illustration.editorial\", assetRef: \"<one of the listed local paths>\" }",
+      "aiGuidance": "Reuse by path only."
+    },
+    "icon.feature": {
+      "generationPolicy": "must-reuse-exact",
+      "geometry": "webp; 104px cap on /trust-safety .trust-card_icon, 88px (max-width 5.5rem) on /careers .benefits-icons, 64px at <=767",
+      "files": [
+        "public/img/universal-screening.webp",
+        "public/img/safety.webp",
+        "public/img/payment.webp",
+        "public/img/health.webp",
+        "public/img/healthcare.webp",
+        "public/img/401k.webp",
+        "public/img/exercising-options-1x1.webp",
+        "public/img/flexible-time-off.webp",
+        "public/img/parental-leave.webp",
+        "public/img/dependent-fsa.webp"
+      ],
+      "exposedAsPageSpecField": true,
+      "fieldShape": "{ assetRole: \"icon.feature\", assetRef: \"<one of the listed local paths>\" }",
+      "aiGuidance": "Reuse by path only. payment.webp carries width=\"96\" as an HTML attribute, which is why it renders narrower than the 104px cap \u2014 preflight being off means that attribute wins."
+    },
+    "icon.values": {
+      "generationPolicy": "must-reuse-exact",
+      "geometry": "72x72 inside .icon-wrap-72 (56x56 at <=479)",
+      "files": [
+        "public/img/care-first.webp",
+        "public/img/always-build-trust.webp",
+        "public/img/be-rigorous.webp",
+        "public/img/do-the-right-thing.webp",
+        "public/img/win-some,-learn-some.webp",
+        "public/img/build-for-diversity.webp"
+      ],
+      "exposedAsPageSpecField": true,
+      "fieldShape": "{ assetRole: \"icon.values\", assetRef: \"<one of the listed local paths>\" }",
+      "aiGuidance": "Reuse by path only."
+    },
+    "editorial.cover": {
+      "generationPolicy": "must-reuse-exact",
+      "geometry": "blog card cover, and a forced 1:1 post-header cover with a 32px radius at every breakpoint, object-fit contain",
+      "files": [
+        "public/img/Playing_Colored_01-1.webp",
+        "public/img/Backyard-Games.png",
+        "public/img/blog-cta.webp",
+        "public/img/Screen-Shot-2022-08-31-at-8.34.51-AM.png"
+      ],
+      "exposedAsPageSpecField": true,
+      "fieldShape": "{ assetRole: \"editorial.cover\", assetRef: \"<one of the listed local paths>\" }",
+      "aiGuidance": "The 10 real blog titles, covers and tags are genuine company content. Reuse covers by path; do not synthesise new covers for real article titles.",
+      "provenanceNote": "The article BODIES in src/data/posts.js are original placeholder prose written for the clone, deliberately NOT the original articles. Do not mistake placeholders for source content and do not attempt to 'restore' the originals."
+    },
+    "media.videoPoster": {
+      "generationPolicy": "must-reuse-exact",
+      "geometry": "fills the .u-aspect-9x16 facade box (56.27659574468085% padding-top)",
+      "files": [
+        "public/img/trust-video-poster.jpg"
+      ],
+      "exposedAsPageSpecField": true,
+      "fieldShape": "{ assetRole: \"media.videoPoster\", assetRef: \"public/img/trust-video-poster.jpg\" }",
+      "aiGuidance": "Poster only. The player is a click-to-play facade: a generated instance must not autoplay, must not embed an iframe or <video> on load, and must not issue a third-party request before a user click."
+    },
+    "blob.fill": {
+      "generationPolicy": "may-generate-new",
+      "geometry": "a 1:1 div clipped by one of the 7 closed clip-path ids, filled with a foundation colour; no image file",
+      "files": [],
+      "exposedAsPageSpecField": true,
+      "fieldShape": "{ assetRole: \"blob.fill\", clipId: \"<one of the 7 ids>\", fill: \"<foundation colour token>\", rotate90: <bool> }",
+      "aiGuidance": "This is the one role a generator may freely compose, because it carries no third-party content: pick any of the 7 closed clip ids, any measured foundation fill, and optionally rotate 90deg. It may NOT invent new path data."
+    },
+    "decorative.none": {
+      "generationPolicy": "may-generate-new",
+      "geometry": "n/a",
+      "files": [],
+      "exposedAsPageSpecField": true,
+      "fieldShape": "{ assetRole: \"decorative.none\" }",
+      "aiGuidance": "Explicit 'no asset in this slot'. Several real slots on the original carry alt=\"\" decorative images or nothing at all; this role lets a PageSpec say so instead of inventing one."
+    },
+    "auth.illustration": {
+      "generationPolicy": "must-reuse-exact",
+      "geometry": "hard 400px wide at every width; at 390 it overflows the 326px column to x = -5 and is clipped by overflow-x:hidden \u2014 that is the original's behaviour",
+      "files": [
+        "public/img/illo-children-of-different-ages.svg"
+      ],
+      "exposedAsPageSpecField": true,
+      "fieldShape": "{ assetRole: \"auth.illustration\", assetRef: \"public/img/illo-children-of-different-ages.svg\" }",
+      "aiGuidance": "Reuse by path only. Belongs to the auth design system, not the marketing one."
+    },
+    "legal.operativeText": {
+      "generationPolicy": "must-not-fabricate",
+      "geometry": "n/a \u2014 prose",
+      "files": [
+        "src/data/legal/terms.js",
+        "src/data/legal/privacy.js"
+      ],
+      "exposedAsPageSpecField": false,
+      "reason": "The legal-prose section exposes a documentRef (an enum of the two real documents) and NO body field. A PageSpec cannot carry legal prose, so a generator has nothing to fabricate into.",
+      "measuredSize": "terms: ~56,170 characters of concatenated document strings across 25 top-level sections; privacy: ~23,964 characters across 12. Measured by importing the modules and concatenating every string value, so these figures include structural strings (hrefs, block type tags) and are an upper bound on the body text itself.",
+      "signOffRequired": "Operative legal text. Requires sign-off from whoever owns legal/content before any real deployment."
+    }
+  },
+  "assetInventory": {
+    "localImageFiles": 83,
+    "localFontFiles": 6,
+    "externalAssetRequests": 0,
+    "verification": "grep -rnE 'https?://[^\\\"'\\\" ]*\\.(webp|png|jpe?g|svg|woff2?|mp4)' src/ returns nothing \u2014 re-run and confirmed empty during this build. All 83 images and 6 fonts are served locally.",
+    "measuredFrom": "ASSETS.md:1-20"
+  }
+}

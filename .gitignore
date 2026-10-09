@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.playwright-mcp/
+.DS_Store
+# derived artifact; regenerate from design-repo/ (never commit alongside the live folder)
+design-repo.zip
+*.log

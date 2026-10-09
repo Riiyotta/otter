@@ -1,0 +1,2902 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://design-repo.local/otter/pagespec.schema.json",
+  "title": "Otter PageSpec",
+  "description": "The machine contract for a generated page. Closed template enum, closed section enum, closed assetRole enum, closed motion object, additionalProperties:false everywhere. Structural rules JSON Schema cannot express live in compatibility/graph.json and are enforced by schema/semantic_validate.py \u2014 a PageSpec is only valid if it passes BOTH.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "pageSpecVersion": {
+      "const": "1.0.0"
+    },
+    "route": {
+      "type": "string",
+      "pattern": "^(/|\\*)",
+      "description": "A real route path. /sign-up and /welcome are forbidden \u2014 removed on purpose (NO_REMOVED_ROUTES)."
+    },
+    "template": {
+      "enum": [
+        "audience-landing",
+        "auth-login",
+        "blog-index",
+        "blog-post",
+        "careers",
+        "contact",
+        "faq-categories",
+        "home",
+        "legal-prose",
+        "not-found",
+        "trust-safety"
+      ],
+      "description": "Closed enum of the 11 real page shapes. 'sign-up' and 'welcome' are deliberately absent."
+    },
+    "designSystem": {
+      "enum": [
+        "marketing",
+        "auth"
+      ],
+      "description": "auth is the app host (Vite + React + Mantine), a separate design system from the Webflow marketing site."
+    },
+    "theme": {
+      "enum": [
+        "marketing-light",
+        "auth-light"
+      ],
+      "description": "The site has exactly one theme per design system. There is no dark mode and no theme switcher."
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "section": {
+            "enum": [
+              "auth.login-form",
+              "banner.beta-card",
+              "benefits.card-grid",
+              "blog.post-grid",
+              "blog.post-header",
+              "blog.related-posts",
+              "chrome.footer",
+              "chrome.navbar",
+              "content.image-copy-split",
+              "content.rich-text-body",
+              "content.stub-notice",
+              "conversion.cta-band",
+              "conversion.cta-card",
+              "conversion.join-card",
+              "disclosure.tabs-accordion",
+              "faq.category-empty",
+              "faq.common-questions-empty",
+              "form.contact",
+              "hero.dark-rounded",
+              "hero.light-split",
+              "jobs.listing-rows",
+              "legal.document-prose",
+              "process.numbered-cards",
+              "stats.grid",
+              "testimonials.slider-empty",
+              "trust.press-bar",
+              "trust.video-and-cards",
+              "values.principle-cards"
+            ],
+            "description": "Closed enum of the 28 real section types."
+          },
+          "variant": {
+            "type": "string",
+            "description": "Must be one of the section's declared variants, and must match the template's pinned variant where it pins one."
+          },
+          "content": {
+            "type": "object"
+          },
+          "motion": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "CLOSED to the real, evidence-grounded motion fields actually in use on this site. additionalProperties is false on purpose: leaving it open lets a generated PageSpec smuggle in an invented field and still validate. There is deliberately NO stagger field \u2014 there is no stagger anywhere on the site.",
+            "properties": {
+              "pattern": {
+                "enum": [
+                  "mobileNav.close",
+                  "mobileNav.open",
+                  "navCurrentIcon.reveal",
+                  "none",
+                  "scrollReveal.slideInBottom",
+                  "tabs.accordion",
+                  "tabs.desktopSwitch"
+                ],
+                "description": "Must also be one of the declaring section's own allowedPatterns (MOTION_PATTERN_CLOSED)."
+              },
+              "reducedMotionFallback": {
+                "enum": [
+                  "instant-switch",
+                  "instant-visible",
+                  "none"
+                ],
+                "description": "Required. Must equal the section contract's declared fallback."
+              },
+              "durationMs": {
+                "type": "integer",
+                "enum": [
+                  0,
+                  200,
+                  300,
+                  400,
+                  500,
+                  1000
+                ],
+                "description": "The only durations measured on this site."
+              },
+              "delayMs": {
+                "type": "integer",
+                "enum": [
+                  0,
+                  100,
+                  200
+                ],
+                "description": "The only delays measured on this site."
+              },
+              "easing": {
+                "enum": [
+                  "ease.outQuart",
+                  "ease.plain",
+                  "none"
+                ],
+                "description": "ease.outQuart = cubic-bezier(0.165,0.84,0.44,1). The site uses no other curve."
+              },
+              "triggerOffsetPercentOfViewport": {
+                "type": "integer",
+                "enum": [
+                  20
+                ],
+                "description": "The one measured scroll-reveal trigger offset."
+              },
+              "firesOnce": {
+                "type": "boolean"
+              },
+              "replaysOnSwitch": {
+                "type": "boolean",
+                "description": "true only for the tabs card's 500ms slideInFromBottom, which replays on each switch."
+              },
+              "asymmetricTiming": {
+                "type": "boolean",
+                "description": "true only for the <=991px tabs accordion (100ms delay then 300ms on open, no delay on close)."
+              },
+              "openDelayMs": {
+                "type": "integer",
+                "enum": [
+                  0,
+                  100,
+                  200
+                ]
+              },
+              "closeDelayMs": {
+                "type": "integer",
+                "enum": [
+                  0,
+                  200
+                ]
+              }
+            },
+            "required": [
+              "pattern",
+              "reducedMotionFallback"
+            ]
+          }
+        },
+        "required": [
+          "section",
+          "content",
+          "motion"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "auth.login-form"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "wordmark": {
+                      "const": true,
+                      "note": "centred, from primitive.auth-wordmark"
+                    },
+                    "illustration": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "auth.illustration"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^(public/img/|public/fonts/|src/)",
+                              "description": "A LOCAL repository path. An absolute http(s) URL is forbidden (NO_EXTERNAL_ASSET_REQUESTS)."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
+                        }
+                      ],
+                      "x-allowedRoles": [
+                        "auth.illustration"
+                      ],
+                      "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)",
+                      "description": "hard 400px wide at every width; overflows and is clipped at 390 \u2014 the original's behaviour"
+                    },
+                    "title": {
+                      "type": "string",
+                      "maxWords": 4,
+                      "measuredLongestRealInstance": "\"Welcome back!\" = 2 words",
+                      "note": "an h3 at 20px/24px weight 600, left-aligned \u2014 NOT an h1"
+                    },
+                    "field": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "label": {
+                          "const": "Phone Number",
+                          "note": "capital N here; /sign-up says \"Phone number\". A real cross-screen copy inconsistency in the original, preserved."
+                        },
+                        "type": {
+                          "const": "tel"
+                        },
+                        "name": {
+                          "const": "phoneNumber"
+                        },
+                        "autocomplete": {
+                          "const": "off"
+                        }
+                      },
+                      "required": [
+                        "label",
+                        "type",
+                        "name",
+                        "autocomplete"
+                      ]
+                    },
+                    "submit": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "label": {
+                          "const": "Continue"
+                        },
+                        "disabled": {
+                          "const": true
+                        },
+                        "inert": {
+                          "const": true,
+                          "note": "HARD CONSTRAINT, LOCKED TRUE. See constraints.inertForm."
+                        }
+                      },
+                      "required": [
+                        "label",
+                        "disabled",
+                        "inert"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "wordmark",
+                    "illustration",
+                    "title",
+                    "field",
+                    "submit"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "banner.beta-card"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "eyebrow": {
+                      "type": "string",
+                      "maxWords": 4,
+                      "measuredLongestRealInstance": "\"Now in Beta\" = 3 words",
+                      "note": "variant \"tag\" \u2014 celeste pill, rendered uppercase"
+                    },
+                    "heading": {
+                      "type": "string",
+                      "maxWords": 8,
+                      "measuredLongestRealInstance": "\"Become a founding caregiver\" = 4 words"
+                    },
+                    "body": {
+                      "type": "string",
+                      "maxWords": 26,
+                      "measuredLongestRealInstance": "17 words measured"
+                    },
+                    "cta": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "label": {
+                          "type": "string",
+                          "maxWords": 6,
+                          "measuredLongestRealInstance": "\"Create a free profile\" = 4 words"
+                        },
+                        "href": {
+                          "type": "string",
+                          "enum": [
+                            "https://app.withotter.com/sign-up"
+                          ]
+                        },
+                        "variant": {
+                          "const": "cc-white"
+                        }
+                      },
+                      "required": [
+                        "label",
+                        "href",
+                        "variant"
+                      ]
+                    },
+                    "illustration": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "illustration.brand"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^(public/img/|public/fonts/|src/)",
+                              "description": "A LOCAL repository path. An absolute http(s) URL is forbidden (NO_EXTERNAL_ASSET_REQUESTS)."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
+                        }
+                      ],
+                      "x-allowedRoles": [
+                        "illustration.brand"
+                      ],
+                      "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)",
+                      "description": "Playdate.svg, rendered 291.2x180 from its height=\"180\" attribute"
+                    }
+                  },
+                  "required": [
+                    "eyebrow",
+                    "heading",
+                    "body",
+                    "cta",
+                    "illustration"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "benefits.card-grid"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "eyebrow": {
+                      "type": "string",
+                      "maxWords": 6,
+                      "measuredLongestRealInstance": "\"Taking Care of Our Team\" = 5 words"
+                    },
+                    "heading": {
+                      "type": "string",
+                      "maxWords": 6,
+                      "measuredLongestRealInstance": "\"Benefits\" = 1 word"
+                    },
+                    "lede": {
+                      "type": "string",
+                      "maxWords": 24,
+                      "measuredLongestRealInstance": "16 words measured"
+                    },
+                    "cards": {
+                      "type": "array",
+                      "minItems": 6,
+                      "maxItems": 6,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "heading": {
+                            "type": "string",
+                            "maxWords": 10,
+                            "measuredLongestRealInstance": "\"7 years to exercise your options\" = 6 words"
+                          },
+                          "body": {
+                            "type": "string",
+                            "maxWords": 40,
+                            "measuredLongestRealInstance": "28 words measured"
+                          },
+                          "icon": {
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "icon.feature"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^(public/img/|public/fonts/|src/)",
+                                    "description": "A LOCAL repository path. An absolute http(s) URL is forbidden (NO_EXTERNAL_ASSET_REQUESTS)."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
+                              }
+                            ],
+                            "x-allowedRoles": [
+                              "icon.feature"
+                            ],
+                            "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
+                          }
+                        },
+                        "required": [
+                          "heading",
+                          "body",
+                          "icon"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "eyebrow",
+                    "heading",
+                    "lede",
+                    "cards"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "blog.post-grid"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "srHeading": {
+                      "const": "Blog posts",
+                      "note": "h2.u-sr-only"
+                    },
+                    "featured": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "slug": {
+                          "type": "string"
+                        },
+                        "title": {
+                          "type": "string",
+                          "maxWords": 12,
+                          "measuredLongestRealInstance": "\"How to Set Your Sitter Up for Success\" = 8 words"
+                        },
+                        "cover": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "assetRole": {
+                                  "enum": [
+                                    "editorial.cover",
+                                    "photo.person"
+                                  ]
+                                },
+                                "assetRef": {
+                                  "type": "string",
+                                  "pattern": "^(public/img/|public/fonts/|src/)",
+                                  "description": "A LOCAL repository path. An absolute http(s) URL is forbidden (NO_EXTERNAL_ASSET_REQUESTS)."
+                                }
+                              },
+                              "required": [
+                                "assetRole",
+                                "assetRef"
+                              ]
+                            }
+                          ],
+                          "x-allowedRoles": [
+                            "editorial.cover",
+                            "photo.person"
+                          ],
+                          "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
+                        },
+                        "tags": {
+                          "type": "array",
+                          "minItems": 1,
+                          "maxItems": 3,
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "name": {
+                                "type": "string",
+                                "maxWords": 3,
+                                "measuredLongestRealInstance": "\"Otter news\" = 2 words"
+                              },
+                              "color": {
+                                "enum": [
+                                  "midnight",
+                                  "sandstone",
+                                  "coral",
+                                  "celeste",
+                                  "peach",
+                                  "olive"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "name",
+                              "color"
+                            ]
+                          }
+                        },
+                        "featured": {
+                          "type": "boolean",
+                          "default": false,
+                          "note": "the featured card shows a single static celeste 'Featured' pill INSTEAD of the CMS tags"
+                        }
+                      },
+                      "required": [
+                        "slug",
+                        "title",
+                        "cover",
+                        "tags"
+                      ],
+                      "forbiddenFields": [
+                        "author",
+                        "date",
+                        "publishedAt",
+                        "readTime",
+                        "excerpt",
+                        "deck",
+                        "shareLinks",
+                        "breadcrumb"
+                      ],
+                      "forbiddenFieldsReason": "None of this data exists on the original. There is not a single <time> element on any blog page. Do not add fields the original lacks."
+                    },
+                    "posts": {
+                      "type": "array",
+                      "minItems": 1,
+                      "maxItems": 9,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "slug": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string",
+                            "maxWords": 12,
+                            "measuredLongestRealInstance": "\"How to Set Your Sitter Up for Success\" = 8 words"
+                          },
+                          "cover": {
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "editorial.cover",
+                                      "photo.person"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^(public/img/|public/fonts/|src/)",
+                                    "description": "A LOCAL repository path. An absolute http(s) URL is forbidden (NO_EXTERNAL_ASSET_REQUESTS)."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
+                              }
+                            ],
+                            "x-allowedRoles": [
+                              "editorial.cover",
+                              "photo.person"
+                            ],
+                            "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
+                          },
+                          "tags": {
+                            "type": "array",
+                            "minItems": 1,
+                            "maxItems": 3,
+                            "items": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "maxWords": 3,
+                                  "measuredLongestRealInstance": "\"Otter news\" = 2 words"
+                                },
+                                "color": {
+                                  "enum": [
+                                    "midnight",
+                                    "sandstone",
+                                    "coral",
+                                    "celeste",
+                                    "peach",
+                                    "olive"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "color"
+                              ]
+                            }
+                          },
+                          "featured": {
+                            "type": "boolean",
+                            "default": false,
+                            "note": "the featured card shows a single static celeste 'Featured' pill INSTEAD of the CMS tags"
+                          }
+                        },
+                        "required": [
+                          "slug",
+                          "title",
+                          "cover",
+                          "tags"
+                        ],
+                        "forbiddenFields": [
+                          "author",
+                          "date",
+                          "publishedAt",
+                          "readTime",
+                          "excerpt",
+                          "deck",
+                          "shareLinks",
+                          "breadcrumb"
+                        ],
+                        "forbiddenFieldsReason": "None of this data exists on the original. There is not a single <time> element on any blog page. Do not add fields the original lacks."
+                      },
+                      "note": "9 standard cards on page 1. The featured post is NOT duplicated here, so page 1 is 1 + 9 = all 10 real posts."
+                    },
+                    "loadMore": {
+                      "const": true,
+                      "note": "A single 'Load more' pill, rendered for visual fidelity and DELIBERATELY INERT. The original is Finsweet CMS Load v1 pointed at page 2; this clone only holds the 10 real page-1 posts, so there is nothing to load and no extra posts are fabricated to give it something to reveal. It is an <a> with no href, role=\"button\", aria-disabled=\"true\" and a preventDefault click, inside a div[role=navigation][aria-label=\"List\"]. Its CSS pins cursor:pointer so it looks identical to the original's real anchor while still doing nothing. A generated instance must not wire it to real pagination. There is no category filter, no tab bar and no search on this page.",
+                      "settable": false
+                    }
+                  },
+                  "required": [
+                    "srHeading",
+                    "featured",
+                    "posts",
+                    "loadMore"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "blog.post-header"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "maxWords": 12,
+                      "measuredLongestRealInstance": "\"How to Set Your Sitter Up for Success\" = 8 words",
+                      "note": "h1.h2.u-mb-0 \u2014 takes .h2's 4.5rem/1.1 scale but keeps h1's Reckless Neue family and -.01em tracking, and .u-mb-0 drops it to weight 400. Net: Reckless Neue 400, not 900. Intentional."
+                    },
+                    "tags": {
+                      "type": "array",
+                      "minItems": 1,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "maxWords": 3,
+                            "measuredLongestRealInstance": "\"Otter news\" = 2 words"
+                          },
+                          "color": {
+                            "enum": [
+                              "midnight",
+                              "sandstone",
+                              "coral",
+                              "celeste",
+                              "peach",
+                              "olive"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "color"
+                        ]
+                      }
+                    },
+                    "cover": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "editorial.cover",
+                                "photo.person"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^(public/img/|public/fonts/|src/)",
+                              "description": "A LOCAL repository path. An absolute http(s) URL is forbidden (NO_EXTERNAL_ASSET_REQUESTS)."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
+                        }
+                      ],
+                      "x-allowedRoles": [
+                        "editorial.cover",
+                        "photo.person"
+                      ],
+                      "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)",
+                      "description": "forced 1:1 square, 32px radius at EVERY breakpoint, letterboxed by object-fit: contain. alt=\"\" on the original. This is a SEPARATE CMS field from the card cover; 9 of the 10 real posts serve the same file for both, and exactly one differs."
+                    }
+                  },
+                  "required": [
+                    "title",
+                    "tags",
+                    "cover"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "blog.related-posts"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "heading": {
+                      "const": "Similar articles"
+                    },
+                    "posts": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "slug": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string",
+                            "maxWords": 12,
+                            "measuredLongestRealInstance": "\"How to Set Your Sitter Up for Success\" = 8 words"
+                          },
+                          "cover": {
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "editorial.cover",
+                                      "photo.person"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^(public/img/|public/fonts/|src/)",
+                                    "description": "A LOCAL repository path. An absolute http(s) URL is forbidden (NO_EXTERNAL_ASSET_REQUESTS)."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
+                              }
+                            ],
+                            "x-allowedRoles": [
+                              "editorial.cover",
+                              "photo.person"
+                            ],
+                            "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
+                          },
+                          "tags": {
+                            "type": "array",
+                            "minItems": 1,
+                            "maxItems": 3,
+                            "items": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "maxWords": 3,
+                                  "measuredLongestRealInstance": "\"Otter news\" = 2 words"
+                                },
+                                "color": {
+                                  "enum": [
+                                    "midnight",
+                                    "sandstone",
+                                    "coral",
+                                    "celeste",
+                                    "peach",
+                                    "olive"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "color"
+                              ]
+                            }
+                          },
+                          "featured": {
+                            "type": "boolean",
+                            "default": false,
+                            "note": "the featured card shows a single static celeste 'Featured' pill INSTEAD of the CMS tags"
+                          }
+                        },
+                        "required": [
+                          "slug",
+                          "title",
+                          "cover",
+                          "tags"
+                        ],
+                        "forbiddenFields": [
+                          "author",
+                          "date",
+                          "publishedAt",
+                          "readTime",
+                          "excerpt",
+                          "deck",
+                          "shareLinks",
+                          "breadcrumb"
+                        ],
+                        "forbiddenFieldsReason": "None of this data exists on the original. There is not a single <time> element on any blog page. Do not add fields the original lacks."
+                      }
+                    }
+                  },
+                  "required": [
+                    "heading",
+                    "posts"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "chrome.footer"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "variant": {
+                      "enum": [
+                        "home",
+                        "site"
+                      ],
+                      "note": "'home' leaves .footer_links-container empty (a 0-height spacer); 'site' renders three ul.footer_link-list columns."
+                    },
+                    "linkColumns": {
+                      "type": "array",
+                      "maxItems": 3,
+                      "settable": false,
+                      "note": "Fixed: column 1 Parents/Sitters/Trust & Safety, column 2 FAQ/Careers/Blog/Contact, column 3 the four social links (all target=_blank). Chrome, not page content."
+                    }
+                  },
+                  "required": [
+                    "variant"
+                  ]
+                },
+                "variant": {
+                  "enum": [
+                    "home",
+                    "site"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "chrome.navbar"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "variant": {
+                      "enum": [
+                        "home",
+                        "site"
+                      ],
+                      "note": "'home' ships EMPTY nav link containers (homepage only); 'site' populates the four content links."
+                    },
+                    "contentLinks": {
+                      "type": "array",
+                      "maxItems": 4,
+                      "note": "Fixed on every 'site' route: Parents, Sitters, Trust & Safety, Blog. A PageSpec cannot change this set \u2014 it is chrome, not page content.",
+                      "settable": false
+                    }
+                  },
+                  "required": [
+                    "variant"
+                  ]
+                },
+                "variant": {
+                  "enum": [
+                    "home",
+                    "site"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "content.image-copy-split"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "heading": {
+                      "type": "string",
+                      "maxWords": 10,
+                      "measuredLongestRealInstance": "\"Kidcare that fills the gap\" = 5 words"
+                    },
+                    "body": {
+                      "type": "string",
+                      "maxWords": 40,
+                      "measuredLongestRealInstance": "28 words measured"
+                    },
+                    "image": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "illustration.editorial"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^(public/img/|public/fonts/|src/)",
+                              "description": "A LOCAL repository path. An absolute http(s) URL is forbidden (NO_EXTERNAL_ASSET_REQUESTS)."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
+                        }
+                      ],
+                      "x-allowedRoles": [
+                        "illustration.editorial"
+                      ],
+                      "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
+                    }
+                  },
+                  "required": [
+                    "heading",
+                    "body",
+                    "image"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "content.rich-text-body"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "blocks": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "type": {
+                                "const": "p"
+                              },
+                              "text": {
+                                "type": "string",
+                                "maxWords": 120
+                              }
+                            },
+                            "required": [
+                              "type",
+                              "text"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "type": {
+                                "const": "h3"
+                              },
+                              "text": {
+                                "type": "string",
+                                "maxWords": 14
+                              }
+                            },
+                            "required": [
+                              "type",
+                              "text"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "type": {
+                                "const": "ul"
+                              },
+                              "items": {
+                                "type": "array",
+                                "minItems": 1,
+                                "items": {
+                                  "type": "string",
+                                  "maxWords": 40
+                                }
+                              }
+                            },
+                            "required": [
+                              "type",
+                              "items"
+                            ]
+                          }
+                        ],
+                        "note": "Three independent block schemas, each fully closed. Using oneOf rather than a shared base + patches, because draft-07's additionalProperties:false on a shared base cannot see properties a sibling allOf branch adds."
+                      }
+                    }
+                  },
+                  "required": [
+                    "blocks"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "content.stub-notice"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "maxWords": 8,
+                      "measuredLongestRealInstance": "\"NotFound - not built yet.\" = 4 words"
+                    }
+                  },
+                  "required": [
+                    "text"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "conversion.cta-band"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "heading": {
+                      "type": "string",
+                      "maxWords": 14,
+                      "measuredLongestRealInstance": "measured on /blog"
+                    },
+                    "cta": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "label": {
+                          "type": "string",
+                          "maxWords": 5,
+                          "measuredLongestRealInstance": "\"Get started\" = 2 words"
+                        },
+                        "href": {
+                          "enum": [
+                            "#"
+                          ],
+                          "note": "The real href on the original is the literal '#' -- a DEAD LINK, kept as-is rather than repaired, because guessing its intended destination would be inventing content. Do NOT substitute an app-host URL here. Measured in src/components/blog/CtaBand.jsx:8-19."
+                        },
+                        "variant": {
+                          "enum": [
+                            "dark",
+                            "cc-white",
+                            "cc-light"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "label",
+                        "href",
+                        "variant"
+                      ]
+                    },
+                    "image": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "editorial.cover",
+                                "photo.person"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^(public/img/|public/fonts/|src/)",
+                              "description": "A LOCAL repository path. An absolute http(s) URL is forbidden (NO_EXTERNAL_ASSET_REQUESTS)."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "const": "decorative.none"
+                            }
+                          },
+                          "required": [
+                            "assetRole"
+                          ]
+                        }
+                      ],
+                      "x-allowedRoles": [
+                        "editorial.cover",
+                        "photo.person",
+                        "decorative.none"
+                      ],
+                      "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
+                    }
+                  },
+                  "required": [
+                    "heading",
+                    "cta",
+                    "image"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "conversion.cta-card"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "variant": {
+                      "enum": [
+                        "narrow",
+                        "wide"
+                      ],
+                      "note": "narrow = /parents, wrapped in section.section.u-p-0.u-mb-3 (zero padding, 48px bottom margin). wide = /sitters, a plain section.section with .cc-wide-cta on the inner container. A real structural difference between two otherwise identical templates."
+                    },
+                    "heading": {
+                      "type": "string",
+                      "maxWords": 14,
+                      "measuredLongestRealInstance": "\"Experienced kidcare is right around the corner.\" = 7 words"
+                    },
+                    "cta": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "label": {
+                          "type": "string",
+                          "maxWords": 5,
+                          "measuredLongestRealInstance": "\"Book kidcare\" = 2 words"
+                        },
+                        "href": {
+                          "type": "string",
+                          "enum": [
+                            "https://app.withotter.com/sign-up/welcome"
+                          ]
+                        },
+                        "variant": {
+                          "const": "dark"
+                        }
+                      },
+                      "required": [
+                        "label",
+                        "href",
+                        "variant"
+                      ]
+                    },
+                    "image": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "photo.person"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^(public/img/|public/fonts/|src/)",
+                              "description": "A LOCAL repository path. An absolute http(s) URL is forbidden (NO_EXTERNAL_ASSET_REQUESTS)."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
+                        }
+                      ],
+                      "x-allowedRoles": [
+                        "photo.person"
+                      ],
+                      "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
+                    },
+                    "blob": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "clipId": {
+                          "enum": [
+                            "footer-shape-right"
+                          ]
+                        },
+                        "fill": {
+                          "enum": [
+                            "color.peach",
+                            "color.celeste"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "clipId",
+                        "fill"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "variant",
+                    "heading",
+                    "cta",
+                    "image",
+                    "blob"
+                  ]
+                },
+                "variant": {
+                  "enum": [
+                    "narrow",
+                    "wide"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "conversion.join-card"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "heading": {
+                      "type": "string",
+                      "maxWords": 10,
+                      "measuredLongestRealInstance": "\"We want to help you grow\" = 6 words"
+                    },
+                    "body": {
+                      "type": "string",
+                      "maxWords": 20,
+                      "measuredLongestRealInstance": "10 words measured"
+                    },
+                    "cta": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "label": {
+                          "type": "string",
+                          "maxWords": 4,
+                          "measuredLongestRealInstance": "\"Join Otter\" = 2 words"
+                        },
+                        "href": {
+                          "type": "string",
+                          "enum": [
+                            "https://app.withotter.com/sign-up"
+                          ]
+                        },
+                        "variant": {
+                          "const": "button-primary"
+                        }
+                      },
+                      "required": [
+                        "label",
+                        "href",
+                        "variant"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "heading",
+                    "body",
+                    "cta"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "disclosure.tabs-accordion"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "eyebrow": {
+                      "type": "string",
+                      "maxWords": 4,
+                      "measuredLongestRealInstance": "\"how it works\" = 3 words"
+                    },
+                    "heading": {
+                      "type": "string",
+                      "maxWords": 14,
+                      "measuredLongestRealInstance": "\"We help families find reliable, flexible kidcare\" = 7 words"
+                    },
+                    "lede": {
+                      "type": "string",
+                      "maxWords": 28,
+                      "measuredLongestRealInstance": "20 words measured on /sitters"
+                    },
+                    "items": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "key": {
+                            "type": "string",
+                            "maxWords": 1
+                          },
+                          "label": {
+                            "type": "string",
+                            "maxWords": 5,
+                            "measuredLongestRealInstance": "\"Give care & get paid\" = 5 words",
+                            "note": "Some labels carry a non-breaking space before the final word, as in the source."
+                          },
+                          "body": {
+                            "type": "string",
+                            "maxWords": 36,
+                            "measuredLongestRealInstance": "25 words measured"
+                          },
+                          "media": {
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "photo.person"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^(public/img/|public/fonts/|src/)",
+                                    "description": "A LOCAL repository path. An absolute http(s) URL is forbidden (NO_EXTERNAL_ASSET_REQUESTS)."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
+                              }
+                            ],
+                            "x-allowedRoles": [
+                              "photo.person"
+                            ],
+                            "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
+                          }
+                        },
+                        "required": [
+                          "key",
+                          "label",
+                          "body",
+                          "media"
+                        ]
+                      },
+                      "note": "Exactly 3 on both observed routes."
+                    }
+                  },
+                  "required": [
+                    "eyebrow",
+                    "heading",
+                    "lede",
+                    "items"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "faq.category-empty"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "heading": {
+                      "type": "string",
+                      "maxWords": 6,
+                      "measuredLongestRealInstance": "\"For parents\" = 2 words"
+                    },
+                    "emptyState": {
+                      "const": true,
+                      "note": "LOCKED TRUE. Both CMS collections on /faq are genuinely empty on the original: the server HTML ships no item template at all, only Webflow's .w-dyn-empty placeholder. So /faq genuinely has NO FAQ content and NO accordion is rendered on it."
+                    }
+                  },
+                  "required": [
+                    "heading",
+                    "emptyState"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "faq.common-questions-empty"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "heading": {
+                      "type": "string",
+                      "maxWords": 8,
+                      "measuredLongestRealInstance": "\"Common questions\" = 2 words"
+                    },
+                    "emptyState": {
+                      "const": true,
+                      "note": "LOCKED TRUE for the same reason as testimonials.slider-empty. No questions array exists."
+                    }
+                  },
+                  "required": [
+                    "heading",
+                    "emptyState"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "form.contact"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "srHeading": {
+                      "const": "Form",
+                      "note": "h2.u-sr-only \u2014 visually hidden, keep for a11y"
+                    },
+                    "fields": {
+                      "type": "array",
+                      "minItems": 5,
+                      "maxItems": 5,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "kind": {
+                            "enum": [
+                              "text",
+                              "email",
+                              "tel",
+                              "textarea"
+                            ]
+                          },
+                          "label": {
+                            "type": "string",
+                            "maxWords": 4,
+                            "measuredLongestRealInstance": "\"Phone number\" = 2 words"
+                          },
+                          "required": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "kind",
+                          "label",
+                          "required"
+                        ]
+                      }
+                    },
+                    "requiredNote": {
+                      "const": "*Required"
+                    },
+                    "successBlock": {
+                      "const": true,
+                      "note": "the custom .form-success / .w-form-done block, hidden by default"
+                    },
+                    "errorBlock": {
+                      "const": true,
+                      "note": "the .form-error / .w-form-fail block, ported and kept in the DOM but hidden by default"
+                    },
+                    "contactBlocks": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "heading": {
+                            "type": "string",
+                            "maxWords": 4,
+                            "measuredLongestRealInstance": "\"Press\" = 1 word"
+                          },
+                          "mailto": {
+                            "type": "string",
+                            "pattern": "^mailto:"
+                          }
+                        },
+                        "required": [
+                          "heading",
+                          "mailto"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "srHeading",
+                    "fields",
+                    "requiredNote",
+                    "successBlock",
+                    "errorBlock",
+                    "contactBlocks"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "hero.dark-rounded"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "heading": {
+                      "type": "string",
+                      "maxWords": 12,
+                      "measuredLongestRealInstance": "\"Build a care career that cares about you\" = 8 words"
+                    },
+                    "lede": {
+                      "type": "string",
+                      "maxWords": 18,
+                      "measuredLongestRealInstance": "\"We want to get you the job and the pay you deserve.\" = 12 words"
+                    },
+                    "cta": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "label": {
+                          "type": "string",
+                          "maxWords": 6,
+                          "measuredLongestRealInstance": "\"Create a free profile\" = 4 words"
+                        },
+                        "href": {
+                          "type": "string",
+                          "enum": [
+                            "https://app.withotter.com/sign-up"
+                          ]
+                        },
+                        "variant": {
+                          "const": "cc-light"
+                        }
+                      },
+                      "required": [
+                        "label",
+                        "href",
+                        "variant"
+                      ]
+                    },
+                    "stones": {
+                      "type": "array",
+                      "minItems": 5,
+                      "maxItems": 5,
+                      "note": "Exactly 5 blobs, in fixed slots: top-left (peach + photo), middle-left (olive, flat), bottom-left (photo), top-right (celeste, flat), bottom-right (photo). Slot geometry is CSS-owned; a PageSpec may only choose fill and photo per slot.",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "slot": {
+                            "enum": [
+                              "top-left",
+                              "middle-left",
+                              "bottom-left",
+                              "top-right",
+                              "bottom-right"
+                            ]
+                          },
+                          "fill": {
+                            "enum": [
+                              "color.peach",
+                              "color.celeste",
+                              "color.olive",
+                              "color.coral",
+                              "color.sandstone",
+                              "none"
+                            ]
+                          },
+                          "media": {
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "photo.person"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^(public/img/|public/fonts/|src/)",
+                                    "description": "A LOCAL repository path. An absolute http(s) URL is forbidden (NO_EXTERNAL_ASSET_REQUESTS)."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "const": "decorative.none"
+                                  }
+                                },
+                                "required": [
+                                  "assetRole"
+                                ]
+                              }
+                            ],
+                            "x-allowedRoles": [
+                              "photo.person",
+                              "decorative.none"
+                            ],
+                            "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
+                          }
+                        },
+                        "required": [
+                          "slot",
+                          "fill",
+                          "media"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "heading",
+                    "lede",
+                    "cta",
+                    "stones"
+                  ]
+                },
+                "variant": {
+                  "enum": [
+                    "home"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "hero.light-split"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "variant": {
+                      "enum": [
+                        "pst-stones",
+                        "shape-stack",
+                        "image-square",
+                        "bare-image"
+                      ],
+                      "note": "pst-stones = two sibling .shape-contain blobs (/parents, /sitters, /trust-safety). shape-stack = .header-shapes-contain with cc-sitters-top + cc-sitters-bottom (/faq, /careers). image-square = a 1:1 .u-img-cover photo (/contact). bare-image = an unwrapped width-limited img with the section's padding zeroed by .u-p-0 (/blog)."
+                    },
+                    "heading": {
+                      "type": "string",
+                      "maxWords": 12,
+                      "measuredLongestRealInstance": "\"Making the impossible things about kidcare possible\" = 7 words"
+                    },
+                    "headingWeightQuirk": {
+                      "type": "boolean",
+                      "default": false,
+                      "note": "true when the h1 carries .u-mb-0, which also declares font-weight:400 \u2014 so the h1 computes Reckless Neue 400 while only the 900 Heavy file is hosted and the browser synthesises a lighter face. Observed true on /sitters, /careers, /contact and /blog; false on /trust-safety, /faq and /parents. INTENTIONAL \u2014 this is the original's correct appearance."
+                    },
+                    "lede": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "string",
+                          "maxWords": 30,
+                          "measuredLongestRealInstance": "24 words measured on /parents"
+                        }
+                      ],
+                      "note": "Absent on /faq, which has a heading only."
+                    },
+                    "ledeClass": {
+                      "enum": [
+                        "paragraph-1-25",
+                        "paragraph-1-5",
+                        "none"
+                      ],
+                      "note": "/trust-safety uses .paragraph-1-5, which is text-align:center with margin-bottom:24px even inside this left-aligned hero. Reproduced as measured."
+                    },
+                    "ctas": {
+                      "type": "array",
+                      "minItems": 0,
+                      "maxItems": 2,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "label": {
+                            "type": "string",
+                            "maxWords": 6,
+                            "measuredLongestRealInstance": "\"Become a caregiver\" = 3 words"
+                          },
+                          "href": {
+                            "type": "string",
+                            "enum": [
+                              "https://app.withotter.com/sign-up/welcome",
+                              "#jobs"
+                            ],
+                            "note": "Only two CTA targets are observed on light heroes: the app-host welcome path (subpages use /sign-up/welcome, NOT the bare /sign-up the homepage uses) and the /careers same-page #jobs anchor."
+                          },
+                          "variant": {
+                            "enum": [
+                              "dark",
+                              "cc-light"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "label",
+                          "href",
+                          "variant"
+                        ]
+                      },
+                      "note": "0 on /faq and /blog, 1 on /parents, /sitters and /careers, 2 on /trust-safety (wrapped in .buttons-wrapper)."
+                    },
+                    "shapes": {
+                      "type": "array",
+                      "minItems": 0,
+                      "maxItems": 2,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "clipId": {
+                            "enum": [
+                              "stone-hero_top-right",
+                              "stone-hero_bottom-right",
+                              "stone-hero_top-left",
+                              "stone-hero_middle-left",
+                              "stone-hero_bottom-left",
+                              "footer-shape-left",
+                              "footer-shape-right"
+                            ]
+                          },
+                          "fill": {
+                            "enum": [
+                              "color.peach",
+                              "color.celeste",
+                              "color.olive",
+                              "color.coral",
+                              "color.sandstone",
+                              "none"
+                            ]
+                          },
+                          "rotate90": {
+                            "type": "boolean",
+                            "default": false
+                          },
+                          "media": {
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "photo.person"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^(public/img/|public/fonts/|src/)",
+                                    "description": "A LOCAL repository path. An absolute http(s) URL is forbidden (NO_EXTERNAL_ASSET_REQUESTS)."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "const": "decorative.none"
+                                  }
+                                },
+                                "required": [
+                                  "assetRole"
+                                ]
+                              }
+                            ],
+                            "x-allowedRoles": [
+                              "photo.person",
+                              "decorative.none"
+                            ],
+                            "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
+                          }
+                        },
+                        "required": [
+                          "clipId",
+                          "fill",
+                          "media"
+                        ]
+                      }
+                    },
+                    "heroImage": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "assetRole": {
+                                  "enum": [
+                                    "photo.person"
+                                  ]
+                                },
+                                "assetRef": {
+                                  "type": "string",
+                                  "pattern": "^(public/img/|public/fonts/|src/)",
+                                  "description": "A LOCAL repository path. An absolute http(s) URL is forbidden (NO_EXTERNAL_ASSET_REQUESTS)."
+                                }
+                              },
+                              "required": [
+                                "assetRole",
+                                "assetRef"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "assetRole": {
+                                  "const": "decorative.none"
+                                }
+                              },
+                              "required": [
+                                "assetRole"
+                              ]
+                            }
+                          ],
+                          "x-allowedRoles": [
+                            "photo.person",
+                            "decorative.none"
+                          ],
+                          "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
+                        }
+                      ],
+                      "note": "Only for the image-square and bare-image variants. /contact's hero image is display:none at <=767 via .col-sm-hide, so it is absent at 390."
+                    }
+                  },
+                  "required": [
+                    "variant",
+                    "heading",
+                    "ctas",
+                    "shapes"
+                  ]
+                },
+                "variant": {
+                  "enum": [
+                    "pst-stones",
+                    "shape-stack",
+                    "image-square",
+                    "bare-image"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "jobs.listing-rows"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "anchorId": {
+                      "const": "jobs",
+                      "note": "the hero CTA is a plain native #jobs jump \u2014 no smooth-scroll JS is attached"
+                    },
+                    "eyebrow": {
+                      "type": "string",
+                      "maxWords": 6,
+                      "measuredLongestRealInstance": "\"join the team\" = 3 words"
+                    },
+                    "heading": {
+                      "type": "string",
+                      "maxWords": 6,
+                      "measuredLongestRealInstance": "\"Current Positions\" = 2 words"
+                    },
+                    "lede": {
+                      "type": "string",
+                      "maxWords": 32,
+                      "measuredLongestRealInstance": "24 words measured"
+                    },
+                    "rows": {
+                      "type": "array",
+                      "minItems": 1,
+                      "maxItems": 8,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "title": {
+                            "type": "string",
+                            "maxWords": 8,
+                            "measuredLongestRealInstance": "\"General Interest\" = 2 words"
+                          },
+                          "location": {
+                            "type": "string",
+                            "maxWords": 4,
+                            "measuredLongestRealInstance": "\"San Francisco\" = 2 words"
+                          },
+                          "href": {
+                            "type": "string",
+                            "pattern": "^https://boards\\.greenhouse\\.io/",
+                            "note": "The three real rows link to the company's Greenhouse board. This is one of the few intentional outbound links on the site; rel=\"noopener noreferrer\" and target=_blank are required."
+                          }
+                        },
+                        "required": [
+                          "title",
+                          "location",
+                          "href"
+                        ]
+                      },
+                      "note": "3 rows on the live original. No department grouping, no ATS iframe and no empty state \u2014 a flat Webflow collection list."
+                    }
+                  },
+                  "required": [
+                    "anchorId",
+                    "eyebrow",
+                    "heading",
+                    "lede",
+                    "rows"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "legal.document-prose"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "documentRef": {
+                      "enum": [
+                        "terms-of-use",
+                        "privacy-policy"
+                      ],
+                      "note": "An ENUM of the two real documents, not a body field. A PageSpec can only point at an existing signed-off document; it cannot carry legal prose."
+                    },
+                    "title": {
+                      "enum": [
+                        "Terms of use",
+                        "Privacy Policy"
+                      ]
+                    },
+                    "sectionCount": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 40,
+                      "note": "terms-of-use has 25 top-level sections, privacy-policy has 12. Recorded for structural validation only."
+                    }
+                  },
+                  "required": [
+                    "documentRef",
+                    "title",
+                    "sectionCount"
+                  ]
+                },
+                "variant": {
+                  "enum": [
+                    "terms",
+                    "privacy"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "process.numbered-cards"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "eyebrow": {
+                      "type": "string",
+                      "maxWords": 4,
+                      "measuredLongestRealInstance": "\"how it works\" = 3 words"
+                    },
+                    "heading": {
+                      "type": "string",
+                      "maxWords": 14,
+                      "measuredLongestRealInstance": "\"A profile that feels like you, because it is\" = 8 words",
+                      "note": "Contains a non-breaking space after the leading 'A' in the source."
+                    },
+                    "illustration": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "illustration.editorial"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^(public/img/|public/fonts/|src/)",
+                              "description": "A LOCAL repository path. An absolute http(s) URL is forbidden (NO_EXTERNAL_ASSET_REQUESTS)."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
+                        }
+                      ],
+                      "x-allowedRoles": [
+                        "illustration.editorial"
+                      ],
+                      "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)",
+                      "description": "Illo-Sitter-and-Kid.webp, max-width 70% with margin-bottom -56px so it overhangs the row"
+                    },
+                    "cards": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "number": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 3
+                          },
+                          "heading": {
+                            "type": "string",
+                            "maxWords": 6,
+                            "measuredLongestRealInstance": "\"Share your profile\" = 3 words"
+                          },
+                          "body": {
+                            "type": "string",
+                            "maxWords": 40,
+                            "measuredLongestRealInstance": "29 words measured"
+                          }
+                        },
+                        "required": [
+                          "number",
+                          "heading",
+                          "body"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "eyebrow",
+                    "heading",
+                    "illustration",
+                    "cards"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "stats.grid"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "variant": {
+                      "enum": [
+                        "six-with-spacers",
+                        "three-centered"
+                      ],
+                      "note": "six-with-spacers = the 'kidcare gap' block: a centred h2 plus 6 stat columns separated by two col-lg-1.col-md-hide spacers that are display:none at <=991. three-centered = the compensation-philosophy block: a .cc-centered section header plus 3 .stat-contain.u-text-center columns."
+                    },
+                    "eyebrow": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "string",
+                          "maxWords": 4,
+                          "measuredLongestRealInstance": "\"internal equity\" = 2 words"
+                        }
+                      ],
+                      "note": "null for six-with-spacers (which has no eyebrow, only a centred h2); present for three-centered."
+                    },
+                    "heading": {
+                      "type": "string",
+                      "maxWords": 10,
+                      "measuredLongestRealInstance": "\"Our compensation philosophy\" = 3 words"
+                    },
+                    "lede": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "string",
+                          "maxWords": 32,
+                          "measuredLongestRealInstance": "24 words measured"
+                        }
+                      ]
+                    },
+                    "stats": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 6,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "eyebrow": {
+                            "anyOf": [
+                              {
+                                "type": "null"
+                              },
+                              {
+                                "type": "string",
+                                "maxWords": 4,
+                                "measuredLongestRealInstance": "\"stay-at-home parents\" = 2 words",
+                                "note": "authored in mixed case, uppercased by CSS"
+                              }
+                            ]
+                          },
+                          "figure": {
+                            "anyOf": [
+                              {
+                                "type": "null"
+                              },
+                              {
+                                "type": "string",
+                                "maxWords": 3,
+                                "measuredLongestRealInstance": "\"2 million\" = 2 words"
+                              }
+                            ]
+                          },
+                          "label": {
+                            "type": "string",
+                            "maxWords": 22,
+                            "measuredLongestRealInstance": "15 words measured"
+                          },
+                          "body": {
+                            "anyOf": [
+                              {
+                                "type": "null"
+                              },
+                              {
+                                "type": "string",
+                                "maxWords": 32,
+                                "measuredLongestRealInstance": "22 words measured"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "label"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "variant",
+                    "heading",
+                    "stats"
+                  ]
+                },
+                "variant": {
+                  "enum": [
+                    "six-with-spacers",
+                    "three-centered"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "testimonials.slider-empty"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "heading": {
+                      "type": "string",
+                      "maxWords": 10,
+                      "measuredLongestRealInstance": "\"What our parents are saying\" = 5 words"
+                    },
+                    "lede": {
+                      "type": "string",
+                      "maxWords": 24,
+                      "measuredLongestRealInstance": "15 words measured on /parents"
+                    },
+                    "emptyState": {
+                      "const": true,
+                      "note": "LOCKED TRUE. The CMS collection behind this slider is genuinely empty on the live original, so the site renders Webflow's grey 'No items found.' box and the clone reproduces it. There is deliberately NO items array a generator could populate \u2014 inventing testimonial copy for a real company is forbidden."
+                    }
+                  },
+                  "required": [
+                    "heading",
+                    "lede",
+                    "emptyState"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "trust.press-bar"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "eyebrow": {
+                      "type": "string",
+                      "maxWords": 4,
+                      "measuredLongestRealInstance": "\"As featured in\" = 3 words",
+                      "note": "h2.eyebrow.u-mb-0.u-text-center \u2014 computes weight 400 because .u-mb-0 declares font-weight:400 and wins. Correct, not a bug."
+                    },
+                    "logoCount": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 4,
+                      "note": "A COUNT ONLY. There is deliberately no logo-file field. The four real marks are third-party trademarks under assetRole press.logo, pinned to must-not-reproduce-real-mark \u2014 a generator has nothing here to populate with a mark."
+                    }
+                  },
+                  "required": [
+                    "eyebrow",
+                    "logoCount"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "trust.video-and-cards"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "heading": {
+                      "type": "string",
+                      "maxWords": 12,
+                      "measuredLongestRealInstance": "\"High-quality childcare, without question\" = 4 words"
+                    },
+                    "lede": {
+                      "type": "string",
+                      "maxWords": 56,
+                      "measuredLongestRealInstance": "41 words measured"
+                    },
+                    "video": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "poster": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "assetRole": {
+                                  "enum": [
+                                    "media.videoPoster"
+                                  ]
+                                },
+                                "assetRef": {
+                                  "type": "string",
+                                  "pattern": "^(public/img/|public/fonts/|src/)",
+                                  "description": "A LOCAL repository path. An absolute http(s) URL is forbidden (NO_EXTERNAL_ASSET_REQUESTS)."
+                                }
+                              },
+                              "required": [
+                                "assetRole",
+                                "assetRef"
+                              ]
+                            }
+                          ],
+                          "x-allowedRoles": [
+                            "media.videoPoster"
+                          ],
+                          "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
+                        },
+                        "clickToPlay": {
+                          "const": true,
+                          "note": "HARD CONSTRAINT, LOCKED TRUE. The original ships 0 iframes, 0 <video> elements and 0 third-party requests on load. The iframe is injected only after a user click. A generated instance must never autoplay or embed on load."
+                        },
+                        "title": {
+                          "type": "string",
+                          "maxWords": 8,
+                          "measuredLongestRealInstance": "\"Trust and Safety at Otter\" = 5 words",
+                          "note": "accessible label for the play button and the injected iframe"
+                        }
+                      },
+                      "required": [
+                        "poster",
+                        "clickToPlay",
+                        "title"
+                      ]
+                    },
+                    "cards": {
+                      "type": "array",
+                      "minItems": 4,
+                      "maxItems": 4,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "heading": {
+                            "type": "string",
+                            "maxWords": 6,
+                            "measuredLongestRealInstance": "\"Universal background check\" = 3 words"
+                          },
+                          "body": {
+                            "type": "string",
+                            "maxWords": 52,
+                            "measuredLongestRealInstance": "37 words measured"
+                          },
+                          "icon": {
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "icon.feature"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^(public/img/|public/fonts/|src/)",
+                                    "description": "A LOCAL repository path. An absolute http(s) URL is forbidden (NO_EXTERNAL_ASSET_REQUESTS)."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
+                              }
+                            ],
+                            "x-allowedRoles": [
+                              "icon.feature"
+                            ],
+                            "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
+                          }
+                        },
+                        "required": [
+                          "heading",
+                          "body",
+                          "icon"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "heading",
+                    "lede",
+                    "video",
+                    "cards"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "values.principle-cards"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "srHeading": {
+                      "const": "Values",
+                      "note": "h2.u-sr-only preceding the container"
+                    },
+                    "cards": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "heading": {
+                            "type": "string",
+                            "maxWords": 6,
+                            "measuredLongestRealInstance": "\"Our operating principles\" = 3 words"
+                          },
+                          "items": {
+                            "type": "array",
+                            "minItems": 3,
+                            "maxItems": 3,
+                            "items": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "label": {
+                                  "type": "string",
+                                  "maxWords": 6,
+                                  "measuredLongestRealInstance": "\"Always do the right thing\" = 5 words"
+                                },
+                                "icon": {
+                                  "oneOf": [
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "assetRole": {
+                                          "enum": [
+                                            "icon.values"
+                                          ]
+                                        },
+                                        "assetRef": {
+                                          "type": "string",
+                                          "pattern": "^(public/img/|public/fonts/|src/)",
+                                          "description": "A LOCAL repository path. An absolute http(s) URL is forbidden (NO_EXTERNAL_ASSET_REQUESTS)."
+                                        }
+                                      },
+                                      "required": [
+                                        "assetRole",
+                                        "assetRef"
+                                      ]
+                                    }
+                                  ],
+                                  "x-allowedRoles": [
+                                    "icon.values"
+                                  ],
+                                  "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
+                                }
+                              },
+                              "required": [
+                                "label",
+                                "icon"
+                              ]
+                            }
+                          }
+                        },
+                        "required": [
+                          "heading",
+                          "items"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "srHeading",
+                    "cards"
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "description": "Per-section content contracts live HERE, on the node item, not on the root object. They are if/then branches keyed on this node's own `section` value; attaching them to the root would make every `if` require a `section` property the root does not have, silently disabling all 28 content contracts."
+      }
+    }
+  },
+  "required": [
+    "pageSpecVersion",
+    "route",
+    "template",
+    "designSystem",
+    "theme",
+    "nodes"
+  ],
+  "x-counts": {
+    "templates": 11,
+    "sections": 28,
+    "assetRoles": 13,
+    "motionPatterns": 7,
+    "contentBranches": 28
+  },
+  "x-assetRoleEnum": [
+    "auth.illustration",
+    "blob.fill",
+    "brand.wordmark",
+    "decorative.none",
+    "editorial.cover",
+    "icon.feature",
+    "icon.values",
+    "illustration.brand",
+    "illustration.editorial",
+    "legal.operativeText",
+    "media.videoPoster",
+    "photo.person",
+    "press.logo"
+  ],
+  "x-pinnedAssetPolicies": {
+    "note": "These roles are PINNED to a specific policy value, not merely constrained to the enum. verify_all.py enforces each pinned pairing exactly, and schema/tests/adversarial_test.py proves a mutation to a DIFFERENT-BUT-VALID enum member is rejected. Membership-in-a-closed-set is a weaker claim than 'this role must have this value', and these four roles carry real legal weight.",
+    "brand.wordmark": "must-not-reproduce-real-mark",
+    "press.logo": "must-not-reproduce-real-mark",
+    "photo.person": "must-not-reproduce-real-mark",
+    "legal.operativeText": "must-not-fabricate"
+  }
+}

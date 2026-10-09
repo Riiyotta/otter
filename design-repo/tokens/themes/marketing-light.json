@@ -1,0 +1,23 @@
+{
+  "id": "theme.marketing-light",
+  "designSystem": "marketing",
+  "default": true,
+  "note": "The marketing site has exactly ONE theme. There is no dark mode, no theme switcher, and no prefers-color-scheme block in the original stylesheet.",
+  "resolves": {
+    "surface.page": "color.ivory",
+    "surface.card": "color.white",
+    "surface.inverse": "color.primary",
+    "surface.accentWarm": "color.peach",
+    "surface.accentCool": "color.celeste",
+    "surface.emptyState": "literals.emptyCollection.background",
+    "text.primary": "color.primary",
+    "text.onInverse": "color.white",
+    "text.onDarkButton": "color.celeste",
+    "border.default": "color.btnBorder",
+    "blob.olive": "color.olive",
+    "blob.coral": "color.coral",
+    "blob.sandstone": "color.sandstone",
+    "blob.peach": "color.peach",
+    "blob.celeste": "color.celeste"
+  }
+}

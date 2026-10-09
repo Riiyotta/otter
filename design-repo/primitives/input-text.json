@@ -1,0 +1,28 @@
+{
+  "id": "primitive.input-text",
+  "kind": "primitive",
+  "name": "Marketing form field",
+  "designSystem": "marketing",
+  "props": {
+    "kind": {
+      "enum": [
+        "text",
+        "email",
+        "tel",
+        "textarea"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "maxWords": 4
+    },
+    "required": {
+      "type": "boolean"
+    }
+  },
+  "measuredFrom": "spec/SPEC_faq_contact_careers.md:399-459",
+  "notes": [
+    "Observed ONLY on /contact. The marketing site has no other inputs.",
+    "The /contact form is method=\"get\" with NO action, Webflow's default. Submission is prevented in the clone and no network call is made."
+  ]
+}

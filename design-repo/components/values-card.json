@@ -1,0 +1,19 @@
+{
+  "id": "component.values-card",
+  "kind": "component",
+  "name": "Values / principles card (.values-wrap)",
+  "designSystem": "marketing",
+  "composes": [],
+  "geometry": {
+    "background": "surface.card",
+    "radius": "radius.hero",
+    "padding": "4.5em 3.5em = 72px 56px",
+    "le479": "radius 2.5em, padding 3em 1.5em",
+    "measured1440": "516.656 x 624"
+  },
+  "measuredFrom": "spec/SPEC_faq_contact_careers.md:606-612",
+  "notes": [
+    "Each .values_item is a label + a 72x72 icon (56x56 at <=479) in a space-between row, padding-block 1em, 104px pitch.",
+    "The card heading is h3.h4.u-mb-2.u-text-center."
+  ]
+}

@@ -1,0 +1,483 @@
+{
+  "$comment": "Derived from the actual React source in src/ (pages, components, styles) cross-checked against the Playwright-measured specs on disk: CLONE_SPEC.md and spec/SPEC_*.md. Section order within each template is real DOM order as rendered, not inferred from design intent.",
+  "meta": {
+    "source": "https://withotter.com/ — pixel-audited React 18 + Vite + Tailwind v3 clone of the live site",
+    "mirror": "reference/original.html + reference/assets/with-otter-*.shared.34930fed5.min.css (saved homepage DOM and compiled Webflow stylesheet, byte-identical across every marketing route)",
+    "status": "measured-from-source",
+    "productionApproved": false,
+    "totalRoutes": 21,
+    "totalTemplates": 13,
+    "generatedBy": "ia-builder skill, from the clone's own components after three independent pixel-audit passes"
+  },
+  "categories": {
+    "CHROME": "Shared wrapper present on every marketing route: navigation, footer, and the SVG clip-path definitions the organic shapes reference.",
+    "HERO": "Page-opening header block, above or at the start of the main content.",
+    "EXPLAIN": "Product explanation: how the service works, capability tabs, programme status.",
+    "PROOF": "Social proof and reassurance: press logos, testimonials, trust cards, video.",
+    "CONTENT": "The substantive body content of a route — prose, collections, article text.",
+    "CONVERT": "Blocks whose job is to get the visitor to act: CTA cards and bands, the contact form.",
+    "RECRUIT": "Careers-only blocks: the market-gap argument, values, benefits, compensation, open roles.",
+    "AUTH": "Blocks belonging to the app host's own design system, not the marketing one."
+  },
+  "sections": {
+    "chrome.nav": {
+      "category": "CHROME",
+      "description": "Non-sticky top navigation: wordmark, four primary links with an organic blob current-indicator, and log-in / sign-up actions. Ships two variants — the homepage renders an empty primary-link container, every other marketing route populates it.",
+      "scope": "Present on all 20 marketing routes; absent from the log-in screen, which has no marketing chrome.",
+      "implementedBy": "src/components/Nav.jsx"
+    },
+    "chrome.footer": {
+      "category": "CHROME",
+      "description": "Two-card footer: a dark primary sign-up card and a white card, above a link region and a legal/copyright row. Like the nav, the homepage ships an empty link container while other routes populate three columns.",
+      "scope": "Present on all 20 marketing routes; absent from the log-in screen.",
+      "implementedBy": "src/components/Footer.jsx"
+    },
+    "chrome.shape-defs": {
+      "category": "CHROME",
+      "description": "Invisible SVG defs block holding the seven objectBoundingBox clip paths that every organic stone and blob references by id. Renders nothing itself; no route adds new path data.",
+      "scope": "Mounted once per page on all 20 marketing routes; not used by the log-in screen.",
+      "implementedBy": "src/components/ClipPathDefs.jsx"
+    },
+    "hero.home": {
+      "category": "HERO",
+      "description": "Homepage hero: large display headline, supporting copy, a single CTA, and a 72px-radius image container flanked by five clipped stone shapes.",
+      "scope": "Homepage only — 1 route.",
+      "implementedBy": "src/components/Hero.jsx"
+    },
+    "hero.page": {
+      "category": "HERO",
+      "description": "Shared audience-page hero: copy column plus a shape container carrying two clipped stones, with per-route fills and a per-route photo. Parametrised by props rather than duplicated.",
+      "scope": "The 3 audience pages: parents, sitters, trust-safety.",
+      "implementedBy": "src/components/pst/PageHero.jsx"
+    },
+    "hero.centered-title": {
+      "category": "HERO",
+      "description": "Simple centred page header — eyebrow plus display heading in a narrow container, with no image. Structurally the same block on each route but currently written inline in all three pages rather than extracted.",
+      "scope": "3 routes: faq, contact, careers. A reuse candidate — see README.",
+      "implementedBy": "inline in src/pages/Faq.jsx, src/pages/Contact.jsx, src/pages/Careers.jsx"
+    },
+    "hero.blog-index": {
+      "category": "HERO",
+      "description": "Blog index header: display heading beside a full-bleed hero illustration, in a zero-padding section.",
+      "scope": "Blog index only — 1 route.",
+      "implementedBy": "src/pages/Blog.jsx"
+    },
+    "hero.post": {
+      "category": "HERO",
+      "description": "Article header: title, one to three tag pills, and a 1:1 cover image at 32px radius. Deliberately carries no author, date, read-time, share or breadcrumb slot — the original has none.",
+      "scope": "All 10 article routes.",
+      "implementedBy": "src/pages/BlogPost.jsx"
+    },
+    "hero.legal-title": {
+      "category": "HERO",
+      "description": "Legal document title band — eyebrow plus document title, rendered outside the main content element as on the original.",
+      "scope": "The 2 legal routes: terms-of-use and privacy-policy.",
+      "implementedBy": "src/components/legal/LegalDocument.jsx"
+    },
+    "explain.beta-banner": {
+      "category": "EXPLAIN",
+      "description": "Programme-status banner announcing beta availability and free access, with a sign-up CTA.",
+      "scope": "Homepage only — 1 route.",
+      "implementedBy": "src/components/BetaBanner.jsx"
+    },
+    "explain.how-it-works": {
+      "category": "EXPLAIN",
+      "description": "Section header plus three numbered steps on organic bullet backgrounds. Carries the site's only scroll-reveal animation, on its section header.",
+      "scope": "Homepage only — 1 route.",
+      "implementedBy": "src/components/HowItWorks.jsx"
+    },
+    "explain.join-card": {
+      "category": "EXPLAIN",
+      "description": "Large full-width card with a background illustration, growth-oriented copy and a primary join action. Rendered at the tail of the how-it-works section.",
+      "scope": "Homepage only — 1 route.",
+      "implementedBy": "src/components/HowItWorks.jsx"
+    },
+    "explain.tabs": {
+      "category": "EXPLAIN",
+      "description": "Dual-mode capability explainer: a pill tab strip with an absolutely-positioned card above 991px, which becomes a CSS-sibling-driven accordion at or below it. Open and close timings are deliberately asymmetric.",
+      "scope": "2 routes: parents and sitters.",
+      "implementedBy": "src/components/pst/Tabs.jsx"
+    },
+    "proof.press-bar": {
+      "category": "PROOF",
+      "description": "Press bar on a peach 40px-radius panel carrying four third-party publication logos. These are real external trademarks — see the licensing note in the README.",
+      "scope": "Homepage only — 1 route.",
+      "implementedBy": "src/components/TrustBar.jsx"
+    },
+    "proof.testimonials": {
+      "category": "PROOF",
+      "description": "Testimonial slider with heading, lede and two circular arrow controls. The underlying CMS collection is empty on the original, so it renders a grey 'No items found.' empty state — intentional, not missing content.",
+      "scope": "2 routes: parents and sitters.",
+      "implementedBy": "src/components/pst/TestimonialsSlider.jsx"
+    },
+    "proof.common-questions": {
+      "category": "PROOF",
+      "description": "'Common questions' heading above an empty CMS collection list. Renders the same deliberate grey empty state; there is no accordion behind it on the original.",
+      "scope": "2 routes: parents and sitters.",
+      "implementedBy": "src/components/pst/CommonQuestions.jsx"
+    },
+    "proof.video-facade": {
+      "category": "PROOF",
+      "description": "Click-to-play video facade: poster image and play button in a ~16:9 ivory box. The third-party player iframe is injected only after a user click, so page load makes no cross-origin request.",
+      "scope": "Trust-safety only — 1 route.",
+      "implementedBy": "src/components/pst/VideoFacade.jsx"
+    },
+    "proof.trust-cards": {
+      "category": "PROOF",
+      "description": "Two rows of two white trust cards, each with an icon, heading and body, covering vetting and care standards.",
+      "scope": "Trust-safety only — 1 route.",
+      "implementedBy": "src/pages/TrustSafety.jsx"
+    },
+    "content.faq-category-rows": {
+      "category": "CONTENT",
+      "description": "Two static audience category rows ('For parents', 'For sitters'), each pairing a heading with an empty CMS collection list. Because both collections are empty on the original, this route carries no actual question-and-answer content.",
+      "scope": "Faq only — 1 route.",
+      "implementedBy": "src/pages/Faq.jsx"
+    },
+    "content.post-grid": {
+      "category": "CONTENT",
+      "description": "Collection grid: one featured post in a 50/50 row, then a three-up grid of standard cards. Both card variants are 4:3, and neither has any hover state or transition on the original.",
+      "scope": "Blog index only — 1 route.",
+      "implementedBy": "src/pages/Blog.jsx + src/components/blog/PostCard.jsx"
+    },
+    "content.load-more": {
+      "category": "CONTENT",
+      "description": "Pagination pill reproducing the original's Finsweet load-more control. Deliberately inert in the clone — the original's collection holds more posts than the ten rebuilt here, so there is no further page to load.",
+      "scope": "Blog index only — 1 route.",
+      "implementedBy": "src/components/blog/LoadMore.jsx"
+    },
+    "content.rich-text": {
+      "category": "CONTENT",
+      "description": "Article body prose block. Base 16/24 weight-500 body type at every breakpoint, with a flat 4rem heading top-margin that does not shrink on mobile. Article bodies in this clone are placeholder prose, not the original articles.",
+      "scope": "All 10 article routes.",
+      "implementedBy": "src/components/blog/RichText.jsx"
+    },
+    "content.related-posts": {
+      "category": "CONTENT",
+      "description": "'Similar articles' row of three post cards in the wide container, reusing the standard card. Selection is next-in-collection-order here, because the original draws from posts outside the rebuilt set.",
+      "scope": "All 10 article routes.",
+      "implementedBy": "src/pages/BlogPost.jsx + src/components/blog/PostCard.jsx"
+    },
+    "content.legal-prose": {
+      "category": "CONTENT",
+      "description": "Hand-authored legal document body: a repeating rule-plus-heading-plus-paragraph pattern in the wide container, giving a wider measure than the article prose block. Lists are faked with line breaks exactly as the original does.",
+      "scope": "The 2 legal routes. Holds real operative legal copy — see the README licensing note.",
+      "implementedBy": "src/components/legal/LegalDocument.jsx + src/data/legal/"
+    },
+    "convert.cta-card": {
+      "category": "CONVERT",
+      "description": "Large conversion card pairing an illustration with a heading and a sign-up action, in a wide or extra-wide variant depending on route.",
+      "scope": "2 routes: parents and sitters.",
+      "implementedBy": "src/components/pst/CtaCard.jsx"
+    },
+    "convert.cta-band": {
+      "category": "CONVERT",
+      "description": "Horizontal conversion band with heading, supporting copy, an action and a supporting image.",
+      "scope": "Blog index only — 1 route.",
+      "implementedBy": "src/components/blog/CtaBand.jsx"
+    },
+    "convert.contact-form": {
+      "category": "CONVERT",
+      "description": "Five-field contact form with a screen-reader heading, plus custom success and failure blocks. Submits locally only — no endpoint and no network request — and carries no error styling, because the original defines none.",
+      "scope": "Contact only — 1 route.",
+      "implementedBy": "src/pages/Contact.jsx"
+    },
+    "convert.contact-info": {
+      "category": "CONVERT",
+      "description": "Supporting contact column: icon-led email and postal-address blocks beside the form.",
+      "scope": "Contact only — 1 route.",
+      "implementedBy": "src/pages/Contact.jsx"
+    },
+    "recruit.gap-intro": {
+      "category": "RECRUIT",
+      "description": "Narrative block introducing the childcare-market gap the company positions against, with supporting imagery.",
+      "scope": "Careers only — 1 route.",
+      "implementedBy": "src/pages/Careers.jsx"
+    },
+    "recruit.gap-stats": {
+      "category": "RECRUIT",
+      "description": "Centred heading above a six-up responsive grid of statistic blocks, each an eyebrow, a large figure and a caption.",
+      "scope": "Careers only — 1 route.",
+      "implementedBy": "src/pages/Careers.jsx"
+    },
+    "recruit.values": {
+      "category": "RECRUIT",
+      "description": "Operating-principles grid: six value cards with 72px icons, behind a screen-reader-only heading. Uses the full-width container rather than the narrow one.",
+      "scope": "Careers only — 1 route.",
+      "implementedBy": "src/pages/Careers.jsx"
+    },
+    "recruit.benefits": {
+      "category": "RECRUIT",
+      "description": "Centred header plus a grid of six benefit items with 88px icons.",
+      "scope": "Careers only — 1 route.",
+      "implementedBy": "src/pages/Careers.jsx"
+    },
+    "recruit.compensation": {
+      "category": "RECRUIT",
+      "description": "Centred header plus prose setting out the company's compensation philosophy.",
+      "scope": "Careers only — 1 route.",
+      "implementedBy": "src/pages/Careers.jsx"
+    },
+    "recruit.positions": {
+      "category": "RECRUIT",
+      "description": "Open-roles list at an anchor target. Each row reuses the accordion item markup as a link pill out to the external applicant-tracking system, with a hover inversion that deliberately excludes its icon pill.",
+      "scope": "Careers only — 1 route.",
+      "implementedBy": "src/pages/Careers.jsx"
+    },
+    "auth.login-form": {
+      "category": "AUTH",
+      "description": "Log-in screen: wordmark, illustration, heading and a single phone-number field with a floating label, on a flat background with no card. Built from the app host's own design system, and deliberately inert — no action, no endpoint, autocomplete disabled, submit cancelled.",
+      "scope": "Log-in only — 1 route, the single route using the app host's design system.",
+      "implementedBy": "src/pages/LogIn.jsx + src/components/auth/"
+    },
+    "content.not-found-stub": {
+      "category": "CONTENT",
+      "description": "Placeholder body for the catch-all route: a single line of scaffold text in a plain section. The original site's 404 page was never visited or measured, so no real layout is documented. Not a copy of anything on withotter.com.",
+      "scope": "Catch-all fallback only — matches no named route, so it carries 0 of the 21 routes."
+    }
+  },
+  "templates": [
+    {
+      "id": "template.home",
+      "name": "Homepage",
+      "routeCount": 1,
+      "routes": [
+        "/"
+      ],
+      "routePattern": null,
+      "chrome": "marketing-home",
+      "sections": [
+        "chrome.shape-defs",
+        "chrome.nav",
+        "hero.home",
+        "explain.beta-banner",
+        "explain.how-it-works",
+        "explain.join-card",
+        "proof.press-bar",
+        "chrome.footer"
+      ]
+    },
+    {
+      "id": "template.parents",
+      "name": "Parents audience page",
+      "routeCount": 1,
+      "routes": [
+        "/parents"
+      ],
+      "routePattern": null,
+      "chrome": "marketing-site",
+      "sections": [
+        "chrome.shape-defs",
+        "chrome.nav",
+        "hero.page",
+        "explain.tabs",
+        "convert.cta-card",
+        "proof.testimonials",
+        "proof.common-questions",
+        "chrome.footer"
+      ]
+    },
+    {
+      "id": "template.sitters",
+      "name": "Sitters audience page",
+      "routeCount": 1,
+      "routes": [
+        "/sitters"
+      ],
+      "routePattern": null,
+      "chrome": "marketing-site",
+      "sections": [
+        "chrome.shape-defs",
+        "chrome.nav",
+        "hero.page",
+        "explain.tabs",
+        "convert.cta-card",
+        "proof.testimonials",
+        "proof.common-questions",
+        "chrome.footer"
+      ]
+    },
+    {
+      "id": "template.trust-safety",
+      "name": "Trust & Safety",
+      "routeCount": 1,
+      "routes": [
+        "/trust-safety"
+      ],
+      "routePattern": null,
+      "chrome": "marketing-site",
+      "sections": [
+        "chrome.shape-defs",
+        "chrome.nav",
+        "hero.page",
+        "proof.video-facade",
+        "proof.trust-cards",
+        "chrome.footer"
+      ]
+    },
+    {
+      "id": "template.faq",
+      "name": "FAQ",
+      "routeCount": 1,
+      "routes": [
+        "/faq"
+      ],
+      "routePattern": null,
+      "chrome": "marketing-site",
+      "sections": [
+        "chrome.shape-defs",
+        "chrome.nav",
+        "hero.centered-title",
+        "content.faq-category-rows",
+        "chrome.footer"
+      ]
+    },
+    {
+      "id": "template.contact",
+      "name": "Contact",
+      "routeCount": 1,
+      "routes": [
+        "/contact"
+      ],
+      "routePattern": null,
+      "chrome": "marketing-site",
+      "sections": [
+        "chrome.shape-defs",
+        "chrome.nav",
+        "hero.centered-title",
+        "convert.contact-form",
+        "convert.contact-info",
+        "chrome.footer"
+      ]
+    },
+    {
+      "id": "template.careers",
+      "name": "Careers",
+      "routeCount": 1,
+      "routes": [
+        "/careers"
+      ],
+      "routePattern": null,
+      "chrome": "marketing-site",
+      "sections": [
+        "chrome.shape-defs",
+        "chrome.nav",
+        "hero.centered-title",
+        "recruit.gap-intro",
+        "recruit.gap-stats",
+        "recruit.values",
+        "recruit.benefits",
+        "recruit.compensation",
+        "recruit.positions",
+        "chrome.footer"
+      ]
+    },
+    {
+      "id": "template.blog-index",
+      "name": "Blog index",
+      "routeCount": 1,
+      "routes": [
+        "/blog"
+      ],
+      "routePattern": null,
+      "chrome": "marketing-site",
+      "sections": [
+        "chrome.shape-defs",
+        "chrome.nav",
+        "hero.blog-index",
+        "content.post-grid",
+        "content.load-more",
+        "convert.cta-band",
+        "chrome.footer"
+      ]
+    },
+    {
+      "id": "template.blog-post",
+      "name": "Blog article",
+      "routeCount": 10,
+      "routes": [
+        "/blog-posts/series-a",
+        "/blog-posts/infant-care-101",
+        "/blog-posts/toddler-care-101",
+        "/blog-posts/how-to-change-a-diaper",
+        "/blog-posts/tackling-bedtime-routines",
+        "/blog-posts/baby-led-bottle-feeding",
+        "/blog-posts/otter-featured-in-the-new-york-times",
+        "/blog-posts/how-to-be-an-amazing-babysitter",
+        "/blog-posts/how-to-set-your-sitter-up-for-success",
+        "/blog-posts/how-to-set-parents-at-ease-while-babysitting"
+      ],
+      "routePattern": "/blog-posts/{slug}",
+      "chrome": "marketing-site",
+      "sections": [
+        "chrome.shape-defs",
+        "chrome.nav",
+        "hero.post",
+        "content.rich-text",
+        "content.related-posts",
+        "chrome.footer"
+      ]
+    },
+    {
+      "id": "template.terms",
+      "name": "Terms of Use",
+      "routeCount": 1,
+      "routes": [
+        "/terms-of-use"
+      ],
+      "routePattern": null,
+      "chrome": "marketing-site",
+      "sections": [
+        "chrome.shape-defs",
+        "chrome.nav",
+        "hero.legal-title",
+        "content.legal-prose",
+        "chrome.footer"
+      ]
+    },
+    {
+      "id": "template.privacy",
+      "name": "Privacy Policy",
+      "routeCount": 1,
+      "routes": [
+        "/privacy-policy"
+      ],
+      "routePattern": null,
+      "chrome": "marketing-site",
+      "sections": [
+        "chrome.shape-defs",
+        "chrome.nav",
+        "hero.legal-title",
+        "content.legal-prose",
+        "chrome.footer"
+      ]
+    },
+    {
+      "id": "template.login",
+      "name": "Log in",
+      "routeCount": 1,
+      "routes": [
+        "/log-in"
+      ],
+      "routePattern": null,
+      "chrome": "none",
+      "sections": [
+        "auth.login-form"
+      ]
+    },
+    {
+      "id": "template.not-found",
+      "name": "Not found (unmeasured placeholder)",
+      "routeCount": 0,
+      "routes": [],
+      "routePattern": "*",
+      "chrome": "marketing-site",
+      "sections": [
+        "chrome.shape-defs",
+        "chrome.nav",
+        "content.not-found-stub",
+        "chrome.footer"
+      ]
+    }
+  ]
+}

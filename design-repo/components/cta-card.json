@@ -1,0 +1,20 @@
+{
+  "id": "component.cta-card",
+  "kind": "component",
+  "name": "Conversion card with blob + photo",
+  "designSystem": "marketing",
+  "composes": [
+    "primitive.button-pill",
+    "primitive.stone-shape"
+  ],
+  "geometry": {
+    "variants": {
+      "narrow": "wrapped in section.section.u-p-0.u-mb-3 (zero padding, 48px bottom margin) \u2014 /parents",
+      "wide": "plain section.section with .cc-wide-cta on the inner container \u2014 /sitters"
+    }
+  },
+  "measuredFrom": "spec/SPEC_parents_sitters_trust.md:531-591",
+  "notes": [
+    "The two variants are a real structural difference between /parents and /sitters, not a styling preference. Keyed as (section, variant) in the compatibility graph so one template can legitimately differ from its sibling."
+  ]
+}

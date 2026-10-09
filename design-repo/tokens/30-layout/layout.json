@@ -1,0 +1,73 @@
+{
+  "id": "tokens.layout",
+  "designSystem": "marketing",
+  "container": {
+    "base": {
+      "width": "90%",
+      "maxWidth": "90rem = 1440px",
+      "marginInline": "auto",
+      "le991": "85%",
+      "le479": "90%",
+      "measured": {
+        "1440": "1296px wide, 72px side margins",
+        "1024": "921.6px wide, 51.2px side margins",
+        "390": "351px wide, 19.5px side margins"
+      },
+      "measuredFrom": "CLONE_SPEC.md:106-118"
+    },
+    "variants": {
+      "cc-nav": "display:flex",
+      "cc-narrow": "display:flex; flex-direction:column; max-width:75rem = 1200px (1200px at 1440, 921.6 at 1024, 351 at 390)",
+      "cc-footer-container": "display:flex; flex-wrap:wrap; justify-content:space-between; gap:2.5rem",
+      "cc-hero": "the dark rounded homepage hero shell \u2014 background primary, radius 4.5em, height 60vh, min-height 800px, overflow hidden, isolation isolate"
+    }
+  },
+  "grid": {
+    "columns": 12,
+    "row": ".row{display:flex;flex-wrap:wrap;flex:0 auto;margin-inline:-20px}",
+    "col": ".col{flex:1;margin-bottom:40px;padding-inline:20px}",
+    "spanClasses": {
+      "desktop": "col-lg-N",
+      "le991": "col-md-N",
+      "le767": "col-sm-N",
+      "le479": "col-xs-N",
+      "formula": "flex-basis and max-width = N/12 as a percentage"
+    },
+    "tinyCollapse": "At <=479 every .col becomes flex-basis:100%; max-width:100%; order:1; position:static \u2014 everything stacks.",
+    "rowModifiers": [
+      "row-justify-center",
+      "row-justify-between",
+      "row-justify-around",
+      "row-align-center",
+      "row-align-end",
+      "row-md-justify-start",
+      "row-reverse",
+      "gap-24",
+      "how-it-works"
+    ],
+    "colModifiers": [
+      "col-narrow",
+      "col-md-hide",
+      "col-sm-hide",
+      "col-sm-first",
+      "u-mb-0",
+      "v-align-center",
+      "spacing-md"
+    ],
+    "measuredFrom": "CLONE_SPEC.md:123-131"
+  },
+  "pageRoot": {
+    ".page-wrapper": "background #f8f6f5; color #00373e; overflow:hidden",
+    "measuredFrom": "CLONE_SPEC.md:277-277"
+  },
+  "shapeScaffolding": {
+    ".shape-contain": "flex:none; width:100%; overflow:hidden (<=767 overflow:visible)",
+    ".shape-ratio": "padding-top:100%; position:relative \u2014 forces 1:1",
+    ".shape": "position:absolute; inset:0",
+    ".u-aspect-1x1": "width:100%; padding-top:100%; position:relative; overflow:hidden",
+    ".u-aspect-9x16": "56% ratio wrapper used by the /trust-safety video and the /careers image-copy split",
+    ".u-img-cover": "object-fit:CONTAIN despite the name; width/height 100%; position:absolute; inset:0",
+    "measuredFrom": "CLONE_SPEC.md:264-272"
+  },
+  "preflightCorollary": "Tailwind preflight is DISABLED, so there is no img{height:auto} reset. Any image sized by CSS width alone needs an explicit height, or its HTML height attribute wins (this is why Playdate.svg renders 291.2x180 from height=\"180\", and why payment.webp renders narrower than its 104px cap from width=\"96\")."
+}

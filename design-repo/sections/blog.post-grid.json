@@ -1,0 +1,219 @@
+{
+  "id": "blog.post-grid",
+  "kind": "section",
+  "name": "Blog post grid",
+  "category": "blog",
+  "designSystem": "marketing",
+  "variants": [
+    "default"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "srHeading": {
+        "const": "Blog posts",
+        "note": "h2.u-sr-only"
+      },
+      "featured": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string",
+            "maxWords": 12,
+            "measuredLongestRealInstance": "\"How to Set Your Sitter Up for Success\" = 8 words"
+          },
+          "cover": {
+            "type": "object",
+            "assetRoleEnumRef": "assets/asset-roles.json#/roles",
+            "allowedRoles": [
+              "editorial.cover",
+              "photo.person"
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 3,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "maxWords": 3,
+                  "measuredLongestRealInstance": "\"Otter news\" = 2 words"
+                },
+                "color": {
+                  "enum": [
+                    "midnight",
+                    "sandstone",
+                    "coral",
+                    "celeste",
+                    "peach",
+                    "olive"
+                  ]
+                }
+              },
+              "required": [
+                "name",
+                "color"
+              ]
+            }
+          },
+          "featured": {
+            "type": "boolean",
+            "default": false,
+            "note": "the featured card shows a single static celeste 'Featured' pill INSTEAD of the CMS tags"
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "cover",
+          "tags"
+        ],
+        "forbiddenFields": [
+          "author",
+          "date",
+          "publishedAt",
+          "readTime",
+          "excerpt",
+          "deck",
+          "shareLinks",
+          "breadcrumb"
+        ],
+        "forbiddenFieldsReason": "None of this data exists on the original. There is not a single <time> element on any blog page. Do not add fields the original lacks."
+      },
+      "posts": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 9,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "slug": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string",
+              "maxWords": 12,
+              "measuredLongestRealInstance": "\"How to Set Your Sitter Up for Success\" = 8 words"
+            },
+            "cover": {
+              "type": "object",
+              "assetRoleEnumRef": "assets/asset-roles.json#/roles",
+              "allowedRoles": [
+                "editorial.cover",
+                "photo.person"
+              ]
+            },
+            "tags": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 3,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxWords": 3,
+                    "measuredLongestRealInstance": "\"Otter news\" = 2 words"
+                  },
+                  "color": {
+                    "enum": [
+                      "midnight",
+                      "sandstone",
+                      "coral",
+                      "celeste",
+                      "peach",
+                      "olive"
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "color"
+                ]
+              }
+            },
+            "featured": {
+              "type": "boolean",
+              "default": false,
+              "note": "the featured card shows a single static celeste 'Featured' pill INSTEAD of the CMS tags"
+            }
+          },
+          "required": [
+            "slug",
+            "title",
+            "cover",
+            "tags"
+          ],
+          "forbiddenFields": [
+            "author",
+            "date",
+            "publishedAt",
+            "readTime",
+            "excerpt",
+            "deck",
+            "shareLinks",
+            "breadcrumb"
+          ],
+          "forbiddenFieldsReason": "None of this data exists on the original. There is not a single <time> element on any blog page. Do not add fields the original lacks."
+        },
+        "note": "9 standard cards on page 1. The featured post is NOT duplicated here, so page 1 is 1 + 9 = all 10 real posts."
+      },
+      "loadMore": {
+        "const": true,
+        "note": "A single 'Load more' pill, rendered for visual fidelity and DELIBERATELY INERT. The original is Finsweet CMS Load v1 pointed at page 2; this clone only holds the 10 real page-1 posts, so there is nothing to load and no extra posts are fabricated to give it something to reveal. It is an <a> with no href, role=\"button\", aria-disabled=\"true\" and a preventDefault click, inside a div[role=navigation][aria-label=\"List\"]. Its CSS pins cursor:pointer so it looks identical to the original's real anchor while still doing nothing. A generated instance must not wire it to real pagination. There is no category filter, no tab bar and no search on this page.",
+        "settable": false
+      }
+    },
+    "required": [
+      "srHeading",
+      "featured",
+      "posts",
+      "loadMore"
+    ]
+  },
+  "constraints": {
+    "maxPerPage": 1,
+    "onePerPage": true,
+    "allowedTemplates": [
+      "blog-index"
+    ],
+    "mustBeInsideMain": true,
+    "noEmptyState": "No .w-dyn-empty block exists in the original markup for either list, so none is rendered here (unlike /faq)."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. Global .btn hover transitions only."
+  },
+  "responsive": {
+    "desktop": "plain .row/.col flex \u2014 no CSS grid and no gap. The 40px gutter and 40px row gap come entirely from .col{padding-inline:20px;margin-bottom:40px} over .row{margin-inline:-20px}. 3-up.",
+    "le991": "still 3-up at 1024 (1024 > 991); cards go col-md-6 below that.",
+    "le479": "1-up."
+  },
+  "assetRoles": [
+    "editorial.cover",
+    "photo.person"
+  ],
+  "observedOn": [
+    "/blog"
+  ],
+  "measuredFrom": "spec/SPEC_blog_legal.md:135-193",
+  "notes": [
+    "Blog cards have NO hover state and NO transition. Do not add one.",
+    "The pill's metrics are a cascade accident preserved on purpose: .w-pagination-next's base font-size:14px beats .btn's 1rem, and because .btn expresses padding and radius in em the whole pill scales down to 110x40.5 with a 1386px radius. The clone wins this with a 0,2,0 selector (.w-pagination-next.btn) rather than relying on source order \u2014 see docs/CASCADE.md.",
+    "The hidden w-page-count still reads '1 / 4' because that is what the original ships; it describes the original collection, not this clone's 10 posts, and it is never visible or exposed to the a11y tree."
+  ]
+}

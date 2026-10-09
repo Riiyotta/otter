@@ -1,0 +1,18 @@
+{
+  "id": "component.stat-block",
+  "kind": "component",
+  "name": "Statistic block (.stat-contain)",
+  "designSystem": "marketing",
+  "composes": [
+    "primitive.eyebrow"
+  ],
+  "geometry": {
+    "display": "flex column",
+    "gap": "0.75em = 12px",
+    "measured1440": "270 x 155.781 (six-with-spacers) / 373.328 x 120-168 (three-centered)"
+  },
+  "measuredFrom": "spec/SPEC_faq_contact_careers.md:579-598",
+  "notes": [
+    "Two observed variants. 'six-with-spacers': h3.eyebrow + div.h4.u-mb-0 figure + p. 'three-centered' (.stat-contain.u-text-center): h3.h4.u-mb-0 + p, and the h3 still computes text-align:LEFT while the p is centred \u2014 reproduce that asymmetry, it is not a bug."
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "component.tabs-disclosure",
+  "kind": "component",
+  "name": "Dual-mode tabs / accordion",
+  "designSystem": "marketing",
+  "composes": [],
+  "geometry": {
+    "desktop": "tab strip driving an absolutely-positioned card in the next column",
+    "le991": "collapses to an accordion driven by a CSS sibling selector"
+  },
+  "measuredFrom": "spec/SPEC_parents_sitters_trust.md:346-349",
+  "responsive": {
+    "desktop": "tab strip + card in adjacent column",
+    "le991": "accordion; .tab-content-mask animates max-height 300ms with a 100ms delay on OPEN only, no delay on close",
+    "le479": "active trigger's top corners animate 99px -> 20px over 300ms"
+  },
+  "notes": [
+    "There is NO separate FAQ-style accordion anywhere on these pages \u2014 no accordion/faq/disclosure class exists in the stylesheet for this widget.",
+    "Tab switching is jQuery, index-based.",
+    "CASCADE: a.tab-trigger{display:flex} is required. A bare .tab-trigger{display:flex} LOSES at equal specificity to index.css's .w-inline-block{display:inline-block}, which measurably made the pills 60.8px instead of 48px and shifted everything below them. See docs/CASCADE.md."
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "component.press-bar",
+  "kind": "component",
+  "name": "Press / 'as featured in' bar",
+  "designSystem": "marketing",
+  "composes": [
+    "primitive.eyebrow",
+    "primitive.press-logo"
+  ],
+  "geometry": {
+    "background": "surface.accentWarm",
+    "radius": "radius.trustBar",
+    "padding": "3.5em 3vw",
+    "gap": "2em",
+    "le991": "flex-direction column, padding 2em",
+    "le479": "gap 3em",
+    "measured1440": "padding 56px 43.2px"
+  },
+  "measuredFrom": "CLONE_SPEC.md:406-414",
+  "responsive": {
+    "desktop": "eyebrow left, logo row 70% wide / max 750px, space-between",
+    "le991": "column, logos 100% wide, centred, gap 32px",
+    "le479": "logos stack in a single column"
+  },
+  "notes": [
+    "LICENSING: the four marks are real third-party publications' trademarks. The section contract exposes a logo COUNT and the eyebrow only \u2014 there is deliberately no logo-file field a generator can populate. See assets/asset-roles.json."
+  ]
+}

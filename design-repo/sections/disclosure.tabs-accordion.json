@@ -1,0 +1,118 @@
+{
+  "id": "disclosure.tabs-accordion",
+  "kind": "section",
+  "name": "Tabs / accordion disclosure",
+  "category": "disclosure",
+  "designSystem": "marketing",
+  "variants": [
+    "default"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "eyebrow": {
+        "type": "string",
+        "maxWords": 4,
+        "measuredLongestRealInstance": "\"how it works\" = 3 words"
+      },
+      "heading": {
+        "type": "string",
+        "maxWords": 14,
+        "measuredLongestRealInstance": "\"We help families find reliable, flexible kidcare\" = 7 words"
+      },
+      "lede": {
+        "type": "string",
+        "maxWords": 28,
+        "measuredLongestRealInstance": "20 words measured on /sitters"
+      },
+      "items": {
+        "type": "array",
+        "minItems": 3,
+        "maxItems": 3,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "type": "string",
+              "maxWords": 1
+            },
+            "label": {
+              "type": "string",
+              "maxWords": 5,
+              "measuredLongestRealInstance": "\"Give care & get paid\" = 5 words",
+              "note": "Some labels carry a non-breaking space before the final word, as in the source."
+            },
+            "body": {
+              "type": "string",
+              "maxWords": 36,
+              "measuredLongestRealInstance": "25 words measured"
+            },
+            "media": {
+              "type": "object",
+              "assetRoleEnumRef": "assets/asset-roles.json#/roles",
+              "allowedRoles": [
+                "photo.person"
+              ]
+            }
+          },
+          "required": [
+            "key",
+            "label",
+            "body",
+            "media"
+          ]
+        },
+        "note": "Exactly 3 on both observed routes."
+      }
+    },
+    "required": [
+      "eyebrow",
+      "heading",
+      "lede",
+      "items"
+    ]
+  },
+  "constraints": {
+    "maxPerPage": 1,
+    "onePerPage": true,
+    "mustBeInsideMain": true,
+    "allowedTemplates": [
+      "audience-landing"
+    ],
+    "note": "There is NO separate FAQ-style accordion anywhere on these routes; this widget is the only disclosure pattern."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "tabs.desktopSwitch",
+      "tabs.accordion"
+    ],
+    "reducedMotionFallback": "instant-switch",
+    "desktopOpacityMs": 300,
+    "desktopSlideMs": 500,
+    "desktopSlideReplaysOnSwitch": true,
+    "accordionMs": 300,
+    "accordionOpenDelayMs": 100,
+    "accordionCloseDelayMs": 0,
+    "asymmetricTiming": true,
+    "easing": "ease.outQuart",
+    "note": "Below 992px the widget becomes an accordion with genuinely asymmetric timing: a 100ms delay then 300ms on open, and no delay on close."
+  },
+  "responsive": {
+    "desktop": "tab strip driving an absolutely-positioned card in the adjacent column.",
+    "le991": "collapses to an accordion driven by a CSS sibling selector; .tab-trigger goes full width with 16px 32px padding and a white background.",
+    "le479": "the active trigger's top corners animate 99px -> 20px over 300ms."
+  },
+  "assetRoles": [
+    "photo.person"
+  ],
+  "observedOn": [
+    "/parents",
+    "/sitters"
+  ],
+  "measuredFrom": "spec/SPEC_parents_sitters_trust.md:350-377",
+  "notes": [
+    "CASCADE: requires a.tab-trigger{display:flex}. A bare .tab-trigger{display:flex} loses at equal specificity to index.css's .w-inline-block{display:inline-block}, which measurably rendered the pills 60.8px instead of 48px. See docs/CASCADE.md."
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "id": "auth.login-form",
+  "kind": "section",
+  "name": "Log-in screen",
+  "category": "auth",
+  "designSystem": "auth",
+  "variants": [
+    "default"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "wordmark": {
+        "const": true,
+        "note": "centred, from primitive.auth-wordmark"
+      },
+      "illustration": {
+        "type": "object",
+        "assetRoleEnumRef": "assets/asset-roles.json#/roles",
+        "allowedRoles": [
+          "auth.illustration"
+        ],
+        "note": "hard 400px wide at every width; overflows and is clipped at 390 \u2014 the original's behaviour"
+      },
+      "title": {
+        "type": "string",
+        "maxWords": 4,
+        "measuredLongestRealInstance": "\"Welcome back!\" = 2 words",
+        "note": "an h3 at 20px/24px weight 600, left-aligned \u2014 NOT an h1"
+      },
+      "field": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "const": "Phone Number",
+            "note": "capital N here; /sign-up says \"Phone number\". A real cross-screen copy inconsistency in the original, preserved."
+          },
+          "type": {
+            "const": "tel"
+          },
+          "name": {
+            "const": "phoneNumber"
+          },
+          "autocomplete": {
+            "const": "off"
+          }
+        },
+        "required": [
+          "label",
+          "type",
+          "name",
+          "autocomplete"
+        ]
+      },
+      "submit": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "const": "Continue"
+          },
+          "disabled": {
+            "const": true
+          },
+          "inert": {
+            "const": true,
+            "note": "HARD CONSTRAINT, LOCKED TRUE. See constraints.inertForm."
+          }
+        },
+        "required": [
+          "label",
+          "disabled",
+          "inert"
+        ]
+      }
+    },
+    "required": [
+      "wordmark",
+      "illustration",
+      "title",
+      "field",
+      "submit"
+    ]
+  },
+  "constraints": {
+    "onePerPage": true,
+    "maxPerPage": 1,
+    "allowedTemplates": [
+      "auth-login"
+    ],
+    "soleSectionOnTemplate": true,
+    "separateDesignSystem": "This screen belongs to the app host (Vite + React + Mantine), NOT the Webflow marketing site. It renders no marketing nav and no footer. Its tokens live in tokens/themes/auth-light.json under a separate namespace and must never be merged into the marketing set. The two systems share only the two font families and the brand hexes.",
+    "inertForm": "HARD CONSTRAINT. The form must have NO action, NO method, NO endpoint and NO fetch. autocomplete=\"off\" everywhere. Submit only preventDefault()s. Nothing typed is stored, transmitted or logged. ANY GENERATED INSTANCE OF THIS TEMPLATE MUST NEVER ACQUIRE CREDENTIAL SUBMISSION. This is enforced by schema const-locks on submit.inert and field.autocomplete, by a semantic-validator check, and by an adversarial test.",
+    "noPanel": "There is no card or panel. Content sits flat on #f8f6f5.",
+    "noLegalText": "There is no 'by continuing you agree to...' line, no privacy link and no terms link on this screen. Recorded as a fact, not an omission.",
+    "scopeReduction": "/sign-up and /welcome were built and then REMOVED on purpose by explicit decision. They must NOT be reintroduced as templates. Their CTAs are now plain external links to the app host."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance animations, no scroll animations, no stagger, nothing animating on load. Only control-level transitions exist: input 200ms ease, floating label 200ms ease, button 300ms ease. There is NO spinner \u2014 Mantine's Loader CSS is not in the bundle.",
+    "inputMs": 200,
+    "labelMs": 200,
+    "buttonMs": 300,
+    "easing": "ease"
+  },
+  "responsive": {
+    "all": "Identical at 1440 / 1024 / 390 apart from the content column: 508px inside a 540px container at 1440/1024, 326px at 390. The type scale does not change at all.",
+    "breakpointNote": "Mantine's min-width em breakpoints (576/768/992/1200/1408) exist in the bundle but NONE of them fire on this screen."
+  },
+  "assetRoles": [
+    "auth.illustration"
+  ],
+  "observedOn": [
+    "/log-in"
+  ],
+  "measuredFrom": "spec/SPEC_auth.md:739-782"
+}

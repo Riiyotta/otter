@@ -1,0 +1,100 @@
+{
+  "id": "benefits.card-grid",
+  "kind": "section",
+  "name": "Benefits card grid",
+  "category": "benefits",
+  "designSystem": "marketing",
+  "variants": [
+    "default"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "eyebrow": {
+        "type": "string",
+        "maxWords": 6,
+        "measuredLongestRealInstance": "\"Taking Care of Our Team\" = 5 words"
+      },
+      "heading": {
+        "type": "string",
+        "maxWords": 6,
+        "measuredLongestRealInstance": "\"Benefits\" = 1 word"
+      },
+      "lede": {
+        "type": "string",
+        "maxWords": 24,
+        "measuredLongestRealInstance": "16 words measured"
+      },
+      "cards": {
+        "type": "array",
+        "minItems": 6,
+        "maxItems": 6,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "heading": {
+              "type": "string",
+              "maxWords": 10,
+              "measuredLongestRealInstance": "\"7 years to exercise your options\" = 6 words"
+            },
+            "body": {
+              "type": "string",
+              "maxWords": 40,
+              "measuredLongestRealInstance": "28 words measured"
+            },
+            "icon": {
+              "type": "object",
+              "assetRoleEnumRef": "assets/asset-roles.json#/roles",
+              "allowedRoles": [
+                "icon.feature"
+              ]
+            }
+          },
+          "required": [
+            "heading",
+            "body",
+            "icon"
+          ]
+        }
+      }
+    },
+    "required": [
+      "eyebrow",
+      "heading",
+      "lede",
+      "cards"
+    ]
+  },
+  "constraints": {
+    "maxPerPage": 1,
+    "onePerPage": true,
+    "allowedTemplates": [
+      "careers"
+    ]
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. Global .btn hover transitions only."
+  },
+  "responsive": {
+    "desktop": "3 x 2 grid of .trust-card (col-lg-4), 373.328x480, padding 48px, radius 32px, dark primary fill. Icons 88x88 with 48px bottom margin. Header .cc-centered, 24px gap.",
+    "le991": "still 3-up at 1024 (1024 > 991); card height grows to 591.953 as content drives it.",
+    "le767": "cards go col-sm-12 -> 1-up; icons drop to 64x64 (max-width 4rem wins over the <=479 width:50%); card padding 32px, gap 32px.",
+    "le479": ".trust-card_header goes max-width 100% with a 16px gap."
+  },
+  "assetRoles": [
+    "icon.feature"
+  ],
+  "observedOn": [
+    "/careers"
+  ],
+  "measuredFrom": "spec/SPEC_faq_contact_careers.md:644-668",
+  "notes": [
+    "Measured asymmetry in the centred header: the eyebrow and h2 are centred but the p inside still computes text-align:LEFT because .paragraph-1-25.u-mb-0 wins. Reproduce it."
+  ]
+}
