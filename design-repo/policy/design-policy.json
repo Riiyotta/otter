@@ -1,0 +1,30 @@
+{
+  "policyId": "consumer-service-marketplace-web",
+  "policyVersion": "1.0.0",
+  "commonIrVersion": "0.5",
+  "title": "Consumer service marketplace (childcare) web-product generation policy",
+  "classification": {
+    "productCategory": "consumer-service-marketplace",
+    "productDomain": "childcare-services",
+    "marketModel": "two-sided marketplace (parents <-> sitters)",
+    "isSaaS": false,
+    "surfaces": ["marketing-site", "auth-entry"],
+    "audiences": ["parents", "sitters", "job-seekers", "press-and-trust"]
+  },
+  "notBoundTo": {
+    "n0-saas-design-constraints-common": "Explicitly NOT applied. That policy assumes a B2B SaaS product (pricing tiers, dashboards, feature matrices, integrations). This repo is a consumer marketplace marketing site; none of those constructs exist here and a generator must not introduce them. Binding to it requires a recorded architecture decision, which has not been made."
+  },
+  "generationRules": [
+    "Pages are drawn only from the 11 templates and 28 section contracts; no pricing-table, feature-matrix, integrations, dashboard or changelog sections.",
+    "Trust and safety content (verification, background checks, press marks) is first-class and must use the pinned asset roles; never fabricate.",
+    "Copy addresses two audiences (parents, sitters); audience-landing is the only template that switches audience.",
+    "Real people, real third-party logos and operative legal text are must-not-fabricate (see assets/asset-roles.json).",
+    "The auth entry (auth-light) stays a separate design system and is never merged into the marketing namespace."
+  ],
+  "enforcedBy": ["schema/pagespec.schema.json", "schema/semantic_validate.py", "assets/asset-roles.json", "docs/CONSTRAINTS.md"],
+  "approval": {
+    "policyDecision": "defined-pending-architecture-review",
+    "architectureDecisionRecorded": false,
+    "note": "Policy classification is defined here; a human architecture owner must still ratify it before it replaces any shared common policy. Legal/licensing sign-off remains open in registry.manifest.json approvalFlags (legalContentSignOff, assetLicensingReviewed) and blocks production use."
+  }
+}

@@ -1,5 +1,15 @@
 {
   "repositoryId": "otter-marketing-design-repo",
+  "category": "consumer-service-marketplace",
+  "productDomain": "childcare-services",
+  "designPolicy": {
+    "ref": "policy/design-policy.json",
+    "policyId": "consumer-service-marketplace-web",
+    "commonIrVersion": "0.5",
+    "notBoundTo": [
+      "n0-saas-design-constraints-common"
+    ]
+  },
   "repositoryVersion": "1.0.0",
   "pageSpecVersion": "1.0.0",
   "allowlistVersion": "1.0.0",
@@ -44,7 +54,7 @@
     "compatibilityRules": 28,
     "assetRoles": 13,
     "schemaContentBranches": 28,
-    "jsonFiles": 81
+    "jsonFiles": 82
   },
   "countsNote": "Every number in `counts` is RECOMPUTED FROM DISK by extraction/verify_all.py's manifest-counts check, which fails the run on any mismatch. A manifest is not self-verifying just because it looks internally coherent -- it has to be checked against the files it summarises. Proven to catch a hand-bumped number by `verify_all.py --prove-drift`.",
   "settablePropertyPaths": 189,
@@ -150,7 +160,8 @@
       "components/trust-card.json",
       "components/values-card.json",
       "components/video-facade.json"
-    ]
+    ],
+    "designPolicy": "policy/design-policy.json"
   },
   "entryPointsNote": "Every path here is INSIDE design-repo/ and is verified to exist by verify_all.py's self-contained check. There are deliberately no ../ paths to the sibling source project: an entry point is a promise about this package's own contents, and a standalone copy or an extracted zip must not reference files it does not contain. External build-time evidence is recorded in extraction/measured-values.json instead, which degrades gracefully (warns, does not fail) when no sibling source tree is present.",
   "dependencies": {

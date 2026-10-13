@@ -29,7 +29,7 @@ real file and line range.
 | **28** | per-section content branches in the schema |
 | **189** | settable property paths in the allowlist |
 | **66** | keyword-verified citations (`extraction/measured-values.json`) |
-| **80** | JSON files in total |
+| **82** | JSON files in total |
 
 All counts above are **recomputed from disk** by `verify_all.py`, which fails
 the run on any mismatch.

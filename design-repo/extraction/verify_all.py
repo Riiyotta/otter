@@ -243,6 +243,34 @@ def check_version_parity():
         record("version-parity", PASS, "allowlistVersion %s (machine-checked)" % want)
 
 
+def check_design_policy():
+    """designPolicy ref resolves, targets Common IR 0.5, is not the SaaS policy,
+    and category/productDomain metadata matches the policy classification."""
+    manifest = jload("registry.manifest.json")
+    ref = manifest.get("designPolicy", {})
+    policy = jload(*ref.get("ref", "missing").split("/"))
+    cls = policy.get("classification", {})
+    errs = []
+    if ref.get("commonIrVersion") != "0.5" or policy.get("commonIrVersion") != "0.5":
+        errs.append("commonIrVersion is not 0.5")
+    if ref.get("policyId") != policy.get("policyId"):
+        errs.append("policyId mismatch manifest vs policy")
+    if "saas" in str(policy.get("policyId", "")).lower() or cls.get("isSaaS") is not False:
+        errs.append("policy is bound to / classified as SaaS")
+    if manifest.get("category") != cls.get("productCategory"):
+        errs.append("manifest.category != policy productCategory")
+    if manifest.get("productDomain") != cls.get("productDomain"):
+        errs.append("manifest.productDomain != policy productDomain")
+    if "n0-saas-design-constraints-common" not in policy.get("notBoundTo", {}):
+        errs.append("policy must record notBoundTo n0-saas-design-constraints-common")
+    if errs:
+        record("design-policy", FAIL, "; ".join(errs))
+    else:
+        record("design-policy", PASS,
+               "%s (Common IR 0.5), category/domain aligned, not SaaS-bound"
+               % policy["policyId"])
+
+
 def check_manifest_counts():
     """Recompute the manifest's own numbers from the files it summarises."""
     manifest = jload("registry.manifest.json")
@@ -535,6 +563,7 @@ CHECKS = [
     check_allowlist_schema,
     check_version_parity,
     check_manifest_counts,
+    check_design_policy,
     check_route_coverage,
     check_graph_validator_agreement,
     check_pinned_asset_policies,
@@ -568,6 +597,12 @@ def prove_drift():
          lambda d: _edit(d, "extraction/measured-values.json",
                          lambda j: j["citations"][0].update(
                              measuredFrom="CLONE_SPEC.md:1-3")), True),
+        ("policy bound to SaaS", "design-policy",
+         lambda d: _edit(d, "policy/design-policy.json",
+                         lambda j: j["classification"].update(isSaaS=True))),
+        ("category/policy mismatch", "design-policy",
+         lambda d: _edit(d, "registry.manifest.json",
+                         lambda j: j.update(category="b2b-saas"))),
         ("hand-bumped manifest count", "manifest-counts",
          lambda d: _edit(d, "registry.manifest.json",
                          lambda j: j["counts"].update(sections=99))),

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.1 — policy classification
+
+- Added `policy/design-policy.json` (`consumer-service-marketplace-web`, Common IR 0.5, childcare-services domain, `isSaaS: false`) and a manifest `designPolicy` ref plus `category`/`productDomain` metadata.
+- Explicitly NOT bound to `n0-saas-design-constraints-common` (recorded under `notBoundTo`); binding would need an architecture decision.
+- New `design-policy` check in `verify_all.py`.
+- Still open: architecture ratification of the policy, legal sign-off and asset-licensing review (`approvalFlags`), so `productionApproved` stays `false`.
+
 ## 1.0.0 — initial build
 
 Built from scratch (Situation A: no design-repo existed). Bottom-up per the
