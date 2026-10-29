@@ -75,5 +75,17 @@
   "notes": [
     "The 'Sign up' CTA target differs per route and must NOT be normalised: the homepage links to https://app.withotter.com/sign-up, subpages link to https://app.withotter.com/sign-up/welcome. These paths genuinely differ in the source.",
     "/log-in does NOT render this chrome \u2014 it is a separate design system with no header at all."
-  ]
+  ],
+  "generatedAssetRoles": [],
+  "retrievalEligible": true,
+  "source": {
+    "id": "Nav.jsx:nav",
+    "tag": "nav",
+    "file": "src/components/Nav.jsx",
+    "lines": "111-207"
+  },
+  "semantic": {
+    "id": "chrome.navbar",
+    "category": "SHELL"
+  }
 }

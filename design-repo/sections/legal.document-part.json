@@ -1,0 +1,81 @@
+{
+  "id": "legal.document-part",
+  "kind": "section",
+  "name": "Legal document part",
+  "category": "legal",
+  "designSystem": "marketing",
+  "variants": [
+    "default"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "documentRef": {
+        "enum": [
+          "terms-of-use",
+          "privacy-policy",
+          "operator-supplied"
+        ],
+        "note": "An ENUM, never a body field. mode:clone -> one of the two real signed-off documents (terms-of-use: 25 heading-bounded parts, privacy-policy: 12). mode:generation -> operator-supplied (the deployer's legal owner supplies the text; GENERATION_MODE_LEGAL)."
+      },
+      "partIndex": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 40,
+        "note": "1-based index of the heading-bounded part (div.splitter + h3.h4 + paragraphs). mode:clone -> parts must run 1..N with N = the real document's part count (LEGAL_DOCUMENT_BINDING)."
+      }
+    },
+    "required": [
+      "documentRef",
+      "partIndex"
+    ]
+  },
+  "constraints": {
+    "maxPerPage": 40,
+    "allowedTemplates": [
+      "legal-prose"
+    ],
+    "repeatable": true,
+    "documentParts": {
+      "terms-of-use": 25,
+      "privacy-policy": 12,
+      "note": "Heading-bounded part count of each real document, re-counted from src/data/legal/{terms,privacy}.js by extraction/verify_all.py when the source tree is present."
+    },
+    "noFabrication": "HARD BAN. assetRole legal.operativeText is pinned to must-not-fabricate. A generator must never write, paraphrase, summarise or 'restore' legal clauses. The schema deliberately exposes no body field for them.",
+    "signOffRequired": "This is the real company's operative legal text, ported verbatim. It requires sign-off from whoever owns legal/content before any real deployment."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. Global .btn hover transitions only."
+  },
+  "responsive": {
+    "desktop": "one div per part: div.splitter (1px rule, 3em margin-block) + h3.h4 heading + paragraphs, inside the col-lg-8 legal column (850.66px measure at 1440).",
+    "le991": "column widens to col-md-12.",
+    "le479": "same structure."
+  },
+  "assetRoles": [],
+  "observedOn": [
+    "/terms-of-use",
+    "/privacy-policy"
+  ],
+  "measuredFrom": "spec/SPEC_blog_legal.md:634-662",
+  "notes": [
+    "One node per heading-bounded part of the document; measured individually by extraction/measure_sections.mjs (instance index) so no single section holds the page."
+  ],
+  "generatedAssetRoles": [],
+  "retrievalEligible": true,
+  "source": {
+    "id": "LegalDocument.jsx:div@L67",
+    "tag": "div",
+    "file": "src/components/legal/LegalDocument.jsx",
+    "lines": "67-75"
+  },
+  "semantic": {
+    "id": "legal.document-part",
+    "category": "LEGAL"
+  }
+}

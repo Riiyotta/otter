@@ -1,9 +1,19 @@
 {
-  "pageSpecVersion": "1.0.0",
+  "pageSpecVersion": "1.1.0",
+  "mode": "clone",
   "route": "/parents",
   "template": "audience-landing",
   "designSystem": "marketing",
   "theme": "marketing-light",
+  "tokens": {
+    "surface": "semantic.surface.page",
+    "text": "semantic.text.primary",
+    "fontDisplay": "typography.font.display",
+    "fontBody": "typography.font.sans",
+    "sectionPadding": "spacing.section.default",
+    "cardRadius": "radius.card",
+    "buttonRadius": "radius.pill"
+  },
   "nodes": [
     {
       "section": "chrome.navbar",
@@ -84,7 +94,7 @@
             "body": "Let us know when you need care and we match you with a sitter based on your needs and their availability.",
             "media": {
               "assetRole": "photo.person",
-              "assetRef": "public/img/home-tabs-–-book.webp"
+              "assetRef": "public/img/home-tabs-\u2013-book.webp"
             }
           },
           {
@@ -93,7 +103,7 @@
             "body": "Your sitter shows up so you can head out. After the booking wraps up you receive a payment request in the app.",
             "media": {
               "assetRole": "photo.person",
-              "assetRef": "public/img/home-tabs-–-heda-out.webp"
+              "assetRef": "public/img/home-tabs-\u2013-heda-out.webp"
             }
           }
         ]

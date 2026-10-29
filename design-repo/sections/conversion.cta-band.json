@@ -51,7 +51,11 @@
         "allowedRoles": [
           "editorial.cover",
           "photo.person",
-          "decorative.none"
+          "decorative.none",
+          "illustration.generated",
+          "screenshot.placeholder",
+          "asset.operatorSupplied",
+          "person.fictional"
         ]
       }
     },
@@ -84,7 +88,11 @@
   "assetRoles": [
     "editorial.cover",
     "photo.person",
-    "decorative.none"
+    "decorative.none",
+    "illustration.generated",
+    "screenshot.placeholder",
+    "asset.operatorSupplied",
+    "person.fictional"
   ],
   "observedOn": [
     "/blog"
@@ -92,5 +100,23 @@
   "measuredFrom": "spec/SPEC_blog_legal.md:374-422",
   "notes": [
     "A first draft of this contract pinned the CTA to https://app.withotter.com/sign-up by analogy with the other conversion sections. Direct inspection of src/components/blog/CtaBand.jsx showed the real href is '#'. The invented value was removed; this is the kind of plausible-but-unmeasured guess the build methodology forbids."
-  ]
+  ],
+  "generatedAssetRoles": [
+    "decorative.none",
+    "illustration.generated",
+    "screenshot.placeholder",
+    "asset.operatorSupplied",
+    "person.fictional"
+  ],
+  "retrievalEligible": true,
+  "source": {
+    "id": "CtaBand.jsx:div.section",
+    "tag": "div",
+    "file": "src/components/blog/CtaBand.jsx",
+    "lines": "12-42"
+  },
+  "semantic": {
+    "id": "conversion.cta-band",
+    "category": "CTA"
+  }
 }

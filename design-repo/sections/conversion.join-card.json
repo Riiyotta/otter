@@ -32,9 +32,21 @@
           },
           "href": {
             "type": "string",
-            "enum": [
+            "anyOf": [
+              {
+                "enum": [
+                  "https://app.withotter.com/sign-up"
+                ]
+              },
+              {
+                "pattern": "^(https?://([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid)(/[^\\s]*)?|mailto:[^@\\s]+@([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid))$"
+              }
+            ],
+            "x-cloneEnum": [
               "https://app.withotter.com/sign-up"
-            ]
+            ],
+            "x-generationPattern": "url.placeholder",
+            "x-modeNote": "mode:clone -> one of x-cloneEnum (CTA_HREF_NOT_NORMALISED). mode:generation -> a reserved .example/.invalid URL (GENERATION_MODE_URL); the source app host is rejected."
           },
           "variant": {
             "const": "button-primary"
@@ -76,5 +88,17 @@
   "observedOn": [
     "/"
   ],
-  "measuredFrom": "CLONE_SPEC.md:388-400"
+  "measuredFrom": "CLONE_SPEC.md:388-400",
+  "generatedAssetRoles": [],
+  "retrievalEligible": true,
+  "source": {
+    "id": "HowItWorks.jsx:div.col.col-lg-12",
+    "tag": "div",
+    "file": "src/components/HowItWorks.jsx",
+    "lines": "107-124"
+  },
+  "semantic": {
+    "id": "conversion.join-card",
+    "category": "CTA"
+  }
 }

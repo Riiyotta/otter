@@ -50,8 +50,18 @@
             },
             "href": {
               "type": "string",
-              "pattern": "^https://boards\\.greenhouse\\.io/",
-              "note": "The three real rows link to the company's Greenhouse board. This is one of the few intentional outbound links on the site; rel=\"noopener noreferrer\" and target=_blank are required."
+              "anyOf": [
+                {
+                  "pattern": "^https://boards\\.greenhouse\\.io/"
+                },
+                {
+                  "pattern": "^(https?://([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid)(/[^\\s]*)?|mailto:[^@\\s]+@([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid))$"
+                }
+              ],
+              "x-clonePattern": "^https://boards\\.greenhouse\\.io/",
+              "x-generationPattern": "url.placeholder",
+              "note": "The three real rows link to the company's Greenhouse board. This is one of the few intentional outbound links on the site; rel=\"noopener noreferrer\" and target=_blank are required.",
+              "x-modeNote": "mode:clone -> the source's job board (x-clonePattern). mode:generation -> a reserved .example/.invalid URL (GENERATION_MODE_URL)."
             }
           },
           "required": [
@@ -98,5 +108,17 @@
   "measuredFrom": "spec/SPEC_faq_contact_careers.md:692-700",
   "notes": [
     "CASCADE: the row is a.faq-item.cc-listing.w-inline-block. The display fix must win on SPECIFICITY, not source order. The earlier measured defect rendered the pills inline-block at 160px instead of 120px with the arrow on the wrong side. See docs/CASCADE.md."
-  ]
+  ],
+  "generatedAssetRoles": [],
+  "retrievalEligible": true,
+  "source": {
+    "id": "Careers.jsx:section#jobs.section",
+    "tag": "section",
+    "file": "src/pages/Careers.jsx",
+    "lines": "328-371"
+  },
+  "semantic": {
+    "id": "jobs.listing-rows",
+    "category": "CONTENT"
+  }
 }

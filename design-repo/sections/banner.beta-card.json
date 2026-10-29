@@ -38,9 +38,21 @@
           },
           "href": {
             "type": "string",
-            "enum": [
+            "anyOf": [
+              {
+                "enum": [
+                  "https://app.withotter.com/sign-up"
+                ]
+              },
+              {
+                "pattern": "^(https?://([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid)(/[^\\s]*)?|mailto:[^@\\s]+@([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid))$"
+              }
+            ],
+            "x-cloneEnum": [
               "https://app.withotter.com/sign-up"
-            ]
+            ],
+            "x-generationPattern": "url.placeholder",
+            "x-modeNote": "mode:clone -> one of x-cloneEnum (CTA_HREF_NOT_NORMALISED). mode:generation -> a reserved .example/.invalid URL (GENERATION_MODE_URL); the source app host is rejected."
           },
           "variant": {
             "const": "cc-white"
@@ -56,7 +68,9 @@
         "type": "object",
         "assetRoleEnumRef": "assets/asset-roles.json#/roles",
         "allowedRoles": [
-          "illustration.brand"
+          "illustration.brand",
+          "illustration.generated",
+          "asset.operatorSupplied"
         ],
         "note": "Playdate.svg, rendered 291.2x180 from its height=\"180\" attribute"
       }
@@ -88,10 +102,27 @@
     "le479": "the two columns stack; the copy column takes order:1 so it sits below the illustration. Card padding 32px 32px 32px 24px, gap 16px."
   },
   "assetRoles": [
-    "illustration.brand"
+    "illustration.brand",
+    "illustration.generated",
+    "asset.operatorSupplied"
   ],
   "observedOn": [
     "/"
   ],
-  "measuredFrom": "CLONE_SPEC.md:336-352"
+  "measuredFrom": "CLONE_SPEC.md:336-352",
+  "generatedAssetRoles": [
+    "illustration.generated",
+    "asset.operatorSupplied"
+  ],
+  "retrievalEligible": true,
+  "source": {
+    "id": "BetaBanner.jsx:header.section.hp-banner",
+    "tag": "header",
+    "file": "src/components/BetaBanner.jsx",
+    "lines": "5-47"
+  },
+  "semantic": {
+    "id": "banner.beta-card",
+    "category": "CTA"
+  }
 }

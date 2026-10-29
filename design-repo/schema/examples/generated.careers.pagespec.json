@@ -1,0 +1,295 @@
+{
+  "pageSpecVersion": "1.1.0",
+  "mode": "generation",
+  "route": "/careers",
+  "template": "careers",
+  "designSystem": "marketing",
+  "theme": "marketing-light",
+  "tokens": {
+    "surface": "semantic.surface.page",
+    "text": "semantic.text.primary",
+    "fontDisplay": "typography.font.display",
+    "fontBody": "typography.font.sans",
+    "sectionPadding": "spacing.section.default",
+    "cardRadius": "radius.card",
+    "buttonRadius": "radius.pill"
+  },
+  "nodes": [
+    {
+      "section": "chrome.navbar",
+      "content": {
+        "variant": "site"
+      },
+      "motion": {
+        "pattern": "mobileNav.open",
+        "reducedMotionFallback": "instant-switch"
+      },
+      "variant": "site"
+    },
+    {
+      "section": "hero.light-split",
+      "content": {
+        "variant": "shape-stack",
+        "heading": "Build calmer days with us",
+        "ctas": [
+          {
+            "label": "See open roles",
+            "href": "https://kettlewood.example/start",
+            "variant": "dark"
+          }
+        ],
+        "shapes": [
+          {
+            "clipId": "stone-hero_top-right",
+            "fill": "color.peach",
+            "media": {
+              "assetRole": "decorative.none"
+            }
+          }
+        ]
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      },
+      "variant": "shape-stack"
+    },
+    {
+      "section": "content.image-copy-split",
+      "content": {
+        "heading": "Why we started Kettlewood",
+        "body": "Caring for an older relative should never mean doing it alone, so we built a team around it.",
+        "image": {
+          "assetRole": "illustration.generated",
+          "assetRef": "generated/art-1.svg"
+        }
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    },
+    {
+      "section": "stats.grid",
+      "content": {
+        "variant": "six-with-spacers",
+        "heading": "The companionship gap",
+        "stats": [
+          {
+            "label": "Fictional sample figure for layout only"
+          },
+          {
+            "label": "A second illustrative sample figure"
+          },
+          {
+            "label": "A third illustrative sample figure"
+          }
+        ]
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      },
+      "variant": "six-with-spacers"
+    },
+    {
+      "section": "values.principle-cards",
+      "content": {
+        "srHeading": "Values",
+        "cards": [
+          {
+            "heading": "What we value",
+            "items": [
+              {
+                "label": "Lead with kindness",
+                "icon": {
+                  "assetRole": "illustration.generated",
+                  "assetRef": "generated/art-2.svg"
+                }
+              },
+              {
+                "label": "Keep promises small",
+                "icon": {
+                  "assetRole": "illustration.generated",
+                  "assetRef": "generated/art-3.svg"
+                }
+              },
+              {
+                "label": "Listen first",
+                "icon": {
+                  "assetRole": "illustration.generated",
+                  "assetRef": "generated/art-4.svg"
+                }
+              }
+            ]
+          },
+          {
+            "heading": "How we work",
+            "items": [
+              {
+                "label": "Lead with kindness",
+                "icon": {
+                  "assetRole": "illustration.generated",
+                  "assetRef": "generated/art-5.svg"
+                }
+              },
+              {
+                "label": "Keep promises small",
+                "icon": {
+                  "assetRole": "illustration.generated",
+                  "assetRef": "generated/art-6.svg"
+                }
+              },
+              {
+                "label": "Listen first",
+                "icon": {
+                  "assetRole": "illustration.generated",
+                  "assetRef": "generated/art-7.svg"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    },
+    {
+      "section": "benefits.card-grid",
+      "content": {
+        "eyebrow": "Perks",
+        "heading": "Benefits that travel with you",
+        "lede": "Every Kettlewood teammate gets the same core package from day one.",
+        "cards": [
+          {
+            "heading": "Health cover",
+            "body": "A fictional benefit described for this example page only.",
+            "icon": {
+              "assetRole": "illustration.generated",
+              "assetRef": "generated/art-8.svg"
+            }
+          },
+          {
+            "heading": "Paid leave",
+            "body": "A fictional benefit described for this example page only.",
+            "icon": {
+              "assetRole": "illustration.generated",
+              "assetRef": "generated/art-9.svg"
+            }
+          },
+          {
+            "heading": "Learning budget",
+            "body": "A fictional benefit described for this example page only.",
+            "icon": {
+              "assetRole": "illustration.generated",
+              "assetRef": "generated/art-10.svg"
+            }
+          },
+          {
+            "heading": "Home office kit",
+            "body": "A fictional benefit described for this example page only.",
+            "icon": {
+              "assetRole": "illustration.generated",
+              "assetRef": "generated/art-11.svg"
+            }
+          },
+          {
+            "heading": "Retirement match",
+            "body": "A fictional benefit described for this example page only.",
+            "icon": {
+              "assetRole": "illustration.generated",
+              "assetRef": "generated/art-12.svg"
+            }
+          },
+          {
+            "heading": "Wellbeing days",
+            "body": "A fictional benefit described for this example page only.",
+            "icon": {
+              "assetRole": "illustration.generated",
+              "assetRef": "generated/art-13.svg"
+            }
+          }
+        ]
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    },
+    {
+      "section": "stats.grid",
+      "content": {
+        "variant": "three-centered",
+        "heading": "How we think about pay",
+        "stats": [
+          {
+            "label": "Transparent salary bands"
+          },
+          {
+            "label": "Annual review cycle"
+          },
+          {
+            "label": "Equal starting ranges"
+          }
+        ]
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      },
+      "variant": "three-centered"
+    },
+    {
+      "section": "jobs.listing-rows",
+      "content": {
+        "anchorId": "jobs",
+        "eyebrow": "Open roles",
+        "heading": "Join the team",
+        "lede": "Roles below are examples for a fictional company.",
+        "rows": [
+          {
+            "title": "Companion Success Lead",
+            "location": "Remote",
+            "href": "https://jobs.kettlewood.example/roles/14"
+          }
+        ]
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    },
+    {
+      "section": "chrome.footer",
+      "content": {
+        "variant": "site"
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      },
+      "variant": "site"
+    }
+  ],
+  "generationContext": {
+    "brandName": "Kettlewood",
+    "brandMark": {
+      "assetRole": "placeholder.brandMark",
+      "assetRef": "placeholder/kettlewood-mark.svg"
+    },
+    "siteUrl": "https://kettlewood.example",
+    "appUrl": "https://app.kettlewood.example",
+    "socialLinks": [
+      {
+        "label": "Newsletter",
+        "href": "https://kettlewood.example/newsletter"
+      },
+      {
+        "label": "Community",
+        "href": "https://kettlewood.example/community"
+      }
+    ]
+  }
+}

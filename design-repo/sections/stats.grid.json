@@ -146,5 +146,17 @@
   "measuredFrom": "spec/SPEC_faq_contact_careers.md:579-598",
   "notes": [
     "three-centered carries a measured asymmetry: .stat-contain.u-text-center sets text-align:center on the wrapper, but the h3.h4.u-mb-0 inside still computes text-align:LEFT while the p is centred. Reproduce verbatim \u2014 it is not a bug."
-  ]
+  ],
+  "generatedAssetRoles": [],
+  "retrievalEligible": true,
+  "source": {
+    "id": "Careers.jsx:section.section[2]",
+    "tag": "section",
+    "file": "src/pages/Careers.jsx",
+    "lines": "203-229"
+  },
+  "semantic": {
+    "id": "stats.grid",
+    "category": "STATS"
+  }
 }

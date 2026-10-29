@@ -1,0 +1,69 @@
+{
+  "id": "legal.document-intro",
+  "kind": "section",
+  "name": "Legal document intro",
+  "category": "legal",
+  "designSystem": "marketing",
+  "variants": [
+    "default"
+  ],
+  "content": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "documentRef": {
+        "enum": [
+          "terms-of-use",
+          "privacy-policy",
+          "operator-supplied"
+        ],
+        "note": "An ENUM, never a body field. mode:clone -> one of the two real signed-off documents (terms-of-use: 25 heading-bounded parts, privacy-policy: 12). mode:generation -> operator-supplied (the deployer's legal owner supplies the text; GENERATION_MODE_LEGAL)."
+      }
+    },
+    "required": [
+      "documentRef"
+    ]
+  },
+  "constraints": {
+    "onePerPage": true,
+    "maxPerPage": 1,
+    "allowedTemplates": [
+      "legal-prose"
+    ],
+    "noFabrication": "HARD BAN. assetRole legal.operativeText is pinned to must-not-fabricate. A generator must never write, paraphrase, summarise or 'restore' legal clauses. The schema deliberately exposes no body field for them.",
+    "signOffRequired": "This is the real company's operative legal text, ported verbatim. It requires sign-off from whoever owns legal/content before any real deployment."
+  },
+  "motion": {
+    "allowedPatterns": [
+      "none"
+    ],
+    "reducedMotionFallback": "none",
+    "note": "No entrance or scroll animation. Global .btn hover transitions only."
+  },
+  "responsive": {
+    "desktop": "first child block of the legal column: the 'Effective date' eyebrow (div on /terms-of-use, h2 on /privacy-policy, identical styling) plus intro paragraphs, no .splitter.",
+    "le991": "column widens to col-md-12.",
+    "le479": "same structure."
+  },
+  "assetRoles": [],
+  "observedOn": [
+    "/terms-of-use",
+    "/privacy-policy"
+  ],
+  "measuredFrom": "spec/SPEC_blog_legal.md:634-662",
+  "notes": [
+    "Content is operative legal text owned by legal.operativeText; the PageSpec carries only the document reference."
+  ],
+  "generatedAssetRoles": [],
+  "retrievalEligible": true,
+  "source": {
+    "id": "LegalDocument.jsx:div@L55",
+    "tag": "div",
+    "file": "src/components/legal/LegalDocument.jsx",
+    "lines": "55-64"
+  },
+  "semantic": {
+    "id": "legal.document-intro",
+    "category": "LEGAL"
+  }
+}

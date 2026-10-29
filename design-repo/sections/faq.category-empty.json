@@ -55,5 +55,18 @@
   "measuredFrom": "spec/SPEC_faq_contact_careers.md:218-256",
   "notes": [
     "The accordion CSS exists in the design system (and is used by /careers' job rows) but has ZERO live instances on /faq."
-  ]
+  ],
+  "generatedAssetRoles": [],
+  "retrievalEligible": false,
+  "retrievalReason": "Runtime empty state of an EMPTY CMS collection (the grey 'No items found.' box) repeated per FAQ category; not a reusable content pattern.",
+  "source": {
+    "id": "Faq.jsx:section.section",
+    "tag": "section",
+    "file": "src/pages/Faq.jsx",
+    "lines": "24-37"
+  },
+  "semantic": {
+    "id": "faq.category-empty",
+    "category": "FAQ"
+  }
 }

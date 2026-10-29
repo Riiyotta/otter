@@ -60,5 +60,18 @@
   "measuredFrom": "spec/SPEC_parents_sitters_trust.md:629-737",
   "notes": [
     "The grey box is #ddd, 10px padding, 44px tall. It is NOT missing content."
-  ]
+  ],
+  "generatedAssetRoles": [],
+  "retrievalEligible": false,
+  "retrievalReason": "Runtime empty state of an EMPTY CMS collection (the grey 'No items found.' box); retrieving it as a testimonial exemplar would teach an empty slider.",
+  "source": {
+    "id": "TestimonialsSlider.jsx:section.section",
+    "tag": "section",
+    "file": "src/components/pst/TestimonialsSlider.jsx",
+    "lines": "71-98"
+  },
+  "semantic": {
+    "id": "testimonials.slider-empty",
+    "category": "SOCIAL_PROOF"
+  }
 }

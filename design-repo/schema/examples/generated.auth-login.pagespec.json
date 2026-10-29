@@ -1,0 +1,64 @@
+{
+  "pageSpecVersion": "1.1.0",
+  "mode": "generation",
+  "route": "/log-in",
+  "template": "auth-login",
+  "designSystem": "auth",
+  "theme": "auth-light",
+  "tokens": {
+    "surface": "auth.color.surface.shell",
+    "text": "auth.color.river",
+    "fontDisplay": "typography.font.display",
+    "fontBody": "typography.font.sans",
+    "sectionPadding": "auth.spacing.xl",
+    "cardRadius": "auth.radius.md",
+    "buttonRadius": "auth.radius.md"
+  },
+  "nodes": [
+    {
+      "section": "auth.login-form",
+      "content": {
+        "wordmark": true,
+        "illustration": {
+          "assetRole": "illustration.generated",
+          "assetRef": "generated/art-1.svg"
+        },
+        "title": "Sign in to Kettlewood",
+        "field": {
+          "label": "Phone Number",
+          "type": "tel",
+          "name": "phoneNumber",
+          "autocomplete": "off"
+        },
+        "submit": {
+          "label": "Continue",
+          "disabled": true,
+          "inert": true
+        }
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    }
+  ],
+  "generationContext": {
+    "brandName": "Kettlewood",
+    "brandMark": {
+      "assetRole": "placeholder.brandMark",
+      "assetRef": "placeholder/kettlewood-mark.svg"
+    },
+    "siteUrl": "https://kettlewood.example",
+    "appUrl": "https://app.kettlewood.example",
+    "socialLinks": [
+      {
+        "label": "Newsletter",
+        "href": "https://kettlewood.example/newsletter"
+      },
+      {
+        "label": "Community",
+        "href": "https://kettlewood.example/community"
+      }
+    ]
+  }
+}

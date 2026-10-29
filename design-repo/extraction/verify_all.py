@@ -1,46 +1,52 @@
 #!/usr/bin/env python3
 """One-shot verification for the Otter design-repo.
 
-Runs every automated consistency check this repo claims to have. Each check is
-drift-proofed: it recomputes a fact from the real files rather than trusting a
-hand-maintained summary, so a stale number fails the run instead of looking
-coherent.
+Runs every automated consistency check this repo claims to have. Each check recomputes a fact from the real
+files rather than trusting a hand-maintained summary, and each is proven to fail on injected drift by
+extraction/prove_drift.py.
 
-  1  json-parse        every JSON file parses
-  2  no-abs-paths      no absolute local machine paths anywhere in the tree
-  3  self-contained    manifest entryPoints are all INSIDE design-repo/
-  4  schema            the bundled example validates draft-07 with 0 errors
-  5  allowlist-parity  allowlist <-> contract files, both directions
-  6  allowlist-schema  allowlist settable props <-> the real schema
-  7  version-parity    manifest.allowlistVersion == allowlist.version
-  8  manifest-counts    manifest counts recomputed from disk
-  9  route-coverage     every route assigned exactly once, 1:1 with templates
- 10  graph-validator    every graph rule maps to a real check in the validator
- 11  pinned-assets      the four compliance-critical roles hold their exact value
- 12  citations          every measuredFrom resolves, in range AND on-topic
- 13  adversarial        the full control + mutation suite
+  json-parse          every JSON file parses
+  no-abs-paths        no absolute local machine paths anywhere in the tree
+  self-contained      manifest entryPoints are all INSIDE design-repo/ and exist
+  schema              the bundled clone example validates draft-07 with 0 errors
+  allowlist-parity    allowlist <-> contract files, both directions
+  allowlist-schema    allowlist settable props <-> the real schema
+  version-parity      allowlist / token catalog / token policy / pageSpec versions == manifest
+  manifest-counts     manifest counts recomputed from disk
+  design-policy       bound to n0-design-constraints-common 0.1.0 + local extension; contentHash; no stale wording
+  route-coverage      every route assigned exactly once, 1:1 with templates
+  graph-validator     every graph rule maps to a real check in the validator
+  pinned-assets       the four compliance-critical roles hold their exact generationPolicy
+  citations           every measuredFrom resolves, in range AND on-topic
+  generated-files     schema branches, token catalog, generation examples == a rebuild (R10, R4)
+  token-policy        token policy resolves against the catalog; registered; theme rules pinned (R10)
+  asset-availability  PINNED_AVAILABILITY (here + semantic validator) == registry == allowlist (R3)
+  retrieval-pin       RETRIEVAL_INELIGIBLE (here + semantic validator) == contracts == allowlist (R8)
+  section-contracts   closed contract schema; source/semantic split; source ranges re-read (R7)
+  source-identity     generation-mode leakage registry == a rebuild from the source (R2)
+  examples            one mode:generation example per template family, all valid (R4)
+  wrapper-gate        measured 1440px heights through extraction/wrapper_gate.py (R9)
+  routes-from-source  routes in src/App.jsx == mapped routes (R11)
+  legal-parts         legal part counts == headings in src/data/legal (R6)
+  adversarial         the full control + mutation suite
 
-Citation checks degrade gracefully: with no sibling source tree present (a
-standalone copy, or an extracted zip) they WARN and skip rather than fail, since
-the evidence they point at is build-time context, not shipped content.
+Source-dependent checks degrade gracefully: with no sibling source tree present (a standalone copy, or an
+extracted zip) they WARN and skip rather than fail, since the evidence they point at is build-time context.
 
 Paths derive from __file__, never hardcoded.
 
 Usage:
     python3 verify_all.py                # everything
-    python3 verify_all.py --cross-check  # also diff the vendored validator
-                                         # against the reference `jsonschema`
-                                         # package, if it happens to be installed
-    python3 verify_all.py --prove-drift  # prove the drift checks actually fail
-                                         # on bad input, in a scratch copy
+    python3 verify_all.py --cross-check  # also diff the vendored validator against `jsonschema`, if installed
+    python3 verify_all.py --prove-drift  # runs extraction/prove_drift.py
 """
 import json
 import os
 import re
-import shutil
 import subprocess
 import sys
-import tempfile
+
+sys.dont_write_bytecode = True
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SOURCE_ROOT = os.path.dirname(REPO)   # the sibling project, when present
@@ -234,41 +240,91 @@ def check_allowlist_schema():
 def check_version_parity():
     manifest = jload("registry.manifest.json")
     allowlist = jload("tokens", "llm", "component-allowlist.json")
-    want = allowlist["version"]
-    got = manifest.get("allowlistVersion")
-    if got != want:
-        record("version-parity", FAIL,
-               "manifest.allowlistVersion %r != allowlist.version %r" % (got, want))
+    pairs = [("allowlistVersion", allowlist["version"]),
+             ("tokenCatalogVersion", jload("tokens", "llm", "token-catalog.json")["version"]),
+             ("tokenPolicyVersion", jload("tokens", "llm", "token-policy.json")["version"]),
+             ("pageSpecVersion", jload("schema", "pagespec.schema.json")["properties"]["pageSpecVersion"]["const"])]
+    bad = ["manifest.%s %r != %r" % (k, manifest.get(k), v) for k, v in pairs if manifest.get(k) != v]
+    if bad:
+        record("version-parity", FAIL, "; ".join(bad))
     else:
-        record("version-parity", PASS, "allowlistVersion %s (machine-checked)" % want)
+        record("version-parity", PASS, ", ".join("%s %s" % kv for kv in pairs) + " (machine-checked)")
+
+
+BOUND_POLICY = {"policyId": "n0-design-constraints-common", "policyVersion": "0.1.0", "commonIrVersion": "0.5",
+                "enforcementMode": "hard-and-soft"}
+LOCAL_EXTENSION = {"ref": "policy/design-policy.json", "policyId": "consumer-service-marketplace-web", "policyVersion": "1.0.0"}
+STALE_POLICY_WORDING = re.compile(r"pending[- ]architecture[- ]review|architecture ratification|not recorded|"
+                                  r"has not been made|would need an architecture decision|requires a recorded architecture decision",
+                                  re.I)
 
 
 def check_design_policy():
-    """designPolicy ref resolves, targets Common IR 0.5, is not the SaaS policy,
-    and category/productDomain metadata matches the policy classification."""
+    """The 2026-10-29 architecture decision: bound to the N0 generic common policy n0-design-constraints-common
+    0.1.0 (Common IR 0.5, hard-and-soft), with policy/design-policy.json as a LOCAL EXTENSION; not bound to the
+    SaaS policy; contentHash over the enforcing files matches; no stale 'pending architecture review' wording."""
+    sys.path.insert(0, os.path.join(REPO, "extraction"))
+    import policy_hash
     manifest = jload("registry.manifest.json")
-    ref = manifest.get("designPolicy", {})
-    policy = jload(*ref.get("ref", "missing").split("/"))
-    cls = policy.get("classification", {})
+    dp = manifest.get("designPolicy") or {}
     errs = []
-    if ref.get("commonIrVersion") != "0.5" or policy.get("commonIrVersion") != "0.5":
-        errs.append("commonIrVersion is not 0.5")
-    if ref.get("policyId") != policy.get("policyId"):
-        errs.append("policyId mismatch manifest vs policy")
-    if "saas" in str(policy.get("policyId", "")).lower() or cls.get("isSaaS") is not False:
+    for k, v in BOUND_POLICY.items():
+        if dp.get(k) != v:
+            errs.append("designPolicy.%s is %r, expected %r" % (k, dp.get(k), v))
+    ext = dp.get("localExtension") or {}
+    for k, v in LOCAL_EXTENSION.items():
+        if ext.get(k) != v:
+            errs.append("designPolicy.localExtension.%s is %r, expected %r" % (k, ext.get(k), v))
+    if not os.path.isfile(os.path.join(REPO, ext.get("ref", "missing"))):
+        errs.append("local extension file %r does not exist" % ext.get("ref"))
+        policy = {}
+    else:
+        policy = jload(*ext["ref"].split("/"))
+    if policy.get("policyId") != LOCAL_EXTENSION["policyId"] or policy.get("policyVersion") != LOCAL_EXTENSION["policyVersion"]:
+        errs.append("policy/design-policy.json id/version disagree with localExtension")
+    if (policy.get("extends") or {}).get("policyId") != BOUND_POLICY["policyId"] or (policy.get("extends") or {}).get("policyVersion") != BOUND_POLICY["policyVersion"]:
+        errs.append("policy/design-policy.json must declare extends n0-design-constraints-common 0.1.0")
+    nb = dp.get("notBoundTo") or {}
+    if "n0-saas-design-constraints-common" not in nb or len(str(nb.get("n0-saas-design-constraints-common", ""))) < 30:
+        errs.append("designPolicy.notBoundTo must keep n0-saas-design-constraints-common with its reason")
+    if "saas" in BOUND_POLICY["policyId"] or (policy.get("classification") or {}).get("isSaaS") is not False:
         errs.append("policy is bound to / classified as SaaS")
-    if manifest.get("category") != cls.get("productCategory"):
-        errs.append("manifest.category != policy productCategory")
-    if manifest.get("productDomain") != cls.get("productDomain"):
-        errs.append("manifest.productDomain != policy productDomain")
-    if "n0-saas-design-constraints-common" not in policy.get("notBoundTo", {}):
+    if "n0-saas-design-constraints-common" not in (policy.get("notBoundTo") or {}):
         errs.append("policy must record notBoundTo n0-saas-design-constraints-common")
+    cls = policy.get("classification") or {}
+    if manifest.get("category") != cls.get("productCategory") or dp.get("category") != cls.get("productCategory"):
+        errs.append("manifest/designPolicy category != policy productCategory")
+    if manifest.get("productDomain") != cls.get("productDomain") or dp.get("domain") != cls.get("productDomain"):
+        errs.append("manifest productDomain / designPolicy.domain != policy productDomain")
+    ap = policy.get("approval") or {}
+    if ap.get("policyDecision") != "ratified" or ap.get("architectureDecisionRecorded") is not True \
+            or ap.get("decidedAt") != "2026-10-29" or "repository owner" not in str(ap.get("decidedBy", "")) \
+            or BOUND_POLICY["policyId"] not in str(ap.get("decision", "")) or "LOCAL EXTENSION" not in str(ap.get("decision", "")).upper():
+        errs.append("policy approval must record the ratified 2026-10-29 decision (bound id/version + local extension)")
+    flags = manifest.get("approvalFlags") or {}
+    if flags.get("legalContentSignOff") is not False or flags.get("assetLicensingReviewed") is not False:
+        errs.append("legal/licensing approvalFlags changed; they are NOT part of the policy decision")
+    if dp.get("contentHashFiles") != policy_hash.POLICY_FILES:
+        errs.append("designPolicy.contentHashFiles != extraction/policy_hash.py POLICY_FILES")
+    want = policy_hash.compute(REPO)
+    if dp.get("contentHash") != want:
+        errs.append("designPolicy.contentHash %r != recomputed %r" % (dp.get("contentHash"), want))
+    stale = []
+    for rel in ("README.md", "CHANGELOG.md", "registry.manifest.json", "policy/design-policy.json"):
+        if not os.path.isfile(os.path.join(REPO, rel)):
+            continue
+        with open(os.path.join(REPO, rel), encoding="utf-8") as f:
+            for i, line in enumerate(f, 1):
+                if STALE_POLICY_WORDING.search(line):
+                    stale.append("%s:%d" % (rel, i))
+    if stale:
+        errs.append("stale pending-architecture wording at %s" % stale[:4])
     if errs:
-        record("design-policy", FAIL, "; ".join(errs))
+        record("design-policy", FAIL, "; ".join(errs[:3]))
     else:
         record("design-policy", PASS,
-               "%s (Common IR 0.5), category/domain aligned, not SaaS-bound"
-               % policy["policyId"])
+               "bound to %s %s (Common IR 0.5, hard-and-soft) + local extension %s %s; not SaaS-bound; contentHash matches"
+               % (BOUND_POLICY["policyId"], BOUND_POLICY["policyVersion"], LOCAL_EXTENSION["policyId"], LOCAL_EXTENSION["policyVersion"]))
 
 
 def check_manifest_counts():
@@ -290,9 +346,19 @@ def check_manifest_counts():
         "schemaContentBranches": len(
             schema["properties"]["nodes"]["items"].get("allOf", [])),
         "jsonFiles": len(all_json()),
+        "catalogTokens": jload("tokens", "llm", "token-catalog.json")["counts"]["tokens"],
+        "tokenSlots": len([k for k in jload("tokens", "llm", "token-policy.json")["pageSpecTokenSlots"] if not k.startswith("$")]),
+        "generationExamples": len([n for n in os.listdir(os.path.join(REPO, "schema", "examples")) if n.endswith(".json")]),
     }
     claimed = manifest.get("counts", {})
     bad = {k: (claimed.get(k), v) for k, v in actual.items() if claimed.get(k) != v}
+    with open(os.path.join(REPO, "README.md"), encoding="utf-8") as handle:
+        readme = re.findall(r"^\| \*\*(\w+)\*\* \|.*\(counts\.(\w+)\) \|$", handle.read(), re.M)
+    if not readme:
+        bad["README count table"] = ("missing", "rows tagged (counts.<key>)")
+    for value, key in readme:
+        if str(actual.get(key)) != value:
+            bad["README " + key] = (value, actual.get(key))
     if bad:
         record("manifest-counts", FAIL,
                "; ".join("%s claims %r, disk says %r" % (k, c, a)
@@ -425,6 +491,348 @@ def check_pinned_asset_policies():
         record("pinned-assets", PASS,
                "%d roles within the enum; %d pinned roles hold their exact value"
                % (len(registry["roles"]), len(pinned)))
+
+
+
+# --------------------------------------------------------------------------
+# BASELINE R1-R10 checks (2.0.0)
+# --------------------------------------------------------------------------
+
+# PINNED_AVAILABILITY -- identical to schema/semantic_validate.py's pin, held here independently so that
+# editing assets/asset-roles.json (or one of the two pins) alone cannot loosen a role.
+PINNED_AVAILABILITY = {
+    "asset.operatorSupplied": "generation-safe",
+    "auth.illustration": "clone-only",
+    "blob.fill": "generation-safe",
+    "brand.wordmark": "blocked-for-generation",
+    "copy.original": "generation-safe",
+    "decorative.none": "generation-safe",
+    "editorial.cover": "clone-only",
+    "icon.feature": "clone-only",
+    "icon.values": "clone-only",
+    "illustration.brand": "clone-only",
+    "illustration.editorial": "clone-only",
+    "illustration.generated": "generation-safe",
+    "legal.operativeText": "blocked-for-generation",
+    "logo.placeholder": "generation-safe",
+    "media.videoPoster": "clone-only",
+    "person.fictional": "generation-safe",
+    "photo.person": "clone-only",
+    "placeholder.brandMark": "generation-safe",
+    "press.logo": "blocked-for-generation",
+    "screenshot.placeholder": "generation-safe",
+    "url.placeholder": "generation-safe",
+}
+# RETRIEVAL_INELIGIBLE -- identical to schema/semantic_validate.py's pin.
+RETRIEVAL_INELIGIBLE = {"content.stub-notice", "faq.category-empty", "faq.common-questions-empty", "testimonials.slider-empty"}
+RUNTIME_UI_HINT = re.compile(r"cookie|consent|modal|dialog|drawer|popup|overlay|preloader|toast|cursor|empty|stub", re.I)
+AVAILABILITY = ("clone-only", "generation-safe", "blocked-for-generation")
+
+
+def _script(rel, *args):
+    proc = subprocess.run([sys.executable, "-I", os.path.join(REPO, rel)] + list(args), capture_output=True, text=True)
+    return proc.returncode, (proc.stdout.strip().splitlines() or [proc.stderr.strip()[-200:]])[-1]
+
+
+def _source_present():
+    return os.path.isdir(os.path.join(SOURCE_ROOT, "src"))
+
+
+def check_generated_artifacts():
+    """Generated files rebuilt in memory and compared: schema branches, token catalog, generation examples."""
+    probs = []
+    for rel in ("schema/build_schema.py", "extraction/build_token_catalog.py", "extraction/build_generation_examples.py"):
+        code, last = _script(rel)
+        if code:
+            probs.append("%s: %s" % (rel, last))
+    if probs:
+        record("generated-files", FAIL, "; ".join(probs))
+    else:
+        record("generated-files", PASS, "schema branches, token catalog and generation examples equal a rebuild from their sources")
+
+
+def check_token_policy():
+    """R10: catalog + policy registered, every policy category/slot/allow entry resolves against the catalog,
+    theme rules equal the semantic validator's pin, every fill enum is covered."""
+    import semantic_validate as sv
+    cat = jload("tokens", "llm", "token-catalog.json")
+    pol = jload("tokens", "llm", "token-policy.json")
+    man = jload("registry.manifest.json")
+    probs = []
+    ep = man.get("entryPoints", {})
+    if ep.get("tokenCatalog") != "tokens/llm/token-catalog.json" or ep.get("tokenPolicy") != "tokens/llm/token-policy.json":
+        probs.append("token catalog/policy not registered in registry.manifest.json entryPoints")
+    cats = set(cat["counts"]["byCategory"])
+    for c in pol["allowedTokenCategories"] + pol["notGenerationApproved"]["categories"]:
+        if c not in cats:
+            probs.append("policy category %r is not a catalog category" % c)
+    if sorted(pol["notGenerationApproved"]["categories"]) != sorted(cat["notGenerationApprovedCategories"]):
+        probs.append("notGenerationApproved categories != catalog notGenerationApprovedCategories")
+    if set(pol["allowedTokenCategories"]) | set(pol["notGenerationApproved"]["categories"]) != cats:
+        probs.append("allowedTokenCategories + notGenerationApproved do not cover the catalog categories exactly")
+    schema_slots = set(jload("schema", "pagespec.schema.json")["properties"]["tokens"]["properties"])
+    slots = {k: v for k, v in pol["pageSpecTokenSlots"].items() if not k.startswith("$")}
+    if set(slots) != schema_slots:
+        probs.append("token slots in policy %s != schema tokens properties %s" % (sorted(slots), sorted(schema_slots)))
+    kind_ok = {"semanticColor": ("semanticColor", "authColor"), "fontFamily": ("fontFamily",), "spacing": ("spacing", "authSpacing"),
+               "radius": ("radius", "authRadius")}
+    for name, s in slots.items():
+        for path in s["allow"]:
+            e = cat["tokens"].get(path)
+            if e is None:
+                probs.append("slot %s allows %r, which is not in the catalog" % (name, path))
+            elif e["category"] not in kind_ok.get(s["kind"], (s["kind"],)):
+                probs.append("slot %s (%s) allows %r of category %s" % (name, s["kind"], path, e["category"]))
+    for path in pol["nodeFillSlots"]["allow"]:
+        if cat["tokens"].get(path, {}).get("category") != "color":
+            probs.append("fill allow %r is not a catalog colour" % path)
+    allowed_fills = set(pol["nodeFillSlots"]["allow"]) | {pol["nodeFillSlots"]["noFillSentinel"]}
+    for sid in contract_ids()["sections"]:
+        def walk(o):
+            if isinstance(o, dict):
+                for k, v in o.items():
+                    if k == "fill" and isinstance(v, dict) and "enum" in v and not set(v["enum"]) <= allowed_fills:
+                        probs.append("%s fill enum %s outside nodeFillSlots" % (sid, sorted(set(v["enum"]) - allowed_fills)))
+                    walk(v)
+            elif isinstance(o, list):
+                for v in o:
+                    walk(v)
+        walk(jload("sections", "%s.json" % sid)["content"])
+    tr = pol["themeRules"]
+    if tr["minTextContrast"] != sv.PINNED_THEME_RULES["minTextContrast"]:
+        probs.append("themeRules.minTextContrast != PINNED_THEME_RULES")
+    for theme, th in cat["themes"].items():
+        pin = sv.PINNED_THEME_RULES.get(theme)
+        if not pin or pin["designSystem"] != th["designSystem"] or pin["tokenScopes"] != th["tokenScopes"]:
+            probs.append("theme %s scopes/designSystem disagree with PINNED_THEME_RULES" % theme)
+    if sorted(cat["themes"]) != sorted(jload("registry.manifest.json")["schemaValidatedThemes"]):
+        probs.append("catalog themes != manifest schemaValidatedThemes")
+    if probs:
+        record("token-policy", FAIL, "; ".join(probs[:3]))
+    else:
+        record("token-policy", PASS, "%d catalog tokens / %d categories; %d slots + fills resolve; theme rules pinned"
+               % (cat["counts"]["tokens"], len(cats), len(slots)))
+
+
+def check_asset_availability():
+    """R3: every role has a closed availability equal to BOTH code pins and the allowlist; substitutes exist and
+    are generation-safe; a real mark is never must-reuse-exact; generatedAssetRoles are recomputed."""
+    import semantic_validate as sv
+    reg = jload("assets", "asset-roles.json")
+    roles = reg["roles"]
+    allow = jload("tokens", "llm", "component-allowlist.json")
+    probs = []
+    if PINNED_AVAILABILITY != sv.PINNED_AVAILABILITY:
+        probs.append("verify_all PINNED_AVAILABILITY != semantic_validate PINNED_AVAILABILITY")
+    if set(roles) != set(PINNED_AVAILABILITY):
+        probs.append("roles not pinned / pins without roles: %s" % sorted(set(roles) ^ set(PINNED_AVAILABILITY)))
+    for r, spec in sorted(roles.items()):
+        av = spec.get("availability")
+        if av not in AVAILABILITY:
+            probs.append("%s availability %r outside the closed enum" % (r, av))
+        if PINNED_AVAILABILITY.get(r) != av:
+            probs.append("PINNED role %s must be %r but the registry says %r" % (r, PINNED_AVAILABILITY.get(r), av))
+        if reg["pinnedAvailability"].get(r) != av:
+            probs.append("registry pinnedAvailability[%s] disagrees with the role" % r)
+        if (allow["assetRoles"].get(r) or {}).get("availability") != av:
+            probs.append("allowlist role %s availability disagrees" % r)
+        subs = spec.get("generationSafeSubstitutes")
+        if not isinstance(subs, list) or not spec.get("generatedModeGuidance"):
+            probs.append("%s lacks generationSafeSubstitutes / generatedModeGuidance" % r)
+        elif av != "generation-safe" and not subs:
+            probs.append("%s is %s with no generation-safe substitute" % (r, av))
+        for s in subs or []:
+            if PINNED_AVAILABILITY.get(s) != "generation-safe":
+                probs.append("%s substitute %s is not generation-safe" % (r, s))
+    for mark in ("brand.wordmark", "press.logo"):
+        if roles[mark]["generationPolicy"] == "must-reuse-exact" or PINNED_AVAILABILITY[mark] == "generation-safe":
+            probs.append("real mark %s must never be must-reuse-exact / generation-safe" % mark)
+    for sid in contract_ids()["sections"]:
+        c = jload("sections", "%s.json" % sid)
+        found = []
+
+        def walk(o):
+            if isinstance(o, dict):
+                if "allowedRoles" in o:
+                    found.extend(o["allowedRoles"])
+                for v in o.values():
+                    walk(v)
+            elif isinstance(o, list):
+                for v in o:
+                    walk(v)
+        walk(c["content"])
+        want = [r for r in dict.fromkeys(found) if PINNED_AVAILABILITY.get(r) == "generation-safe"]
+        if "blob.fill" in c["assetRoles"] and "blob.fill" not in want:
+            want.insert(0, "blob.fill")
+        if c.get("generatedAssetRoles") != want:
+            probs.append("%s generatedAssetRoles %s != recomputed %s" % (sid, c.get("generatedAssetRoles"), want))
+        if allow["sections"][sid].get("generatedAssetRoles") != c.get("generatedAssetRoles"):
+            probs.append("%s allowlist generatedAssetRoles disagrees with the contract" % sid)
+        for r in found:
+            if PINNED_AVAILABILITY.get(r) != "generation-safe" and not set(roles[r]["generationSafeSubstitutes"]) <= set(found):
+                probs.append("%s: a field allows %s but not its substitutes" % (sid, r))
+    if probs:
+        record("asset-availability", FAIL, "; ".join(probs[:3]))
+    else:
+        n = sum(1 for v in PINNED_AVAILABILITY.values() if v == "generation-safe")
+        record("asset-availability", PASS, "%d roles pinned in BOTH validators (%d generation-safe); substitutes + generatedAssetRoles consistent"
+               % (len(roles), n))
+
+
+def check_retrieval_pin():
+    """R8: retrievalEligible on every contract equals BOTH pins and the allowlist; ineligible ones have a reason."""
+    import semantic_validate as sv
+    allow = jload("tokens", "llm", "component-allowlist.json")["sections"]
+    probs = []
+    if RETRIEVAL_INELIGIBLE != sv.RETRIEVAL_INELIGIBLE:
+        probs.append("verify_all RETRIEVAL_INELIGIBLE != semantic_validate RETRIEVAL_INELIGIBLE")
+    false_n = 0
+    for sid in contract_ids()["sections"]:
+        c = jload("sections", "%s.json" % sid)
+        want = sid not in RETRIEVAL_INELIGIBLE
+        if c.get("retrievalEligible") is not want:
+            probs.append("%s retrievalEligible %r, pin says %r" % (sid, c.get("retrievalEligible"), want))
+        if allow[sid].get("retrievalEligible") is not c.get("retrievalEligible"):
+            probs.append("%s allowlist retrievalEligible disagrees with the contract" % sid)
+        if not want:
+            false_n += 1
+            if len(str(c.get("retrievalReason", ""))) < 30:
+                probs.append("%s ineligible without a 30+ char reason" % sid)
+        elif RUNTIME_UI_HINT.search(sid + " " + c.get("name", "")):
+            probs.append("%s looks like runtime UI but is not in RETRIEVAL_INELIGIBLE" % sid)
+    for sid in RETRIEVAL_INELIGIBLE:
+        if sid not in contract_ids()["sections"]:
+            probs.append("pinned %s has no contract" % sid)
+    if probs:
+        record("retrieval-pin", FAIL, "; ".join(probs[:3]))
+    else:
+        record("retrieval-pin", PASS, "%d contracts, %d retrieval-ineligible, pinned in both validators + allowlist"
+               % (len(contract_ids()["sections"]), false_n))
+
+
+def check_section_contracts():
+    """R7: every contract validates the CLOSED schema/section-contract.schema.json; semantic.id == id and
+    source.id != id; source ranges re-derived (and the tag re-read at the cited line) from the real files."""
+    import _draft7
+    schema = jload("schema", "section-contract.schema.json")
+    probs = []
+    if _draft7.check_schema(schema):
+        probs.append("section-contract schema uses unsupported keywords")
+    checked = 0
+    for sid in contract_ids()["sections"]:
+        c = jload("sections", "%s.json" % sid)
+        for where, msg in _draft7.validate(c, schema)[:1]:
+            probs.append("%s %s %s" % (sid, where, msg))
+        if (c.get("semantic") or {}).get("id") != c["id"]:
+            probs.append("%s semantic.id != id" % sid)
+        if (c.get("source") or {}).get("id") == c["id"]:
+            probs.append("%s source.id must not equal the contract id" % sid)
+        src = c.get("source") or {}
+        real = os.path.join(SOURCE_ROOT, src.get("file", ""))
+        if _source_present() and os.path.isfile(real):
+            lo, hi = map(int, src["lines"].split("-"))
+            lines = open(real, encoding="utf-8").read().split("\n")
+            if hi > len(lines) or "<" + src["tag"] not in lines[lo - 1] or ("</" + src["tag"] not in lines[hi - 1] and not lines[hi - 1].rstrip().endswith("/>")):
+                probs.append("%s source %s:%s does not open/close <%s> there" % (sid, src["file"], src["lines"], src["tag"]))
+            checked += 1
+        elif _source_present():
+            probs.append("%s source file %s missing" % (sid, src.get("file")))
+    if _source_present():
+        code, last = _script("extraction/build_section_provenance.py")
+        if code:
+            probs.append(last)
+    if probs:
+        record("section-contracts", FAIL, "; ".join(probs[:3]))
+    else:
+        record("section-contracts", PASS if _source_present() else WARN,
+               "%d contracts validate the closed contract schema; source/semantic split; %s"
+               % (len(contract_ids()["sections"]),
+                  "%d source ranges re-read + provenance rebuilt" % checked if _source_present() else "no sibling source tree, ranges NOT re-read"))
+
+
+def check_source_identity():
+    """R2: the generation-mode leakage registry equals a rebuild from the real source."""
+    if not _source_present():
+        record("source-identity", WARN, "no sibling source tree; checked-in schema/source-identity.json used as-is")
+        return
+    code, last = _script("extraction/build_source_identity.py")
+    record("source-identity", FAIL if code else PASS, last)
+
+
+def check_examples():
+    """R4: every template family has >= 1 mode:generation example; every example passes both validators."""
+    import semantic_validate as sv
+    tp = jload("templates", "templates.json")
+    fams = {t["family"] for t in tp["templates"].values()}
+    covered, probs = set(), []
+    edir = os.path.join(REPO, "schema", "examples")
+    names = sorted(n for n in os.listdir(edir) if n.endswith(".json"))
+    reg = sv.load_registry()
+    for n in names:
+        spec = jload("schema", "examples", n)
+        if spec.get("mode") != "generation":
+            probs.append("%s is not mode:generation" % n)
+        se = sv.validate_schema(spec)
+        errs, _ = sv.validate_spec(spec, reg)
+        if se or errs:
+            probs.append("%s: %s" % (n, (se or errs)[0]))
+        covered.add(tp["templates"].get(spec.get("template"), {}).get("family"))
+    clone = jload("schema", "example.pagespec.json")
+    if clone.get("mode") != "clone":
+        probs.append("schema/example.pagespec.json must be the mode:clone example")
+    missing = sorted(fams - covered)
+    if missing:
+        probs.append("template families without a generation example: %s" % missing)
+    if probs:
+        record("examples", FAIL, "; ".join(probs[:3]))
+    else:
+        record("examples", PASS, "%d generation examples cover all %d template families; clone example present" % (len(names), len(fams)))
+
+
+def check_wrapper_gate():
+    """R9: extraction/wrapper_gate.py over the measured 1440px section heights."""
+    sys.path.insert(0, os.path.join(REPO, "extraction"))
+    import wrapper_gate
+    pins = (wrapper_gate.HERO_WARN_PX, wrapper_gate.HERO_ERROR_PX, wrapper_gate.SHARE_WARN, wrapper_gate.SHARE_ERROR,
+            wrapper_gate.MIN_INFLOW_SECTIONS, wrapper_gate.REQUIRED_VIEWPORT, wrapper_gate.MIN_JUSTIFICATION)
+    if pins != (1800, 3000, 0.50, 0.60, 3, 1440, 30):
+        record("wrapper-gate", FAIL, "gate thresholds %s differ from the pinned baseline (1800, 3000, 0.5, 0.6, 3, 1440, 30)" % (pins,))
+        return
+    errors, warnings, _ = wrapper_gate.run(REPO)
+    if errors:
+        record("wrapper-gate", FAIL, "%d error(s): %s" % (len(errors), errors[0]))
+    else:
+        record("wrapper-gate", PASS, "0 errors, %d warning(s)%s" % (len(warnings), (": " + "; ".join(w[:70] for w in warnings)) if warnings else ""))
+
+
+def check_routes_from_source():
+    """R11: every route the clone's router serves is mapped exactly once (enumerated from src/App.jsx)."""
+    app = os.path.join(SOURCE_ROOT, "src", "App.jsx")
+    if not os.path.isfile(app):
+        record("routes-from-source", WARN, "no sibling source tree; router not re-read")
+        return
+    served = re.findall(r'<Route\s+path="([^"]+)"', open(app, encoding="utf-8").read())
+    mapping = jload("templates", "templates.json")["routeToTemplate"]
+    dup = sorted({r for r in served if served.count(r) > 1})
+    if sorted(set(served)) != sorted(mapping) or dup:
+        record("routes-from-source", FAIL, "router serves %s, templates map %s, duplicates %s" % (sorted(served), sorted(mapping), dup))
+    else:
+        record("routes-from-source", PASS, "%d routes in src/App.jsx == %d mapped routes, each exactly once" % (len(served), len(mapping)))
+
+
+def check_legal_parts():
+    """The legal decomposition's per-document part counts equal the real documents' heading counts."""
+    want = jload("sections", "legal.document-part.json")["constraints"]["documentParts"]
+    if not _source_present():
+        record("legal-parts", WARN, "no sibling source tree; part counts not re-counted")
+        return
+    got = {}
+    for ref, fname in (("terms-of-use", "terms.js"), ("privacy-policy", "privacy.js")):
+        text = open(os.path.join(SOURCE_ROOT, "src", "data", "legal", fname), encoding="utf-8").read()
+        got[ref] = len(re.findall(r"^\s{6}heading:", text, re.M))
+    bad = {k: (want.get(k), v) for k, v in got.items() if want.get(k) != v}
+    record("legal-parts", FAIL if bad else PASS,
+           "declared vs re-counted: %s" % bad if bad else "terms-of-use %d / privacy-policy %d heading-bounded parts re-counted from src/data/legal" % (got["terms-of-use"], got["privacy-policy"]))
 
 
 CITE = re.compile(r"^([A-Za-z0-9_./\-]+\.(?:md|css|jsx|js|json|html)):(\d+)-(\d+)$")
@@ -568,152 +976,23 @@ CHECKS = [
     check_graph_validator_agreement,
     check_pinned_asset_policies,
     check_citations,
+    check_generated_artifacts,
+    check_token_policy,
+    check_asset_availability,
+    check_retrieval_pin,
+    check_section_contracts,
+    check_source_identity,
+    check_examples,
+    check_wrapper_gate,
+    check_routes_from_source,
+    check_legal_parts,
     check_adversarial,
 ]
 
 
 def prove_drift():
-    """Prove the drift checks actually FAIL on bad input.
-
-    A check that has only ever been run against a correct repo might not be
-    checking anything. Each case below copies the repo to a scratch directory,
-    injects one specific defect, and asserts the matching check flips to FAIL --
-    then confirms the real repo still passes.
-    """
-    cases = [
-        ("phantom allowlist entry", "allowlist-parity",
-         lambda d: _edit(d, "tokens/llm/component-allowlist.json",
-                         lambda j: j["sections"].update(
-                             {"hero.nonexistent": {"contractFile":
-                                                   "sections/hero.nonexistent.json"}}))),
-        ("orphaned contract (allowlist entry removed)", "allowlist-parity",
-         lambda d: _edit(d, "tokens/llm/component-allowlist.json",
-                         lambda j: j["sections"].pop("trust.press-bar"))),
-        ("out-of-range citation", "citations",
-         lambda d: _edit(d, "tokens/00-foundation/color.json",
-                         lambda j: j["tokens"]["color.primary"].update(
-                             measuredFrom="CLONE_SPEC.md:99000-99001")), True),
-        ("in-range but OFF-TOPIC citation", "citations",
-         lambda d: _edit(d, "extraction/measured-values.json",
-                         lambda j: j["citations"][0].update(
-                             measuredFrom="CLONE_SPEC.md:1-3")), True),
-        ("policy bound to SaaS", "design-policy",
-         lambda d: _edit(d, "policy/design-policy.json",
-                         lambda j: j["classification"].update(isSaaS=True))),
-        ("category/policy mismatch", "design-policy",
-         lambda d: _edit(d, "registry.manifest.json",
-                         lambda j: j.update(category="b2b-saas"))),
-        ("hand-bumped manifest count", "manifest-counts",
-         lambda d: _edit(d, "registry.manifest.json",
-                         lambda j: j["counts"].update(sections=99))),
-        ("allowlistVersion drift", "version-parity",
-         lambda d: _edit(d, "registry.manifest.json",
-                         lambda j: j.update(allowlistVersion="9.9.9"))),
-        ("pinned asset policy switched to a DIFFERENT-BUT-VALID enum member",
-         "pinned-assets",
-         lambda d: _edit(d, "assets/asset-roles.json",
-                         lambda j: j["roles"]["press.logo"].update(
-                             generationPolicy="may-generate-new"))),
-        ("entryPoint pointing outside design-repo/", "self-contained",
-         lambda d: _edit(d, "registry.manifest.json",
-                         lambda j: j["entryPoints"].update(
-                             external=["../CLONE_SPEC.md"]))),
-        ("absolute local path introduced", "no-abs-paths",
-         lambda d: _append(d, "README.md",
-                           "\nBuilt at " + "/" + "Users" + "/someone/project\n")),
-        ("stale derived set in the graph", "graph-validator",
-         lambda d: _edit(d, "compatibility/graph.json",
-                         lambda j: j["derivedSets"]["NO_HERO_TEMPLATES"].update(
-                             value=["home"]))),
-        ("allowlist drifted from the schema", "allowlist-schema",
-         lambda d: _edit(d, "tokens/llm/component-allowlist.json",
-                         lambda j: j["sections"]["trust.press-bar"].update(
-                             requiredContentFields=["eyebrow"]))),
-        ("route double-assigned to two templates", "route-coverage",
-         lambda d: _edit(d, "templates/templates.json",
-                         lambda j: j["templates"]["contact"]["routes"].append("/careers"))),
-    ]
-    print()
-    print("=" * 74)
-    print("DRIFT PROOF -- inject one defect per scratch copy; the matching check")
-    print("must flip to FAIL. Proves these checks catch drift, not just that they")
-    print("pass on a correct repo.")
-    print("=" * 74)
-    failures = 0
-    cases = [c if len(c) == 4 else (c[0], c[1], c[2], False) for c in cases]
-    for label, expect, mutate, needs_source in cases:
-        tmp = tempfile.mkdtemp(prefix="drift-")
-        dest = os.path.join(tmp, "design-repo")
-        shutil.copytree(REPO, dest,
-                        ignore=shutil.ignore_patterns("__pycache__"))
-        if needs_source:
-            # A citation defect can only be CAUGHT where the cited evidence is
-            # resolvable. Without this the check correctly warns-and-skips and
-            # the injected defect is unobservable -- which is a flaw in the
-            # proof, not in the check. Stage just the cited files as siblings.
-            staged = _stage_cited_sources(tmp)
-            if not staged:
-                print("  %-58s SKIP (no source tree to stage from)" % label[:58])
-                shutil.rmtree(tmp, ignore_errors=True)
-                continue
-        mutate(dest)
-        proc = subprocess.run(
-            [sys.executable, "-I", os.path.join(dest, "extraction", "verify_all.py")],
-            capture_output=True, text=True)
-        line = next((l for l in proc.stdout.splitlines()
-                     if l.strip().startswith(expect)), "")
-        caught = " FAIL " in line
-        print("  %-58s %s" % (label[:58], "caught" if caught else "NOT CAUGHT"))
-        if not caught:
-            failures += 1
-            print("      expected %r to FAIL; got: %s" % (expect, line.strip() or "(no line)"))
-        shutil.rmtree(tmp, ignore_errors=True)
-    print()
-    print("drift cases: %d | not caught: %d" % (len(cases), failures))
-    print("DRIFT PROOF: %s" % ("FAIL" if failures else "PASS"))
-    return 1 if failures else 0
-
-
-def _stage_cited_sources(tmp):
-    """Copy every file this repo cites into `tmp`, mirroring its relative path,
-    so a scratch copy at tmp/design-repo can resolve its own citations."""
-    if not os.path.isdir(os.path.join(SOURCE_ROOT, "src")):
-        return 0
-    wanted = set()
-    for _, _, value in collect_citations():
-        match = CITE.match(value)
-        if match:
-            wanted.add(match.group(1))
-    for entry in jload("extraction", "measured-values.json")["citations"]:
-        match = CITE.match(entry["measuredFrom"])
-        if match:
-            wanted.add(match.group(1))
-    staged = 0
-    for rel in sorted(wanted):
-        src = os.path.join(SOURCE_ROOT, rel)
-        if not os.path.exists(src):
-            continue
-        dst = os.path.join(tmp, rel)
-        os.makedirs(os.path.dirname(dst), exist_ok=True)
-        shutil.copy2(src, dst)
-        staged += 1
-    # the citation check gates on the presence of a src/ directory
-    os.makedirs(os.path.join(tmp, "src"), exist_ok=True)
-    return staged
-
-
-def _edit(root, rel, fn):
-    path = os.path.join(root, rel)
-    with open(path, encoding="utf-8") as handle:
-        data = json.load(handle)
-    fn(data)
-    with open(path, "w", encoding="utf-8") as handle:
-        json.dump(data, handle, indent=2)
-
-
-def _append(root, rel, text):
-    with open(os.path.join(root, rel), "a", encoding="utf-8") as handle:
-        handle.write(text)
+    """Delegates to extraction/prove_drift.py (the drift proof lives in its own script since 2.0.0)."""
+    return subprocess.run([sys.executable, "-I", os.path.join(REPO, "extraction", "prove_drift.py")]).returncode
 
 
 def main(argv):

@@ -35,7 +35,11 @@
               "assetRoleEnumRef": "assets/asset-roles.json#/roles",
               "allowedRoles": [
                 "editorial.cover",
-                "photo.person"
+                "photo.person",
+                "illustration.generated",
+                "screenshot.placeholder",
+                "asset.operatorSupplied",
+                "person.fictional"
               ]
             },
             "tags": {
@@ -123,10 +127,31 @@
   },
   "assetRoles": [
     "editorial.cover",
-    "photo.person"
+    "photo.person",
+    "illustration.generated",
+    "screenshot.placeholder",
+    "asset.operatorSupplied",
+    "person.fictional"
   ],
   "observedOn": [
     "/blog-posts/:slug"
   ],
-  "measuredFrom": "spec/SPEC_blog_legal.md:602-629"
+  "measuredFrom": "spec/SPEC_blog_legal.md:602-629",
+  "generatedAssetRoles": [
+    "illustration.generated",
+    "screenshot.placeholder",
+    "asset.operatorSupplied",
+    "person.fictional"
+  ],
+  "retrievalEligible": true,
+  "source": {
+    "id": "BlogPost.jsx:div.section[2]",
+    "tag": "div",
+    "file": "src/pages/BlogPost.jsx",
+    "lines": "85-102"
+  },
+  "semantic": {
+    "id": "blog.related-posts",
+    "category": "EDITORIAL"
+  }
 }

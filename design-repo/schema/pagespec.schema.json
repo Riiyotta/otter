@@ -2,12 +2,20 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://design-repo.local/otter/pagespec.schema.json",
   "title": "Otter PageSpec",
-  "description": "The machine contract for a generated page. Closed template enum, closed section enum, closed assetRole enum, closed motion object, additionalProperties:false everywhere. Structural rules JSON Schema cannot express live in compatibility/graph.json and are enforced by schema/semantic_validate.py \u2014 a PageSpec is only valid if it passes BOTH.",
+  "description": "The machine contract for a generated page. Closed template enum, closed section enum, closed assetRole enum, closed motion object, additionalProperties:false everywhere. Structural rules JSON Schema cannot express live in compatibility/graph.json and are enforced by schema/semantic_validate.py \u2014 a PageSpec is only valid if it passes BOTH. Since 1.1.0 every PageSpec declares mode (clone | generation) and a closed `tokens` object.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
     "pageSpecVersion": {
-      "const": "1.0.0"
+      "const": "1.1.0",
+      "description": "1.1.0 added the required closed `mode`, the closed `tokens` slot object and `generationContext`. Documentation-only version marker (see registry.manifest.json versionFieldNote)."
+    },
+    "mode": {
+      "enum": [
+        "clone",
+        "generation"
+      ],
+      "description": "REQUIRED generation context. clone = a faithful reconstruction of the source (withotter.com): real source assets/copy may be referenced for fidelity. generation = a new page for a DIFFERENT brand: only generation-safe asset roles, no source brand, people, press/customer marks, screenshots, copy, claims, URLs or embeds (schema/semantic_validate.py GENERATION_MODE_* rules), and generationContext is required."
     },
     "route": {
       "type": "string",
@@ -74,7 +82,9 @@
               "hero.dark-rounded",
               "hero.light-split",
               "jobs.listing-rows",
-              "legal.document-prose",
+              "legal.document-header",
+              "legal.document-intro",
+              "legal.document-part",
               "process.numbered-cards",
               "stats.grid",
               "testimonials.slider-empty",
@@ -82,7 +92,7 @@
               "trust.video-and-cards",
               "values.principle-cards"
             ],
-            "description": "Closed enum of the 28 real section types."
+            "description": "Closed enum of the 30 real section types."
           },
           "variant": {
             "type": "string",
@@ -183,6 +193,10 @@
               "pattern",
               "reducedMotionFallback"
             ]
+          },
+          "retrievalEligible": {
+            "type": "boolean",
+            "description": "Optional echo of the section contract's retrievalEligible. When present it must equal the contract (and the RETRIEVAL_INELIGIBLE pin): RETRIEVAL_ELIGIBILITY_PINNED."
           }
         },
         "required": [
@@ -233,10 +247,52 @@
                             "assetRole",
                             "assetRef"
                           ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "illustration.generated"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^generated/[a-z0-9][a-z0-9._/-]*$",
+                              "description": "A generated/ reference: newly generated original art (no source asset). Generation-safe."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "asset.operatorSupplied"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^operator/[a-z0-9][a-z0-9._/-]*$",
+                              "description": "An operator/ reference the deployer resolves to an asset they supply and license. Generation-safe."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
                         }
                       ],
                       "x-allowedRoles": [
-                        "auth.illustration"
+                        "auth.illustration",
+                        "illustration.generated",
+                        "asset.operatorSupplied"
                       ],
                       "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)",
                       "description": "hard 400px wide at every width; overflows and is clipped at 390 \u2014 the original's behaviour"
@@ -349,9 +405,21 @@
                         },
                         "href": {
                           "type": "string",
-                          "enum": [
+                          "anyOf": [
+                            {
+                              "enum": [
+                                "https://app.withotter.com/sign-up"
+                              ]
+                            },
+                            {
+                              "pattern": "^(https?://([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid)(/[^\\s]*)?|mailto:[^@\\s]+@([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid))$"
+                            }
+                          ],
+                          "x-cloneEnum": [
                             "https://app.withotter.com/sign-up"
-                          ]
+                          ],
+                          "x-generationPattern": "url.placeholder",
+                          "x-modeNote": "mode:clone -> one of x-cloneEnum (CTA_HREF_NOT_NORMALISED). mode:generation -> a reserved .example/.invalid URL (GENERATION_MODE_URL); the source app host is rejected."
                         },
                         "variant": {
                           "const": "cc-white"
@@ -384,10 +452,52 @@
                             "assetRole",
                             "assetRef"
                           ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "illustration.generated"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^generated/[a-z0-9][a-z0-9._/-]*$",
+                              "description": "A generated/ reference: newly generated original art (no source asset). Generation-safe."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "asset.operatorSupplied"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^operator/[a-z0-9][a-z0-9._/-]*$",
+                              "description": "An operator/ reference the deployer resolves to an asset they supply and license. Generation-safe."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
                         }
                       ],
                       "x-allowedRoles": [
-                        "illustration.brand"
+                        "illustration.brand",
+                        "illustration.generated",
+                        "asset.operatorSupplied"
                       ],
                       "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)",
                       "description": "Playdate.svg, rendered 291.2x180 from its height=\"180\" attribute"
@@ -475,10 +585,52 @@
                                   "assetRole",
                                   "assetRef"
                                 ]
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "illustration.generated"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^generated/[a-z0-9][a-z0-9._/-]*$",
+                                    "description": "A generated/ reference: newly generated original art (no source asset). Generation-safe."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "asset.operatorSupplied"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^operator/[a-z0-9][a-z0-9._/-]*$",
+                                    "description": "An operator/ reference the deployer resolves to an asset they supply and license. Generation-safe."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
                               }
                             ],
                             "x-allowedRoles": [
-                              "icon.feature"
+                              "icon.feature",
+                              "illustration.generated",
+                              "asset.operatorSupplied"
                             ],
                             "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
                           }
@@ -556,11 +708,76 @@
                                 "assetRole",
                                 "assetRef"
                               ]
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "assetRole": {
+                                  "enum": [
+                                    "illustration.generated",
+                                    "person.fictional"
+                                  ]
+                                },
+                                "assetRef": {
+                                  "type": "string",
+                                  "pattern": "^generated/[a-z0-9][a-z0-9._/-]*$",
+                                  "description": "A generated/ reference: newly generated original art (no source asset). Generation-safe."
+                                }
+                              },
+                              "required": [
+                                "assetRole",
+                                "assetRef"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "assetRole": {
+                                  "enum": [
+                                    "screenshot.placeholder"
+                                  ]
+                                },
+                                "assetRef": {
+                                  "type": "string",
+                                  "pattern": "^placeholder/[a-z0-9][a-z0-9._/-]*$",
+                                  "description": "A placeholder/ reference (no source asset). Generation-safe."
+                                }
+                              },
+                              "required": [
+                                "assetRole",
+                                "assetRef"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "assetRole": {
+                                  "enum": [
+                                    "asset.operatorSupplied"
+                                  ]
+                                },
+                                "assetRef": {
+                                  "type": "string",
+                                  "pattern": "^operator/[a-z0-9][a-z0-9._/-]*$",
+                                  "description": "An operator/ reference the deployer resolves to an asset they supply and license. Generation-safe."
+                                }
+                              },
+                              "required": [
+                                "assetRole",
+                                "assetRef"
+                              ]
                             }
                           ],
                           "x-allowedRoles": [
                             "editorial.cover",
-                            "photo.person"
+                            "photo.person",
+                            "illustration.generated",
+                            "screenshot.placeholder",
+                            "asset.operatorSupplied",
+                            "person.fictional"
                           ],
                           "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
                         },
@@ -656,11 +873,76 @@
                                   "assetRole",
                                   "assetRef"
                                 ]
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "illustration.generated",
+                                      "person.fictional"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^generated/[a-z0-9][a-z0-9._/-]*$",
+                                    "description": "A generated/ reference: newly generated original art (no source asset). Generation-safe."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "screenshot.placeholder"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^placeholder/[a-z0-9][a-z0-9._/-]*$",
+                                    "description": "A placeholder/ reference (no source asset). Generation-safe."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "asset.operatorSupplied"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^operator/[a-z0-9][a-z0-9._/-]*$",
+                                    "description": "An operator/ reference the deployer resolves to an asset they supply and license. Generation-safe."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
                               }
                             ],
                             "x-allowedRoles": [
                               "editorial.cover",
-                              "photo.person"
+                              "photo.person",
+                              "illustration.generated",
+                              "screenshot.placeholder",
+                              "asset.operatorSupplied",
+                              "person.fictional"
                             ],
                             "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
                           },
@@ -811,11 +1093,76 @@
                             "assetRole",
                             "assetRef"
                           ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "illustration.generated",
+                                "person.fictional"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^generated/[a-z0-9][a-z0-9._/-]*$",
+                              "description": "A generated/ reference: newly generated original art (no source asset). Generation-safe."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "screenshot.placeholder"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^placeholder/[a-z0-9][a-z0-9._/-]*$",
+                              "description": "A placeholder/ reference (no source asset). Generation-safe."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "asset.operatorSupplied"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^operator/[a-z0-9][a-z0-9._/-]*$",
+                              "description": "An operator/ reference the deployer resolves to an asset they supply and license. Generation-safe."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
                         }
                       ],
                       "x-allowedRoles": [
                         "editorial.cover",
-                        "photo.person"
+                        "photo.person",
+                        "illustration.generated",
+                        "screenshot.placeholder",
+                        "asset.operatorSupplied",
+                        "person.fictional"
                       ],
                       "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)",
                       "description": "forced 1:1 square, 32px radius at EVERY breakpoint, letterboxed by object-fit: contain. alt=\"\" on the original. This is a SEPARATE CMS field from the card cover; 9 of the 10 real posts serve the same file for both, and exactly one differs."
@@ -888,11 +1235,76 @@
                                   "assetRole",
                                   "assetRef"
                                 ]
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "illustration.generated",
+                                      "person.fictional"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^generated/[a-z0-9][a-z0-9._/-]*$",
+                                    "description": "A generated/ reference: newly generated original art (no source asset). Generation-safe."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "screenshot.placeholder"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^placeholder/[a-z0-9][a-z0-9._/-]*$",
+                                    "description": "A placeholder/ reference (no source asset). Generation-safe."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "asset.operatorSupplied"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^operator/[a-z0-9][a-z0-9._/-]*$",
+                                    "description": "An operator/ reference the deployer resolves to an asset they supply and license. Generation-safe."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
                               }
                             ],
                             "x-allowedRoles": [
                               "editorial.cover",
-                              "photo.person"
+                              "photo.person",
+                              "illustration.generated",
+                              "screenshot.placeholder",
+                              "asset.operatorSupplied",
+                              "person.fictional"
                             ],
                             "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
                           },
@@ -1096,10 +1508,52 @@
                             "assetRole",
                             "assetRef"
                           ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "illustration.generated"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^generated/[a-z0-9][a-z0-9._/-]*$",
+                              "description": "A generated/ reference: newly generated original art (no source asset). Generation-safe."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "asset.operatorSupplied"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^operator/[a-z0-9][a-z0-9._/-]*$",
+                              "description": "An operator/ reference the deployer resolves to an asset they supply and license. Generation-safe."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
                         }
                       ],
                       "x-allowedRoles": [
-                        "illustration.editorial"
+                        "illustration.editorial",
+                        "illustration.generated",
+                        "asset.operatorSupplied"
                       ],
                       "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
                     }
@@ -1317,12 +1771,77 @@
                           "required": [
                             "assetRole"
                           ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "illustration.generated",
+                                "person.fictional"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^generated/[a-z0-9][a-z0-9._/-]*$",
+                              "description": "A generated/ reference: newly generated original art (no source asset). Generation-safe."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "screenshot.placeholder"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^placeholder/[a-z0-9][a-z0-9._/-]*$",
+                              "description": "A placeholder/ reference (no source asset). Generation-safe."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "asset.operatorSupplied"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^operator/[a-z0-9][a-z0-9._/-]*$",
+                              "description": "An operator/ reference the deployer resolves to an asset they supply and license. Generation-safe."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
                         }
                       ],
                       "x-allowedRoles": [
                         "editorial.cover",
                         "photo.person",
-                        "decorative.none"
+                        "decorative.none",
+                        "illustration.generated",
+                        "screenshot.placeholder",
+                        "asset.operatorSupplied",
+                        "person.fictional"
                       ],
                       "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
                     }
@@ -1376,9 +1895,21 @@
                         },
                         "href": {
                           "type": "string",
-                          "enum": [
+                          "anyOf": [
+                            {
+                              "enum": [
+                                "https://app.withotter.com/sign-up/welcome"
+                              ]
+                            },
+                            {
+                              "pattern": "^(https?://([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid)(/[^\\s]*)?|mailto:[^@\\s]+@([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid))$"
+                            }
+                          ],
+                          "x-cloneEnum": [
                             "https://app.withotter.com/sign-up/welcome"
-                          ]
+                          ],
+                          "x-generationPattern": "url.placeholder",
+                          "x-modeNote": "mode:clone -> one of x-cloneEnum (CTA_HREF_NOT_NORMALISED). mode:generation -> a reserved .example/.invalid URL (GENERATION_MODE_URL); the source app host is rejected."
                         },
                         "variant": {
                           "const": "dark"
@@ -1411,10 +1942,54 @@
                             "assetRole",
                             "assetRef"
                           ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "person.fictional",
+                                "illustration.generated"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^generated/[a-z0-9][a-z0-9._/-]*$",
+                              "description": "A generated/ reference: newly generated original art (no source asset). Generation-safe."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "asset.operatorSupplied"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^operator/[a-z0-9][a-z0-9._/-]*$",
+                              "description": "An operator/ reference the deployer resolves to an asset they supply and license. Generation-safe."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
                         }
                       ],
                       "x-allowedRoles": [
-                        "photo.person"
+                        "photo.person",
+                        "person.fictional",
+                        "illustration.generated",
+                        "asset.operatorSupplied"
                       ],
                       "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
                     },
@@ -1495,9 +2070,21 @@
                         },
                         "href": {
                           "type": "string",
-                          "enum": [
+                          "anyOf": [
+                            {
+                              "enum": [
+                                "https://app.withotter.com/sign-up"
+                              ]
+                            },
+                            {
+                              "pattern": "^(https?://([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid)(/[^\\s]*)?|mailto:[^@\\s]+@([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid))$"
+                            }
+                          ],
+                          "x-cloneEnum": [
                             "https://app.withotter.com/sign-up"
-                          ]
+                          ],
+                          "x-generationPattern": "url.placeholder",
+                          "x-modeNote": "mode:clone -> one of x-cloneEnum (CTA_HREF_NOT_NORMALISED). mode:generation -> a reserved .example/.invalid URL (GENERATION_MODE_URL); the source app host is rejected."
                         },
                         "variant": {
                           "const": "button-primary"
@@ -1595,10 +2182,54 @@
                                   "assetRole",
                                   "assetRef"
                                 ]
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "person.fictional",
+                                      "illustration.generated"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^generated/[a-z0-9][a-z0-9._/-]*$",
+                                    "description": "A generated/ reference: newly generated original art (no source asset). Generation-safe."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "asset.operatorSupplied"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^operator/[a-z0-9][a-z0-9._/-]*$",
+                                    "description": "An operator/ reference the deployer resolves to an asset they supply and license. Generation-safe."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
                               }
                             ],
                             "x-allowedRoles": [
-                              "photo.person"
+                              "photo.person",
+                              "person.fictional",
+                              "illustration.generated",
+                              "asset.operatorSupplied"
                             ],
                             "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
                           }
@@ -1832,9 +2463,21 @@
                         },
                         "href": {
                           "type": "string",
-                          "enum": [
+                          "anyOf": [
+                            {
+                              "enum": [
+                                "https://app.withotter.com/sign-up"
+                              ]
+                            },
+                            {
+                              "pattern": "^(https?://([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid)(/[^\\s]*)?|mailto:[^@\\s]+@([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid))$"
+                            }
+                          ],
+                          "x-cloneEnum": [
                             "https://app.withotter.com/sign-up"
-                          ]
+                          ],
+                          "x-generationPattern": "url.placeholder",
+                          "x-modeNote": "mode:clone -> one of x-cloneEnum (CTA_HREF_NOT_NORMALISED). mode:generation -> a reserved .example/.invalid URL (GENERATION_MODE_URL); the source app host is rejected."
                         },
                         "variant": {
                           "const": "cc-light"
@@ -1907,11 +2550,55 @@
                                 "required": [
                                   "assetRole"
                                 ]
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "person.fictional",
+                                      "illustration.generated"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^generated/[a-z0-9][a-z0-9._/-]*$",
+                                    "description": "A generated/ reference: newly generated original art (no source asset). Generation-safe."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "asset.operatorSupplied"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^operator/[a-z0-9][a-z0-9._/-]*$",
+                                    "description": "An operator/ reference the deployer resolves to an asset they supply and license. Generation-safe."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
                               }
                             ],
                             "x-allowedRoles": [
                               "photo.person",
-                              "decorative.none"
+                              "decorative.none",
+                              "person.fictional",
+                              "illustration.generated",
+                              "asset.operatorSupplied"
                             ],
                             "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
                           }
@@ -2011,11 +2698,24 @@
                           },
                           "href": {
                             "type": "string",
-                            "enum": [
+                            "anyOf": [
+                              {
+                                "enum": [
+                                  "https://app.withotter.com/sign-up/welcome",
+                                  "#jobs"
+                                ]
+                              },
+                              {
+                                "pattern": "^(https?://([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid)(/[^\\s]*)?|mailto:[^@\\s]+@([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid))$"
+                              }
+                            ],
+                            "x-cloneEnum": [
                               "https://app.withotter.com/sign-up/welcome",
                               "#jobs"
                             ],
-                            "note": "Only two CTA targets are observed on light heroes: the app-host welcome path (subpages use /sign-up/welcome, NOT the bare /sign-up the homepage uses) and the /careers same-page #jobs anchor."
+                            "x-generationPattern": "url.placeholder",
+                            "note": "Only two CTA targets are observed on light heroes: the app-host welcome path (subpages use /sign-up/welcome, NOT the bare /sign-up the homepage uses) and the /careers same-page #jobs anchor.",
+                            "x-modeNote": "mode:clone -> one of x-cloneEnum (CTA_HREF_NOT_NORMALISED). mode:generation -> a reserved .example/.invalid URL (GENERATION_MODE_URL); the source app host is rejected."
                           },
                           "variant": {
                             "enum": [
@@ -2098,11 +2798,55 @@
                                 "required": [
                                   "assetRole"
                                 ]
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "person.fictional",
+                                      "illustration.generated"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^generated/[a-z0-9][a-z0-9._/-]*$",
+                                    "description": "A generated/ reference: newly generated original art (no source asset). Generation-safe."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "asset.operatorSupplied"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^operator/[a-z0-9][a-z0-9._/-]*$",
+                                    "description": "An operator/ reference the deployer resolves to an asset they supply and license. Generation-safe."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
                               }
                             ],
                             "x-allowedRoles": [
                               "photo.person",
-                              "decorative.none"
+                              "decorative.none",
+                              "person.fictional",
+                              "illustration.generated",
+                              "asset.operatorSupplied"
                             ],
                             "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
                           }
@@ -2152,11 +2896,55 @@
                               "required": [
                                 "assetRole"
                               ]
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "assetRole": {
+                                  "enum": [
+                                    "person.fictional",
+                                    "illustration.generated"
+                                  ]
+                                },
+                                "assetRef": {
+                                  "type": "string",
+                                  "pattern": "^generated/[a-z0-9][a-z0-9._/-]*$",
+                                  "description": "A generated/ reference: newly generated original art (no source asset). Generation-safe."
+                                }
+                              },
+                              "required": [
+                                "assetRole",
+                                "assetRef"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "assetRole": {
+                                  "enum": [
+                                    "asset.operatorSupplied"
+                                  ]
+                                },
+                                "assetRef": {
+                                  "type": "string",
+                                  "pattern": "^operator/[a-z0-9][a-z0-9._/-]*$",
+                                  "description": "An operator/ reference the deployer resolves to an asset they supply and license. Generation-safe."
+                                }
+                              },
+                              "required": [
+                                "assetRole",
+                                "assetRef"
+                              ]
                             }
                           ],
                           "x-allowedRoles": [
                             "photo.person",
-                            "decorative.none"
+                            "decorative.none",
+                            "person.fictional",
+                            "illustration.generated",
+                            "asset.operatorSupplied"
                           ],
                           "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
                         }
@@ -2238,8 +3026,18 @@
                           },
                           "href": {
                             "type": "string",
-                            "pattern": "^https://boards\\.greenhouse\\.io/",
-                            "note": "The three real rows link to the company's Greenhouse board. This is one of the few intentional outbound links on the site; rel=\"noopener noreferrer\" and target=_blank are required."
+                            "anyOf": [
+                              {
+                                "pattern": "^https://boards\\.greenhouse\\.io/"
+                              },
+                              {
+                                "pattern": "^(https?://([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid)(/[^\\s]*)?|mailto:[^@\\s]+@([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid))$"
+                              }
+                            ],
+                            "x-clonePattern": "^https://boards\\.greenhouse\\.io/",
+                            "x-generationPattern": "url.placeholder",
+                            "note": "The three real rows link to the company's Greenhouse board. This is one of the few intentional outbound links on the site; rel=\"noopener noreferrer\" and target=_blank are required.",
+                            "x-modeNote": "mode:clone -> the source's job board (x-clonePattern). mode:generation -> a reserved .example/.invalid URL (GENERATION_MODE_URL)."
                           }
                         },
                         "required": [
@@ -2266,7 +3064,7 @@
             "if": {
               "properties": {
                 "section": {
-                  "const": "legal.document-prose"
+                  "const": "legal.document-header"
                 }
               },
               "required": [
@@ -2282,33 +3080,94 @@
                     "documentRef": {
                       "enum": [
                         "terms-of-use",
-                        "privacy-policy"
+                        "privacy-policy",
+                        "operator-supplied"
                       ],
-                      "note": "An ENUM of the two real documents, not a body field. A PageSpec can only point at an existing signed-off document; it cannot carry legal prose."
+                      "note": "An ENUM, never a body field. mode:clone -> one of the two real signed-off documents (terms-of-use: 25 heading-bounded parts, privacy-policy: 12). mode:generation -> operator-supplied (the deployer's legal owner supplies the text; GENERATION_MODE_LEGAL)."
                     },
                     "title": {
-                      "enum": [
-                        "Terms of use",
-                        "Privacy Policy"
-                      ]
-                    },
-                    "sectionCount": {
-                      "type": "integer",
-                      "minimum": 1,
-                      "maximum": 40,
-                      "note": "terms-of-use has 25 top-level sections, privacy-policy has 12. Recorded for structural validation only."
+                      "type": "string",
+                      "maxWords": 4,
+                      "measuredLongestRealInstance": "\"Privacy Policy\" / \"Terms of use\" = 2 words",
+                      "note": "mode:clone -> must equal the real document title (Terms of use / Privacy Policy), LEGAL_DOCUMENT_BINDING."
                     }
                   },
                   "required": [
                     "documentRef",
-                    "title",
-                    "sectionCount"
+                    "title"
                   ]
-                },
-                "variant": {
-                  "enum": [
-                    "terms",
-                    "privacy"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "legal.document-intro"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "documentRef": {
+                      "enum": [
+                        "terms-of-use",
+                        "privacy-policy",
+                        "operator-supplied"
+                      ],
+                      "note": "An ENUM, never a body field. mode:clone -> one of the two real signed-off documents (terms-of-use: 25 heading-bounded parts, privacy-policy: 12). mode:generation -> operator-supplied (the deployer's legal owner supplies the text; GENERATION_MODE_LEGAL)."
+                    }
+                  },
+                  "required": [
+                    "documentRef"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "section": {
+                  "const": "legal.document-part"
+                }
+              },
+              "required": [
+                "section"
+              ]
+            },
+            "then": {
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "documentRef": {
+                      "enum": [
+                        "terms-of-use",
+                        "privacy-policy",
+                        "operator-supplied"
+                      ],
+                      "note": "An ENUM, never a body field. mode:clone -> one of the two real signed-off documents (terms-of-use: 25 heading-bounded parts, privacy-policy: 12). mode:generation -> operator-supplied (the deployer's legal owner supplies the text; GENERATION_MODE_LEGAL)."
+                    },
+                    "partIndex": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 40,
+                      "note": "1-based index of the heading-bounded part (div.splitter + h3.h4 + paragraphs). mode:clone -> parts must run 1..N with N = the real document's part count (LEGAL_DOCUMENT_BINDING)."
+                    }
+                  },
+                  "required": [
+                    "documentRef",
+                    "partIndex"
                   ]
                 }
               }
@@ -2363,10 +3222,52 @@
                             "assetRole",
                             "assetRef"
                           ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "illustration.generated"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^generated/[a-z0-9][a-z0-9._/-]*$",
+                              "description": "A generated/ reference: newly generated original art (no source asset). Generation-safe."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "assetRole": {
+                              "enum": [
+                                "asset.operatorSupplied"
+                              ]
+                            },
+                            "assetRef": {
+                              "type": "string",
+                              "pattern": "^operator/[a-z0-9][a-z0-9._/-]*$",
+                              "description": "An operator/ reference the deployer resolves to an asset they supply and license. Generation-safe."
+                            }
+                          },
+                          "required": [
+                            "assetRole",
+                            "assetRef"
+                          ]
                         }
                       ],
                       "x-allowedRoles": [
-                        "illustration.editorial"
+                        "illustration.editorial",
+                        "illustration.generated",
+                        "asset.operatorSupplied"
                       ],
                       "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)",
                       "description": "Illo-Sitter-and-Kid.webp, max-width 70% with margin-bottom -56px so it overhangs the row"
@@ -2670,10 +3571,73 @@
                                 "assetRole",
                                 "assetRef"
                               ]
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "assetRole": {
+                                  "enum": [
+                                    "screenshot.placeholder"
+                                  ]
+                                },
+                                "assetRef": {
+                                  "type": "string",
+                                  "pattern": "^placeholder/[a-z0-9][a-z0-9._/-]*$",
+                                  "description": "A placeholder/ reference (no source asset). Generation-safe."
+                                }
+                              },
+                              "required": [
+                                "assetRole",
+                                "assetRef"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "assetRole": {
+                                  "enum": [
+                                    "illustration.generated"
+                                  ]
+                                },
+                                "assetRef": {
+                                  "type": "string",
+                                  "pattern": "^generated/[a-z0-9][a-z0-9._/-]*$",
+                                  "description": "A generated/ reference: newly generated original art (no source asset). Generation-safe."
+                                }
+                              },
+                              "required": [
+                                "assetRole",
+                                "assetRef"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "assetRole": {
+                                  "enum": [
+                                    "asset.operatorSupplied"
+                                  ]
+                                },
+                                "assetRef": {
+                                  "type": "string",
+                                  "pattern": "^operator/[a-z0-9][a-z0-9._/-]*$",
+                                  "description": "An operator/ reference the deployer resolves to an asset they supply and license. Generation-safe."
+                                }
+                              },
+                              "required": [
+                                "assetRole",
+                                "assetRef"
+                              ]
                             }
                           ],
                           "x-allowedRoles": [
-                            "media.videoPoster"
+                            "media.videoPoster",
+                            "screenshot.placeholder",
+                            "illustration.generated",
+                            "asset.operatorSupplied"
                           ],
                           "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
                         },
@@ -2733,10 +3697,52 @@
                                   "assetRole",
                                   "assetRef"
                                 ]
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "illustration.generated"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^generated/[a-z0-9][a-z0-9._/-]*$",
+                                    "description": "A generated/ reference: newly generated original art (no source asset). Generation-safe."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "assetRole": {
+                                    "enum": [
+                                      "asset.operatorSupplied"
+                                    ]
+                                  },
+                                  "assetRef": {
+                                    "type": "string",
+                                    "pattern": "^operator/[a-z0-9][a-z0-9._/-]*$",
+                                    "description": "An operator/ reference the deployer resolves to an asset they supply and license. Generation-safe."
+                                  }
+                                },
+                                "required": [
+                                  "assetRole",
+                                  "assetRef"
+                                ]
                               }
                             ],
                             "x-allowedRoles": [
-                              "icon.feature"
+                              "icon.feature",
+                              "illustration.generated",
+                              "asset.operatorSupplied"
                             ],
                             "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
                           }
@@ -2827,10 +3833,52 @@
                                         "assetRole",
                                         "assetRef"
                                       ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "assetRole": {
+                                          "enum": [
+                                            "illustration.generated"
+                                          ]
+                                        },
+                                        "assetRef": {
+                                          "type": "string",
+                                          "pattern": "^generated/[a-z0-9][a-z0-9._/-]*$",
+                                          "description": "A generated/ reference: newly generated original art (no source asset). Generation-safe."
+                                        }
+                                      },
+                                      "required": [
+                                        "assetRole",
+                                        "assetRef"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "assetRole": {
+                                          "enum": [
+                                            "asset.operatorSupplied"
+                                          ]
+                                        },
+                                        "assetRef": {
+                                          "type": "string",
+                                          "pattern": "^operator/[a-z0-9][a-z0-9._/-]*$",
+                                          "description": "An operator/ reference the deployer resolves to an asset they supply and license. Generation-safe."
+                                        }
+                                      },
+                                      "required": [
+                                        "assetRole",
+                                        "assetRef"
+                                      ]
                                     }
                                   ],
                                   "x-allowedRoles": [
-                                    "icon.values"
+                                    "icon.values",
+                                    "illustration.generated",
+                                    "asset.operatorSupplied"
                                   ],
                                   "x-assetRoleEnum": "assets/asset-roles.json#/roles (closed)"
                                 }
@@ -2860,37 +3908,241 @@
         ],
         "description": "Per-section content contracts live HERE, on the node item, not on the root object. They are if/then branches keyed on this node's own `section` value; attaching them to the root would make every `if` require a `section` property the root does not have, silently disabling all 28 content contracts."
       }
+    },
+    "tokens": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Page-level design tokens, each a catalog path from tokens/llm/token-catalog.json. Closed set of slots = tokens/llm/token-policy.json pageSpecTokenSlots (GENERATED from it by schema/build_schema.py). Whether a path is a real, approved, slot-appropriate, theme-valid token is checked by schema/semantic_validate.py (TOKEN_* rules); a raw colour, length or font name is rejected there.",
+      "properties": {
+        "surface": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "description": "Page background colour (marketing: the ivory .page-wrapper; auth: the flat shell)."
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "description": "Body text colour; must reach minTextContrast against the surface slot in the declared theme."
+        },
+        "fontDisplay": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "description": "Display family (Reckless Neue; h1)."
+        },
+        "fontBody": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "description": "Body family (Jokker)."
+        },
+        "sectionPadding": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "description": "Vertical section rhythm; a token, never a measured length."
+        },
+        "cardRadius": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "description": "Corner radius of cards and rounded containers."
+        },
+        "buttonRadius": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "description": "Corner radius of buttons (.btn 99em pill, .button-primary 999px)."
+        }
+      },
+      "required": [
+        "surface",
+        "text",
+        "fontDisplay",
+        "fontBody",
+        "sectionPadding",
+        "cardRadius",
+        "buttonRadius"
+      ]
+    },
+    "generationContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "mode:generation ONLY (forbidden in mode:clone). Substitutes the CHROME/CONTRACT-OWNED source identity that no section field exposes: the wordmark (nav, footer, auth screen), the app host behind every sign-up CTA, the footer social links, the press-bar marks and the trust video embed. Without it a generated page would render the source's identity from the components themselves.",
+      "properties": {
+        "brandName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40,
+          "maxWords": 4,
+          "description": "The fictional brand's name (original, not the source brand)."
+        },
+        "brandMark": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "assetRole": {
+                  "enum": [
+                    "placeholder.brandMark"
+                  ]
+                },
+                "assetRef": {
+                  "type": "string",
+                  "pattern": "^placeholder/[a-z0-9][a-z0-9._/-]*$"
+                }
+              },
+              "required": [
+                "assetRole",
+                "assetRef"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "assetRole": {
+                  "enum": [
+                    "asset.operatorSupplied"
+                  ]
+                },
+                "assetRef": {
+                  "type": "string",
+                  "pattern": "^operator/[a-z0-9][a-z0-9._/-]*$"
+                }
+              },
+              "required": [
+                "assetRole",
+                "assetRef"
+              ]
+            }
+          ],
+          "x-allowedRoles": [
+            "placeholder.brandMark",
+            "asset.operatorSupplied"
+          ],
+          "description": "Replaces brand.wordmark (blocked-for-generation)."
+        },
+        "siteUrl": {
+          "type": "string",
+          "pattern": "^(https?://([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid)(/[^\\s]*)?|mailto:[^@\\s]+@([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid))$",
+          "description": "Placeholder site origin on a reserved .example/.invalid domain."
+        },
+        "appUrl": {
+          "type": "string",
+          "pattern": "^(https?://([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid)(/[^\\s]*)?|mailto:[^@\\s]+@([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid))$",
+          "description": "Replaces the source app host every chrome sign-up CTA links to."
+        },
+        "socialLinks": {
+          "type": "array",
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "label": {
+                "type": "string",
+                "maxWords": 2
+              },
+              "href": {
+                "type": "string",
+                "pattern": "^(https?://([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid)(/[^\\s]*)?|mailto:[^@\\s]+@([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid))$"
+              }
+            },
+            "required": [
+              "label",
+              "href"
+            ]
+          },
+          "description": "Replaces the footer's four source social-profile links."
+        },
+        "pressLogos": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxWords": 4
+              },
+              "assetRole": {
+                "enum": [
+                  "logo.placeholder"
+                ]
+              },
+              "assetRef": {
+                "type": "string",
+                "pattern": "^placeholder/[a-z0-9][a-z0-9._/-]*$"
+              }
+            },
+            "required": [
+              "name",
+              "assetRole",
+              "assetRef"
+            ]
+          },
+          "description": "Replaces press.logo (blocked-for-generation) on the press bar; one per logoCount slot."
+        },
+        "videoEmbedUrl": {
+          "type": "string",
+          "pattern": "^(https?://([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid)(/[^\\s]*)?|mailto:[^@\\s]+@([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid))$",
+          "description": "Replaces the source video embed behind the click-to-play facade."
+        }
+      },
+      "required": [
+        "brandName",
+        "brandMark",
+        "siteUrl",
+        "appUrl"
+      ]
     }
   },
   "required": [
     "pageSpecVersion",
+    "mode",
     "route",
     "template",
     "designSystem",
     "theme",
+    "tokens",
     "nodes"
   ],
   "x-counts": {
     "templates": 11,
-    "sections": 28,
-    "assetRoles": 13,
+    "sections": 30,
+    "assetRoles": 21,
     "motionPatterns": 7,
-    "contentBranches": 28
+    "contentBranches": 30,
+    "tokenSlots": 7
   },
   "x-assetRoleEnum": [
+    "asset.operatorSupplied",
     "auth.illustration",
     "blob.fill",
     "brand.wordmark",
+    "copy.original",
     "decorative.none",
     "editorial.cover",
     "icon.feature",
     "icon.values",
     "illustration.brand",
     "illustration.editorial",
+    "illustration.generated",
     "legal.operativeText",
+    "logo.placeholder",
     "media.videoPoster",
+    "person.fictional",
     "photo.person",
-    "press.logo"
+    "placeholder.brandMark",
+    "press.logo",
+    "screenshot.placeholder",
+    "url.placeholder"
   ],
   "x-pinnedAssetPolicies": {
     "note": "These roles are PINNED to a specific policy value, not merely constrained to the enum. verify_all.py enforces each pinned pairing exactly, and schema/tests/adversarial_test.py proves a mutation to a DIFFERENT-BUT-VALID enum member is rejected. Membership-in-a-closed-set is a weaker claim than 'this role must have this value', and these four roles carry real legal weight.",
@@ -2898,5 +4150,67 @@
     "press.logo": "must-not-reproduce-real-mark",
     "photo.person": "must-not-reproduce-real-mark",
     "legal.operativeText": "must-not-fabricate"
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "mode": {
+            "const": "generation"
+          }
+        },
+        "required": [
+          "mode"
+        ]
+      },
+      "then": {
+        "required": [
+          "generationContext"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "mode": {
+            "const": "clone"
+          }
+        },
+        "required": [
+          "mode"
+        ]
+      },
+      "then": {
+        "not": {
+          "required": [
+            "generationContext"
+          ]
+        }
+      }
+    }
+  ],
+  "x-pinnedAvailability": {
+    "note": "Pinned in code as PINNED_AVAILABILITY in BOTH extraction/verify_all.py and schema/semantic_validate.py; editing this registry alone cannot loosen a role. verify_all cross-checks registry == both pins == allowlist.",
+    "asset.operatorSupplied": "generation-safe",
+    "auth.illustration": "clone-only",
+    "blob.fill": "generation-safe",
+    "brand.wordmark": "blocked-for-generation",
+    "copy.original": "generation-safe",
+    "decorative.none": "generation-safe",
+    "editorial.cover": "clone-only",
+    "icon.feature": "clone-only",
+    "icon.values": "clone-only",
+    "illustration.brand": "clone-only",
+    "illustration.editorial": "clone-only",
+    "illustration.generated": "generation-safe",
+    "legal.operativeText": "blocked-for-generation",
+    "logo.placeholder": "generation-safe",
+    "media.videoPoster": "clone-only",
+    "person.fictional": "generation-safe",
+    "photo.person": "clone-only",
+    "placeholder.brandMark": "generation-safe",
+    "press.logo": "blocked-for-generation",
+    "screenshot.placeholder": "generation-safe",
+    "url.placeholder": "generation-safe"
   }
 }

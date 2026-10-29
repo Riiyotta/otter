@@ -1,0 +1,149 @@
+{
+  "pageSpecVersion": "1.1.0",
+  "mode": "generation",
+  "route": "/blog-posts/:slug",
+  "template": "blog-post",
+  "designSystem": "marketing",
+  "theme": "marketing-light",
+  "tokens": {
+    "surface": "semantic.surface.page",
+    "text": "semantic.text.primary",
+    "fontDisplay": "typography.font.display",
+    "fontBody": "typography.font.sans",
+    "sectionPadding": "spacing.section.default",
+    "cardRadius": "radius.card",
+    "buttonRadius": "radius.pill"
+  },
+  "nodes": [
+    {
+      "section": "chrome.navbar",
+      "content": {
+        "variant": "site"
+      },
+      "motion": {
+        "pattern": "mobileNav.open",
+        "reducedMotionFallback": "instant-switch"
+      },
+      "variant": "site"
+    },
+    {
+      "section": "blog.post-header",
+      "content": {
+        "title": "Planning a gentle weekly routine",
+        "tags": [
+          {
+            "name": "Routines",
+            "color": "midnight"
+          }
+        ],
+        "cover": {
+          "assetRole": "illustration.generated",
+          "assetRef": "generated/art-1.svg"
+        }
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    },
+    {
+      "section": "content.rich-text-body",
+      "content": {
+        "blocks": [
+          {
+            "type": "p",
+            "text": "Small rituals help a week feel steady."
+          }
+        ]
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    },
+    {
+      "section": "blog.related-posts",
+      "content": {
+        "heading": "Similar articles",
+        "posts": [
+          {
+            "slug": "sample-article-1",
+            "title": "Gentle stretches for mornings",
+            "cover": {
+              "assetRole": "illustration.generated",
+              "assetRef": "generated/art-2.svg"
+            },
+            "tags": [
+              {
+                "name": "Routines",
+                "color": "midnight"
+              }
+            ]
+          },
+          {
+            "slug": "sample-article-2",
+            "title": "Making a shared calendar",
+            "cover": {
+              "assetRole": "illustration.generated",
+              "assetRef": "generated/art-3.svg"
+            },
+            "tags": [
+              {
+                "name": "Routines",
+                "color": "midnight"
+              }
+            ]
+          },
+          {
+            "slug": "sample-article-3",
+            "title": "Questions for a first visit",
+            "cover": {
+              "assetRole": "illustration.generated",
+              "assetRef": "generated/art-4.svg"
+            },
+            "tags": [
+              {
+                "name": "Routines",
+                "color": "midnight"
+              }
+            ]
+          }
+        ]
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    },
+    {
+      "section": "chrome.footer",
+      "content": {
+        "variant": "site"
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      },
+      "variant": "site"
+    }
+  ],
+  "generationContext": {
+    "brandName": "Kettlewood",
+    "brandMark": {
+      "assetRole": "placeholder.brandMark",
+      "assetRef": "placeholder/kettlewood-mark.svg"
+    },
+    "siteUrl": "https://kettlewood.example",
+    "appUrl": "https://app.kettlewood.example",
+    "socialLinks": [
+      {
+        "label": "Newsletter",
+        "href": "https://kettlewood.example/newsletter"
+      },
+      {
+        "label": "Community",
+        "href": "https://kettlewood.example/community"
+      }
+    ]
+  }
+}

@@ -44,5 +44,18 @@
   "observedOn": [
     "*"
   ],
-  "measuredFrom": "src/pages/NotFound.jsx:1-9"
+  "measuredFrom": "src/pages/NotFound.jsx:1-9",
+  "generatedAssetRoles": [],
+  "retrievalEligible": false,
+  "retrievalReason": "Scaffold placeholder for the unmeasured 404 route ('not built yet'); it is not a design pattern of the source and must not be retrieved as an exemplar.",
+  "source": {
+    "id": "NotFound.jsx:main#main.section",
+    "tag": "main",
+    "file": "src/pages/NotFound.jsx",
+    "lines": "3-7"
+  },
+  "semantic": {
+    "id": "content.stub-notice",
+    "category": "UTILITY"
+  }
 }

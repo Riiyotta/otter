@@ -50,5 +50,18 @@
     "/parents",
     "/sitters"
   ],
-  "measuredFrom": "spec/SPEC_parents_sitters_trust.md:738-756"
+  "measuredFrom": "spec/SPEC_parents_sitters_trust.md:738-756",
+  "generatedAssetRoles": [],
+  "retrievalEligible": false,
+  "retrievalReason": "Runtime empty state of an EMPTY CMS collection (the grey 'No items found.' box); it carries no question/answer pattern to retrieve.",
+  "source": {
+    "id": "CommonQuestions.jsx:section.section",
+    "tag": "section",
+    "file": "src/components/pst/CommonQuestions.jsx",
+    "lines": "14-27"
+  },
+  "semantic": {
+    "id": "faq.common-questions-empty",
+    "category": "FAQ"
+  }
 }

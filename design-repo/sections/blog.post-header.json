@@ -52,7 +52,11 @@
         "assetRoleEnumRef": "assets/asset-roles.json#/roles",
         "allowedRoles": [
           "editorial.cover",
-          "photo.person"
+          "photo.person",
+          "illustration.generated",
+          "screenshot.placeholder",
+          "asset.operatorSupplied",
+          "person.fictional"
         ],
         "note": "forced 1:1 square, 32px radius at EVERY breakpoint, letterboxed by object-fit: contain. alt=\"\" on the original. This is a SEPARATE CMS field from the card cover; 9 of the 10 real posts serve the same file for both, and exactly one differs."
       }
@@ -101,10 +105,31 @@
   },
   "assetRoles": [
     "editorial.cover",
-    "photo.person"
+    "photo.person",
+    "illustration.generated",
+    "screenshot.placeholder",
+    "asset.operatorSupplied",
+    "person.fictional"
   ],
   "observedOn": [
     "/blog-posts/:slug"
   ],
-  "measuredFrom": "spec/SPEC_blog_legal.md:499-527"
+  "measuredFrom": "spec/SPEC_blog_legal.md:499-527",
+  "generatedAssetRoles": [
+    "illustration.generated",
+    "screenshot.placeholder",
+    "asset.operatorSupplied",
+    "person.fictional"
+  ],
+  "retrievalEligible": true,
+  "source": {
+    "id": "BlogPost.jsx:div.section.u-pb-0",
+    "tag": "div",
+    "file": "src/pages/BlogPost.jsx",
+    "lines": "31-68"
+  },
+  "semantic": {
+    "id": "blog.post-header",
+    "category": "EDITORIAL"
+  }
 }

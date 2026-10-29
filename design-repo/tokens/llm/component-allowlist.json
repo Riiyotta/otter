@@ -1,6 +1,6 @@
 {
-  "$comment": "The closed list of what an AI generator is allowed to override. GENERATED FROM the real section contracts and cross-checked against schema/pagespec.schema.json by extraction/verify_all.py -- never hand-copied, so it cannot go stale against the schema. Anything absent from settableProperties is not settable.",
-  "version": "1.0.0",
+  "$comment": "The closed list of what an AI generator is allowed to override. DERIVED FROM the real section contracts and cross-checked against schema/pagespec.schema.json by extraction/verify_all.py -- its section keys, required fields, top-level settable props, asset roles, generatedAssetRoles and retrievalEligible are re-checked against the contracts and the schema on every verify_all run. Anything absent from settableProperties is not settable.",
+  "version": "2.0.0",
   "designSystems": {
     "marketing": "The Webflow-derived marketing site. Theme marketing-light.",
     "auth": "The app host (/log-in): Vite + React + Mantine. Theme auth-light. A SEPARATE design system -- different grid, breakpoints, spacing, radii and line-height. Its tokens live in tokens/themes/auth-light.json and must never be merged into the marketing set. The two share only the two font families and the brand hexes."
@@ -9,16 +9,20 @@
     "A generator may set only the properties listed under a section's settableProperties. Everything else is contract-owned.",
     "Every text field must respect its maxWords budget.",
     "Every media field must carry an assetRole from the closed enum in assets/asset-roles.json, and that role must be in the field's own assetRoles list.",
-    "For any role whose generationPolicy is not may-generate-new, assetRef must be one of the files that role already declares. A generator may reference an existing asset but must never invent one.",
+    "For any role whose generationPolicy is must-reuse-exact (or another non-generative policy with declared files), assetRef must be one of the files that role already declares. A generator may reference an existing asset but must never invent one.",
     "Motion may only use a pattern from the section's allowedMotionPatterns, and reducedMotionFallback must equal the section's declared fallback.",
-    "No token values may be overridden per instance. This schema has NO per-instance style/token-override field at all -- styling is owned entirely by the section and component contracts. Recorded explicitly so nobody looks for a mechanism that does not exist.",
     "Never emit or imitate the real third-party press marks, the Otter wordmark, brand illustrations, real people's photographs, or operative legal text. See assets/asset-roles.json.",
     "Never reintroduce /sign-up or /welcome as local routes.",
-    "Never give an instance of auth.login-form any form of credential submission."
+    "Never give an instance of auth.login-form any form of credential submission.",
+    "Every PageSpec declares mode: clone (faithful reconstruction; real assets/copy may be referenced) or generation (a different brand: generation-safe roles only, no source identity or content, generationContext required).",
+    "In mode:generation only roles whose availability is generation-safe may appear (pinned in code: PINNED_AVAILABILITY).",
+    "Page-level tokens go in the closed `tokens` object and must name catalog paths allowed by tokens/llm/token-policy.json; raw colours, lengths and font names are rejected.",
+    "Sections with retrievalEligible:false (runtime / empty-state / scaffold UI) are never retrieved as design exemplars."
   ],
   "tokenOverridePolicy": {
     "perInstanceOverridesSupported": false,
-    "statement": "There is deliberately no PageSpec-level token-override field. Adversarial coverage for token misuse therefore lives at the catalog layer (extraction/verify_all.py's drift-injection tests), not at the PageSpec layer, because the PageSpec layer has nothing to mutate.",
+    "pageLevelTokenSlots": "tokens/llm/token-policy.json pageSpecTokenSlots (closed `tokens` object in the PageSpec, added in pageSpecVersion 1.1.0)",
+    "statement": "There is still no per-instance style override inside a section. A PageSpec names a closed set of PAGE-LEVEL tokens (surface, text, fontDisplay, fontBody, sectionPadding, cardRadius, buttonRadius) plus the pre-existing per-node fill enums; schema/semantic_validate.py check_tokens validates them against tokens/llm/token-catalog.json (generated from the token files) and tokens/llm/token-policy.json, with adversarial PageSpec-level mutations for every TOKEN_* rule.",
     "rawValueRestrictions": {
       "color": "Only the 9 foundation colours in tokens/00-foundation/color.json. No new hex may be introduced.",
       "fontFamily": "Only font.display and font.sans.",
@@ -76,7 +80,9 @@
         "illustration": {
           "settable": true,
           "assetRoles": [
-            "auth.illustration"
+            "auth.illustration",
+            "illustration.generated",
+            "asset.operatorSupplied"
           ]
         },
         "submit": {
@@ -106,7 +112,13 @@
           "lockedTo": true,
           "reason": "centred, from primitive.auth-wordmark"
         }
-      }
+      },
+      "generatedAssetRoles": [
+        "illustration.generated",
+        "asset.operatorSupplied"
+      ],
+      "retrievalEligible": true,
+      "semanticCategory": "AUTH"
     },
     "banner.beta-card": {
       "contractFile": "sections/banner.beta-card.json",
@@ -136,9 +148,10 @@
         },
         "cta.href": {
           "settable": true,
-          "enum": [
+          "cloneEnum": [
             "https://app.withotter.com/sign-up"
-          ]
+          ],
+          "generationMode": "url.placeholder: a reserved .example/.invalid URL (GENERATION_MODE_URL)"
         },
         "cta.label": {
           "settable": true,
@@ -160,10 +173,18 @@
         "illustration": {
           "settable": true,
           "assetRoles": [
-            "illustration.brand"
+            "illustration.brand",
+            "illustration.generated",
+            "asset.operatorSupplied"
           ]
         }
-      }
+      },
+      "generatedAssetRoles": [
+        "illustration.generated",
+        "asset.operatorSupplied"
+      ],
+      "retrievalEligible": true,
+      "semanticCategory": "CTA"
     },
     "benefits.card-grid": {
       "contractFile": "sections/benefits.card-grid.json",
@@ -199,7 +220,9 @@
         "cards[].icon": {
           "settable": true,
           "assetRoles": [
-            "icon.feature"
+            "icon.feature",
+            "illustration.generated",
+            "asset.operatorSupplied"
           ]
         },
         "eyebrow": {
@@ -214,7 +237,13 @@
           "settable": true,
           "maxWords": 24
         }
-      }
+      },
+      "generatedAssetRoles": [
+        "illustration.generated",
+        "asset.operatorSupplied"
+      ],
+      "retrievalEligible": true,
+      "semanticCategory": "FEATURES"
     },
     "blog.post-grid": {
       "contractFile": "sections/blog.post-grid.json",
@@ -241,7 +270,11 @@
           "settable": true,
           "assetRoles": [
             "editorial.cover",
-            "photo.person"
+            "photo.person",
+            "illustration.generated",
+            "screenshot.placeholder",
+            "asset.operatorSupplied",
+            "person.fictional"
           ]
         },
         "featured.featured": {
@@ -287,7 +320,11 @@
           "settable": true,
           "assetRoles": [
             "editorial.cover",
-            "photo.person"
+            "photo.person",
+            "illustration.generated",
+            "screenshot.placeholder",
+            "asset.operatorSupplied",
+            "person.fictional"
           ]
         },
         "posts[].featured": {
@@ -325,7 +362,15 @@
           "lockedTo": "Blog posts",
           "reason": "h2.u-sr-only"
         }
-      }
+      },
+      "generatedAssetRoles": [
+        "illustration.generated",
+        "screenshot.placeholder",
+        "asset.operatorSupplied",
+        "person.fictional"
+      ],
+      "retrievalEligible": true,
+      "semanticCategory": "EDITORIAL"
     },
     "blog.post-header": {
       "contractFile": "sections/blog.post-header.json",
@@ -348,7 +393,11 @@
           "settable": true,
           "assetRoles": [
             "editorial.cover",
-            "photo.person"
+            "photo.person",
+            "illustration.generated",
+            "screenshot.placeholder",
+            "asset.operatorSupplied",
+            "person.fictional"
           ]
         },
         "tags": {
@@ -375,7 +424,15 @@
           "settable": true,
           "maxWords": 12
         }
-      }
+      },
+      "generatedAssetRoles": [
+        "illustration.generated",
+        "screenshot.placeholder",
+        "asset.operatorSupplied",
+        "person.fictional"
+      ],
+      "retrievalEligible": true,
+      "semanticCategory": "EDITORIAL"
     },
     "blog.related-posts": {
       "contractFile": "sections/blog.related-posts.json",
@@ -407,7 +464,11 @@
           "settable": true,
           "assetRoles": [
             "editorial.cover",
-            "photo.person"
+            "photo.person",
+            "illustration.generated",
+            "screenshot.placeholder",
+            "asset.operatorSupplied",
+            "person.fictional"
           ]
         },
         "posts[].featured": {
@@ -440,7 +501,15 @@
           "settable": true,
           "maxWords": 12
         }
-      }
+      },
+      "generatedAssetRoles": [
+        "illustration.generated",
+        "screenshot.placeholder",
+        "asset.operatorSupplied",
+        "person.fictional"
+      ],
+      "retrievalEligible": true,
+      "semanticCategory": "EDITORIAL"
     },
     "chrome.footer": {
       "contractFile": "sections/chrome.footer.json",
@@ -469,7 +538,12 @@
             "site"
           ]
         }
-      }
+      },
+      "generatedAssetRoles": [
+        "blob.fill"
+      ],
+      "retrievalEligible": true,
+      "semanticCategory": "SHELL"
     },
     "chrome.navbar": {
       "contractFile": "sections/chrome.navbar.json",
@@ -501,7 +575,10 @@
             "site"
           ]
         }
-      }
+      },
+      "generatedAssetRoles": [],
+      "retrievalEligible": true,
+      "semanticCategory": "SHELL"
     },
     "content.image-copy-split": {
       "contractFile": "sections/content.image-copy-split.json",
@@ -531,10 +608,18 @@
         "image": {
           "settable": true,
           "assetRoles": [
-            "illustration.editorial"
+            "illustration.editorial",
+            "illustration.generated",
+            "asset.operatorSupplied"
           ]
         }
-      }
+      },
+      "generatedAssetRoles": [
+        "illustration.generated",
+        "asset.operatorSupplied"
+      ],
+      "retrievalEligible": true,
+      "semanticCategory": "CONTENT"
     },
     "content.rich-text-body": {
       "contractFile": "sections/content.rich-text-body.json",
@@ -568,7 +653,10 @@
           "settable": true,
           "minItems": 1
         }
-      }
+      },
+      "generatedAssetRoles": [],
+      "retrievalEligible": true,
+      "semanticCategory": "EDITORIAL"
     },
     "content.stub-notice": {
       "contractFile": "sections/content.stub-notice.json",
@@ -589,7 +677,11 @@
           "settable": true,
           "maxWords": 8
         }
-      }
+      },
+      "generatedAssetRoles": [],
+      "retrievalEligible": false,
+      "retrievalReason": "Scaffold placeholder for the unmeasured 404 route ('not built yet'); it is not a design pattern of the source and must not be retrieved as an exemplar.",
+      "semanticCategory": "UTILITY"
     },
     "conversion.cta-band": {
       "contractFile": "sections/conversion.cta-band.json",
@@ -638,10 +730,23 @@
           "assetRoles": [
             "editorial.cover",
             "photo.person",
-            "decorative.none"
+            "decorative.none",
+            "illustration.generated",
+            "screenshot.placeholder",
+            "asset.operatorSupplied",
+            "person.fictional"
           ]
         }
-      }
+      },
+      "generatedAssetRoles": [
+        "decorative.none",
+        "illustration.generated",
+        "screenshot.placeholder",
+        "asset.operatorSupplied",
+        "person.fictional"
+      ],
+      "retrievalEligible": true,
+      "semanticCategory": "CTA"
     },
     "conversion.cta-card": {
       "contractFile": "sections/conversion.cta-card.json",
@@ -684,9 +789,10 @@
         },
         "cta.href": {
           "settable": true,
-          "enum": [
+          "cloneEnum": [
             "https://app.withotter.com/sign-up/welcome"
-          ]
+          ],
+          "generationMode": "url.placeholder: a reserved .example/.invalid URL (GENERATION_MODE_URL)"
         },
         "cta.label": {
           "settable": true,
@@ -704,7 +810,10 @@
         "image": {
           "settable": true,
           "assetRoles": [
-            "photo.person"
+            "photo.person",
+            "person.fictional",
+            "illustration.generated",
+            "asset.operatorSupplied"
           ]
         },
         "variant": {
@@ -714,7 +823,15 @@
             "wide"
           ]
         }
-      }
+      },
+      "generatedAssetRoles": [
+        "blob.fill",
+        "person.fictional",
+        "illustration.generated",
+        "asset.operatorSupplied"
+      ],
+      "retrievalEligible": true,
+      "semanticCategory": "CTA"
     },
     "conversion.join-card": {
       "contractFile": "sections/conversion.join-card.json",
@@ -742,9 +859,10 @@
         },
         "cta.href": {
           "settable": true,
-          "enum": [
+          "cloneEnum": [
             "https://app.withotter.com/sign-up"
-          ]
+          ],
+          "generationMode": "url.placeholder: a reserved .example/.invalid URL (GENERATION_MODE_URL)"
         },
         "cta.label": {
           "settable": true,
@@ -759,7 +877,10 @@
           "settable": true,
           "maxWords": 10
         }
-      }
+      },
+      "generatedAssetRoles": [],
+      "retrievalEligible": true,
+      "semanticCategory": "CTA"
     },
     "disclosure.tabs-accordion": {
       "contractFile": "sections/disclosure.tabs-accordion.json",
@@ -808,14 +929,24 @@
         "items[].media": {
           "settable": true,
           "assetRoles": [
-            "photo.person"
+            "photo.person",
+            "person.fictional",
+            "illustration.generated",
+            "asset.operatorSupplied"
           ]
         },
         "lede": {
           "settable": true,
           "maxWords": 28
         }
-      }
+      },
+      "generatedAssetRoles": [
+        "person.fictional",
+        "illustration.generated",
+        "asset.operatorSupplied"
+      ],
+      "retrievalEligible": true,
+      "semanticCategory": "FEATURES"
     },
     "faq.category-empty": {
       "contractFile": "sections/faq.category-empty.json",
@@ -842,7 +973,11 @@
           "settable": true,
           "maxWords": 6
         }
-      }
+      },
+      "generatedAssetRoles": [],
+      "retrievalEligible": false,
+      "retrievalReason": "Runtime empty state of an EMPTY CMS collection (the grey 'No items found.' box) repeated per FAQ category; not a reusable content pattern.",
+      "semanticCategory": "FAQ"
     },
     "faq.common-questions-empty": {
       "contractFile": "sections/faq.common-questions-empty.json",
@@ -869,7 +1004,11 @@
           "settable": true,
           "maxWords": 8
         }
-      }
+      },
+      "generatedAssetRoles": [],
+      "retrievalEligible": false,
+      "retrievalReason": "Runtime empty state of an EMPTY CMS collection (the grey 'No items found.' box); it carries no question/answer pattern to retrieve.",
+      "semanticCategory": "FAQ"
     },
     "form.contact": {
       "contractFile": "sections/form.contact.json",
@@ -944,7 +1083,10 @@
           "lockedTo": true,
           "reason": "the custom .form-success / .w-form-done block, hidden by default"
         }
-      }
+      },
+      "generatedAssetRoles": [],
+      "retrievalEligible": true,
+      "semanticCategory": "FORM"
     },
     "hero.dark-rounded": {
       "contractFile": "sections/hero.dark-rounded.json",
@@ -969,9 +1111,10 @@
         },
         "cta.href": {
           "settable": true,
-          "enum": [
+          "cloneEnum": [
             "https://app.withotter.com/sign-up"
-          ]
+          ],
+          "generationMode": "url.placeholder: a reserved .example/.invalid URL (GENERATION_MODE_URL)"
         },
         "cta.label": {
           "settable": true,
@@ -1010,7 +1153,10 @@
           "settable": true,
           "assetRoles": [
             "photo.person",
-            "decorative.none"
+            "decorative.none",
+            "person.fictional",
+            "illustration.generated",
+            "asset.operatorSupplied"
           ]
         },
         "stones[].slot": {
@@ -1023,7 +1169,16 @@
             "bottom-right"
           ]
         }
-      }
+      },
+      "generatedAssetRoles": [
+        "blob.fill",
+        "decorative.none",
+        "person.fictional",
+        "illustration.generated",
+        "asset.operatorSupplied"
+      ],
+      "retrievalEligible": true,
+      "semanticCategory": "HERO"
     },
     "hero.light-split": {
       "contractFile": "sections/hero.light-split.json",
@@ -1053,10 +1208,11 @@
         },
         "ctas[].href": {
           "settable": true,
-          "enum": [
+          "cloneEnum": [
             "https://app.withotter.com/sign-up/welcome",
             "#jobs"
-          ]
+          ],
+          "generationMode": "url.placeholder: a reserved .example/.invalid URL (GENERATION_MODE_URL)"
         },
         "ctas[].label": {
           "settable": true,
@@ -1081,7 +1237,10 @@
           "nullable": true,
           "assetRoles": [
             "photo.person",
-            "decorative.none"
+            "decorative.none",
+            "person.fictional",
+            "illustration.generated",
+            "asset.operatorSupplied"
           ]
         },
         "lede": {
@@ -1129,7 +1288,10 @@
           "settable": true,
           "assetRoles": [
             "photo.person",
-            "decorative.none"
+            "decorative.none",
+            "person.fictional",
+            "illustration.generated",
+            "asset.operatorSupplied"
           ]
         },
         "shapes[].rotate90": {
@@ -1144,7 +1306,16 @@
             "bare-image"
           ]
         }
-      }
+      },
+      "generatedAssetRoles": [
+        "blob.fill",
+        "decorative.none",
+        "person.fictional",
+        "illustration.generated",
+        "asset.operatorSupplied"
+      ],
+      "retrievalEligible": true,
+      "semanticCategory": "HERO"
     },
     "jobs.listing-rows": {
       "contractFile": "sections/jobs.listing-rows.json",
@@ -1188,7 +1359,9 @@
           "maxItems": 8
         },
         "rows[].href": {
-          "settable": true
+          "settable": true,
+          "clonePattern": "^https://boards\\.greenhouse\\.io/",
+          "generationMode": "url.placeholder: a reserved .example/.invalid URL (GENERATION_MODE_URL)"
         },
         "rows[].location": {
           "settable": true,
@@ -1198,15 +1371,17 @@
           "settable": true,
           "maxWords": 8
         }
-      }
+      },
+      "generatedAssetRoles": [],
+      "retrievalEligible": true,
+      "semanticCategory": "CONTENT"
     },
-    "legal.document-prose": {
-      "contractFile": "sections/legal.document-prose.json",
+    "legal.document-header": {
+      "contractFile": "sections/legal.document-header.json",
       "designSystem": "marketing",
       "category": "legal",
       "variants": [
-        "terms",
-        "privacy"
+        "default"
       ],
       "allowedMotionPatterns": [
         "none"
@@ -1214,28 +1389,85 @@
       "reducedMotionFallback": "none",
       "requiredContentFields": [
         "documentRef",
-        "title",
-        "sectionCount"
+        "title"
       ],
       "settableProperties": {
         "documentRef": {
           "settable": true,
           "enum": [
             "terms-of-use",
-            "privacy-policy"
+            "privacy-policy",
+            "operator-supplied"
           ]
-        },
-        "sectionCount": {
-          "settable": true
         },
         "title": {
           "settable": true,
+          "maxWords": 4
+        }
+      },
+      "generatedAssetRoles": [],
+      "retrievalEligible": true,
+      "semanticCategory": "LEGAL"
+    },
+    "legal.document-intro": {
+      "contractFile": "sections/legal.document-intro.json",
+      "designSystem": "marketing",
+      "category": "legal",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "documentRef"
+      ],
+      "settableProperties": {
+        "documentRef": {
+          "settable": true,
           "enum": [
-            "Terms of use",
-            "Privacy Policy"
+            "terms-of-use",
+            "privacy-policy",
+            "operator-supplied"
           ]
         }
-      }
+      },
+      "generatedAssetRoles": [],
+      "retrievalEligible": true,
+      "semanticCategory": "LEGAL"
+    },
+    "legal.document-part": {
+      "contractFile": "sections/legal.document-part.json",
+      "designSystem": "marketing",
+      "category": "legal",
+      "variants": [
+        "default"
+      ],
+      "allowedMotionPatterns": [
+        "none"
+      ],
+      "reducedMotionFallback": "none",
+      "requiredContentFields": [
+        "documentRef",
+        "partIndex"
+      ],
+      "settableProperties": {
+        "documentRef": {
+          "settable": true,
+          "enum": [
+            "terms-of-use",
+            "privacy-policy",
+            "operator-supplied"
+          ]
+        },
+        "partIndex": {
+          "settable": true
+        }
+      },
+      "generatedAssetRoles": [],
+      "retrievalEligible": true,
+      "semanticCategory": "LEGAL"
     },
     "process.numbered-cards": {
       "contractFile": "sections/process.numbered-cards.json",
@@ -1282,10 +1514,18 @@
         "illustration": {
           "settable": true,
           "assetRoles": [
-            "illustration.editorial"
+            "illustration.editorial",
+            "illustration.generated",
+            "asset.operatorSupplied"
           ]
         }
-      }
+      },
+      "generatedAssetRoles": [
+        "illustration.generated",
+        "asset.operatorSupplied"
+      ],
+      "retrievalEligible": true,
+      "semanticCategory": "FEATURES"
     },
     "stats.grid": {
       "contractFile": "sections/stats.grid.json",
@@ -1350,7 +1590,10 @@
             "three-centered"
           ]
         }
-      }
+      },
+      "generatedAssetRoles": [],
+      "retrievalEligible": true,
+      "semanticCategory": "STATS"
     },
     "testimonials.slider-empty": {
       "contractFile": "sections/testimonials.slider-empty.json",
@@ -1382,7 +1625,11 @@
           "settable": true,
           "maxWords": 24
         }
-      }
+      },
+      "generatedAssetRoles": [],
+      "retrievalEligible": false,
+      "retrievalReason": "Runtime empty state of an EMPTY CMS collection (the grey 'No items found.' box); retrieving it as a testimonial exemplar would teach an empty slider.",
+      "semanticCategory": "SOCIAL_PROOF"
     },
     "trust.press-bar": {
       "contractFile": "sections/trust.press-bar.json",
@@ -1407,7 +1654,10 @@
         "logoCount": {
           "settable": true
         }
-      }
+      },
+      "generatedAssetRoles": [],
+      "retrievalEligible": true,
+      "semanticCategory": "SOCIAL_PROOF"
     },
     "trust.video-and-cards": {
       "contractFile": "sections/trust.video-and-cards.json",
@@ -1443,7 +1693,9 @@
         "cards[].icon": {
           "settable": true,
           "assetRoles": [
-            "icon.feature"
+            "icon.feature",
+            "illustration.generated",
+            "asset.operatorSupplied"
           ]
         },
         "heading": {
@@ -1465,14 +1717,24 @@
         "video.poster": {
           "settable": true,
           "assetRoles": [
-            "media.videoPoster"
+            "media.videoPoster",
+            "screenshot.placeholder",
+            "illustration.generated",
+            "asset.operatorSupplied"
           ]
         },
         "video.title": {
           "settable": true,
           "maxWords": 8
         }
-      }
+      },
+      "generatedAssetRoles": [
+        "screenshot.placeholder",
+        "illustration.generated",
+        "asset.operatorSupplied"
+      ],
+      "retrievalEligible": true,
+      "semanticCategory": "TRUST"
     },
     "values.principle-cards": {
       "contractFile": "sections/values.principle-cards.json",
@@ -1507,7 +1769,9 @@
         "cards[].items[].icon": {
           "settable": true,
           "assetRoles": [
-            "icon.values"
+            "icon.values",
+            "illustration.generated",
+            "asset.operatorSupplied"
           ]
         },
         "cards[].items[].label": {
@@ -1519,7 +1783,13 @@
           "lockedTo": "Values",
           "reason": "h2.u-sr-only preceding the container"
         }
-      }
+      },
+      "generatedAssetRoles": [
+        "illustration.generated",
+        "asset.operatorSupplied"
+      ],
+      "retrievalEligible": true,
+      "semanticCategory": "CONTENT"
     }
   },
   "primitives": {
@@ -1763,57 +2033,165 @@
     }
   },
   "assetRoles": {
+    "asset.operatorSupplied": {
+      "generationPolicy": "operator-supplied",
+      "exposedAsPageSpecField": true,
+      "availability": "generation-safe",
+      "generationSafeSubstitutes": []
+    },
     "auth.illustration": {
       "generationPolicy": "must-reuse-exact",
-      "exposedAsPageSpecField": true
+      "exposedAsPageSpecField": true,
+      "availability": "clone-only",
+      "generationSafeSubstitutes": [
+        "illustration.generated",
+        "asset.operatorSupplied"
+      ]
     },
     "blob.fill": {
       "generationPolicy": "may-generate-new",
-      "exposedAsPageSpecField": true
+      "exposedAsPageSpecField": true,
+      "availability": "generation-safe",
+      "generationSafeSubstitutes": []
     },
     "brand.wordmark": {
       "generationPolicy": "must-not-reproduce-real-mark",
-      "exposedAsPageSpecField": false
+      "exposedAsPageSpecField": false,
+      "availability": "blocked-for-generation",
+      "generationSafeSubstitutes": [
+        "placeholder.brandMark",
+        "asset.operatorSupplied"
+      ]
+    },
+    "copy.original": {
+      "generationPolicy": "may-generate-new",
+      "exposedAsPageSpecField": true,
+      "availability": "generation-safe",
+      "generationSafeSubstitutes": []
     },
     "decorative.none": {
       "generationPolicy": "may-generate-new",
-      "exposedAsPageSpecField": true
+      "exposedAsPageSpecField": true,
+      "availability": "generation-safe",
+      "generationSafeSubstitutes": []
     },
     "editorial.cover": {
       "generationPolicy": "must-reuse-exact",
-      "exposedAsPageSpecField": true
+      "exposedAsPageSpecField": true,
+      "availability": "clone-only",
+      "generationSafeSubstitutes": [
+        "illustration.generated",
+        "screenshot.placeholder",
+        "asset.operatorSupplied"
+      ]
     },
     "icon.feature": {
       "generationPolicy": "must-reuse-exact",
-      "exposedAsPageSpecField": true
+      "exposedAsPageSpecField": true,
+      "availability": "clone-only",
+      "generationSafeSubstitutes": [
+        "illustration.generated",
+        "asset.operatorSupplied"
+      ]
     },
     "icon.values": {
       "generationPolicy": "must-reuse-exact",
-      "exposedAsPageSpecField": true
+      "exposedAsPageSpecField": true,
+      "availability": "clone-only",
+      "generationSafeSubstitutes": [
+        "illustration.generated",
+        "asset.operatorSupplied"
+      ]
     },
     "illustration.brand": {
       "generationPolicy": "must-reuse-exact",
-      "exposedAsPageSpecField": true
+      "exposedAsPageSpecField": true,
+      "availability": "clone-only",
+      "generationSafeSubstitutes": [
+        "illustration.generated",
+        "asset.operatorSupplied"
+      ]
     },
     "illustration.editorial": {
       "generationPolicy": "must-reuse-exact",
-      "exposedAsPageSpecField": true
+      "exposedAsPageSpecField": true,
+      "availability": "clone-only",
+      "generationSafeSubstitutes": [
+        "illustration.generated",
+        "asset.operatorSupplied"
+      ]
+    },
+    "illustration.generated": {
+      "generationPolicy": "may-generate-new",
+      "exposedAsPageSpecField": true,
+      "availability": "generation-safe",
+      "generationSafeSubstitutes": []
     },
     "legal.operativeText": {
       "generationPolicy": "must-not-fabricate",
-      "exposedAsPageSpecField": false
+      "exposedAsPageSpecField": false,
+      "availability": "blocked-for-generation",
+      "generationSafeSubstitutes": [
+        "asset.operatorSupplied"
+      ]
+    },
+    "logo.placeholder": {
+      "generationPolicy": "may-generate-new",
+      "exposedAsPageSpecField": true,
+      "availability": "generation-safe",
+      "generationSafeSubstitutes": []
     },
     "media.videoPoster": {
       "generationPolicy": "must-reuse-exact",
-      "exposedAsPageSpecField": true
+      "exposedAsPageSpecField": true,
+      "availability": "clone-only",
+      "generationSafeSubstitutes": [
+        "screenshot.placeholder",
+        "illustration.generated",
+        "asset.operatorSupplied"
+      ]
+    },
+    "person.fictional": {
+      "generationPolicy": "may-generate-new",
+      "exposedAsPageSpecField": true,
+      "availability": "generation-safe",
+      "generationSafeSubstitutes": []
     },
     "photo.person": {
       "generationPolicy": "must-not-reproduce-real-mark",
-      "exposedAsPageSpecField": true
+      "exposedAsPageSpecField": true,
+      "availability": "clone-only",
+      "generationSafeSubstitutes": [
+        "person.fictional",
+        "illustration.generated",
+        "asset.operatorSupplied"
+      ]
+    },
+    "placeholder.brandMark": {
+      "generationPolicy": "may-generate-new",
+      "exposedAsPageSpecField": true,
+      "availability": "generation-safe",
+      "generationSafeSubstitutes": []
     },
     "press.logo": {
       "generationPolicy": "must-not-reproduce-real-mark",
-      "exposedAsPageSpecField": false
+      "exposedAsPageSpecField": false,
+      "availability": "blocked-for-generation",
+      "generationSafeSubstitutes": [
+        "logo.placeholder"
+      ]
+    },
+    "screenshot.placeholder": {
+      "generationPolicy": "may-generate-new",
+      "exposedAsPageSpecField": true,
+      "availability": "generation-safe",
+      "generationSafeSubstitutes": []
+    },
+    "url.placeholder": {
+      "generationPolicy": "may-generate-new",
+      "exposedAsPageSpecField": true,
+      "availability": "generation-safe",
+      "generationSafeSubstitutes": []
     }
   },
   "pinnedAssetPolicies": {
@@ -1823,9 +2201,32 @@
     "legal.operativeText": "must-not-fabricate"
   },
   "counts": {
-    "sections": 28,
+    "sections": 30,
     "primitives": 14,
     "components": 18,
-    "assetRoles": 13
+    "assetRoles": 21
+  },
+  "pinnedAvailability": {
+    "asset.operatorSupplied": "generation-safe",
+    "auth.illustration": "clone-only",
+    "blob.fill": "generation-safe",
+    "brand.wordmark": "blocked-for-generation",
+    "copy.original": "generation-safe",
+    "decorative.none": "generation-safe",
+    "editorial.cover": "clone-only",
+    "icon.feature": "clone-only",
+    "icon.values": "clone-only",
+    "illustration.brand": "clone-only",
+    "illustration.editorial": "clone-only",
+    "illustration.generated": "generation-safe",
+    "legal.operativeText": "blocked-for-generation",
+    "logo.placeholder": "generation-safe",
+    "media.videoPoster": "clone-only",
+    "person.fictional": "generation-safe",
+    "photo.person": "clone-only",
+    "placeholder.brandMark": "generation-safe",
+    "press.logo": "blocked-for-generation",
+    "screenshot.placeholder": "generation-safe",
+    "url.placeholder": "generation-safe"
   }
 }

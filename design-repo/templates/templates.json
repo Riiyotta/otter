@@ -1,6 +1,6 @@
 {
   "$comment": "One entry per distinct PAGE SHAPE, not per route. Every node is a structured object so required/repeatable/variant are machine-enforceable rather than implicit conventions.",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "designSystems": [
     "marketing",
     "auth"
@@ -80,7 +80,8 @@
         "The only route using the 'home' chrome variant (empty nav link and footer link containers) and the only route with hero.dark-rounded, banner.beta-card, process.numbered-cards, conversion.join-card or trust.press-bar.",
         "process.numbered-cards and conversion.join-card are both inside the same section.how-it-works; the join card is its 4th col-lg-12 column.",
         "Carries the site's ONLY scroll reveal."
-      ]
+      ],
+      "family": "landing"
     },
     "audience-landing": {
       "id": "audience-landing",
@@ -135,7 +136,8 @@
       "sharedByVerification": "Grouped only after diffing both pages' real node sequences directly in src/pages/Parents.jsx and src/pages/Sitters.jsx: both render PageHero -> section>Tabs -> section>CtaCard -> TestimonialsSlider -> CommonQuestions, in that order, with no extra or missing section on either side. The ONLY structural difference is conversion.cta-card's variant (/parents narrow, /sitters wide), which is why structural rules key on (section, variant) rather than bare id.",
       "notes": [
         "Both routes render two genuinely empty CMS collections (the testimonials slider and Common questions). Those grey 'No items found.' boxes are intentional, not missing content."
-      ]
+      ],
+      "family": "landing"
     },
     "trust-safety": {
       "id": "trust-safety",
@@ -175,7 +177,8 @@
         "Shares the PST hero skeleton with audience-landing but diverges completely below it: its whole <main> is ONE section (video facade + 4 cards).",
         "It has no tabs, no CTA card, no testimonials slider and no Common questions \u2014 0 .swiper and 0 .w-dyn-empty on the route.",
         "The only route with two hero CTAs."
-      ]
+      ],
+      "family": "landing"
     },
     "faq-categories": {
       "id": "faq-categories",
@@ -218,7 +221,8 @@
         "/faq genuinely has NO FAQ content: both CMS collections are empty on the original, the server HTML ships no item template at all, and no accordion is rendered on the route.",
         "The accordion CSS exists in the design system and is used by /careers' job rows, but has zero live instances here.",
         "This is the only template whose hero has no lede and no CTA."
-      ]
+      ],
+      "family": "company"
     },
     "contact": {
       "id": "contact",
@@ -257,7 +261,8 @@
       "notes": [
         "The only route with form inputs anywhere on the marketing site.",
         "The form has method=\"get\" and NO action (Webflow's default). The clone prevents submission and makes no network call."
-      ]
+      ],
+      "family": "company"
     },
     "careers": {
       "id": "careers",
@@ -325,7 +330,8 @@
         "stats.grid appears TWICE with DIFFERENT variants \u2014 the clearest case for keying structural rules on (section, variant).",
         "The hero CTA is a plain native #jobs anchor jump; no smooth-scroll JS is attached.",
         "jobs.listing-rows holds the site's only Greenhouse outbound links."
-      ]
+      ],
+      "family": "company"
     },
     "blog-index": {
       "id": "blog-index",
@@ -370,7 +376,8 @@
         "The hero section carries .u-p-0, zeroing its padding at all three widths \u2014 the only hero that does.",
         "Its image is a bare <img> with no wrapper and no object-fit; the single-candidate srcset plus the original's sizes string are load-bearing, not decoration.",
         "Unlike /faq, no .w-dyn-empty block exists in the original markup for either blog list, so none is rendered."
-      ]
+      ],
+      "family": "editorial"
     },
     "blog-post": {
       "id": "blog-post",
@@ -430,7 +437,8 @@
         "Slots deliberately absent: author, date, read-time, share, breadcrumb, back-to-blog, deck, subtitle, excerpt, inline CTA, next/prev. Zero <time> elements exist on the original. Do not add fields the original lacks.",
         "The related-posts grid uses the WIDE .container, not .cc-narrow, so it is wider than the prose above it. Deliberate.",
         "CONTENT PROVENANCE: the real titles, covers and tags are genuine; the article bodies in the clone are original placeholder prose, deliberately not the original articles."
-      ]
+      ],
+      "family": "editorial"
     },
     "legal-prose": {
       "id": "legal-prose",
@@ -449,9 +457,21 @@
           "variant": "site"
         },
         {
-          "section": "legal.document-prose",
+          "section": "legal.document-header",
           "required": true,
           "repeatable": false
+        },
+        {
+          "section": "legal.document-intro",
+          "required": true,
+          "repeatable": false
+        },
+        {
+          "section": "legal.document-part",
+          "required": true,
+          "repeatable": true,
+          "minOccurs": 1,
+          "maxOccurs": 40
         },
         {
           "section": "chrome.footer",
@@ -465,8 +485,10 @@
       "notes": [
         "HAS NO HERO. Listed in NO_HERO_TEMPLATES.",
         "Both routes are lazy-loaded behind Suspense in the real router.",
-        "OPERATIVE LEGAL TEXT. assetRole legal.operativeText is pinned to must-not-fabricate. The section exposes a documentRef enum and NO body field, so a PageSpec cannot carry legal prose and a generator has nothing to fabricate into. Requires sign-off from whoever owns legal/content before any real deployment."
-      ]
+        "OPERATIVE LEGAL TEXT. assetRole legal.operativeText is pinned to must-not-fabricate. The legal sections expose a documentRef enum and NO body field, so a PageSpec cannot carry legal prose and a generator has nothing to fabricate into. Requires sign-off from whoever owns legal/content before any real deployment.",
+        "DECOMPOSED (R6): header + intro + one legal.document-part per heading-bounded part (25 on /terms-of-use, 12 on /privacy-policy), replacing the former single whole-page legal.document-prose section that measured 95.5% / 90.6% of the page at 1440px."
+      ],
+      "family": "legal"
     },
     "auth-login": {
       "id": "auth-login",
@@ -490,7 +512,8 @@
         "HAS NO HERO. Listed in NO_HERO_TEMPLATES.",
         "DELIBERATELY INERT: no action, no method, no endpoint, no fetch, autocomplete=\"off\", submit only preventDefault()s. Any generated instance must never acquire credential submission.",
         "SCOPE REDUCTION: /sign-up and /welcome were built and then removed on purpose by explicit decision. They must NOT be reintroduced as templates. Only /log-in is a local route."
-      ]
+      ],
+      "family": "auth"
     },
     "not-found": {
       "id": "not-found",
@@ -526,7 +549,19 @@
         "A generator must not invent a 404 layout out of the marketing vocabulary.",
         "It sits inside the chrome='site' layout route in the real router, so it does get the site nav and footer."
       ],
-      "routeNote": "React Router catch-all: <Route path=\"*\"> inside the chrome=\"site\" layout route."
+      "routeNote": "React Router catch-all: <Route path=\"*\"> inside the chrome=\"site\" layout route.",
+      "family": "utility"
     }
+  },
+  "templateFamilies": {
+    "note": "Template families group templates by semantic purpose (R6). Every family has at least one mode:generation example in schema/examples/ (checked by extraction/verify_all.py).",
+    "values": [
+      "auth",
+      "company",
+      "editorial",
+      "landing",
+      "legal",
+      "utility"
+    ]
   }
 }

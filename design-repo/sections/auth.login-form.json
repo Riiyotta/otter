@@ -19,7 +19,9 @@
         "type": "object",
         "assetRoleEnumRef": "assets/asset-roles.json#/roles",
         "allowedRoles": [
-          "auth.illustration"
+          "auth.illustration",
+          "illustration.generated",
+          "asset.operatorSupplied"
         ],
         "note": "hard 400px wide at every width; overflows and is clipped at 390 \u2014 the original's behaviour"
       },
@@ -113,10 +115,27 @@
     "breakpointNote": "Mantine's min-width em breakpoints (576/768/992/1200/1408) exist in the bundle but NONE of them fire on this screen."
   },
   "assetRoles": [
-    "auth.illustration"
+    "auth.illustration",
+    "illustration.generated",
+    "asset.operatorSupplied"
   ],
   "observedOn": [
     "/log-in"
   ],
-  "measuredFrom": "spec/SPEC_auth.md:739-782"
+  "measuredFrom": "spec/SPEC_auth.md:739-782",
+  "generatedAssetRoles": [
+    "illustration.generated",
+    "asset.operatorSupplied"
+  ],
+  "retrievalEligible": true,
+  "source": {
+    "id": "LogIn.jsx:AuthShell",
+    "tag": "AuthShell",
+    "file": "src/pages/LogIn.jsx",
+    "lines": "14-47"
+  },
+  "semantic": {
+    "id": "auth.login-form",
+    "category": "AUTH"
+  }
 }

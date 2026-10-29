@@ -48,7 +48,9 @@
               "type": "object",
               "assetRoleEnumRef": "assets/asset-roles.json#/roles",
               "allowedRoles": [
-                "icon.feature"
+                "icon.feature",
+                "illustration.generated",
+                "asset.operatorSupplied"
               ]
             }
           },
@@ -88,7 +90,9 @@
     "le479": ".trust-card_header goes max-width 100% with a 16px gap."
   },
   "assetRoles": [
-    "icon.feature"
+    "icon.feature",
+    "illustration.generated",
+    "asset.operatorSupplied"
   ],
   "observedOn": [
     "/careers"
@@ -96,5 +100,20 @@
   "measuredFrom": "spec/SPEC_faq_contact_careers.md:644-668",
   "notes": [
     "Measured asymmetry in the centred header: the eyebrow and h2 are centred but the p inside still computes text-align:LEFT because .paragraph-1-25.u-mb-0 wins. Reproduce it."
-  ]
+  ],
+  "generatedAssetRoles": [
+    "illustration.generated",
+    "asset.operatorSupplied"
+  ],
+  "retrievalEligible": true,
+  "source": {
+    "id": "Careers.jsx:section.section[4]",
+    "tag": "section",
+    "file": "src/pages/Careers.jsx",
+    "lines": "263-292"
+  },
+  "semantic": {
+    "id": "benefits.card-grid",
+    "category": "FEATURES"
+  }
 }

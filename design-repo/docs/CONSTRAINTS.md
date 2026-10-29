@@ -131,9 +131,11 @@ or fabricate:
 - **Photographs of real people.** Referencing an existing local file by path is
   allowed; **synthesising a new photograph of a person is not**, and is prevented
   structurally because the only legal values are paths that already exist.
-- **Operative legal text.** The legal section exposes a `documentRef` enum of
-  the two real documents and **no body field**, so legal prose cannot be carried
-  by a PageSpec. **This is operative legal text and requires sign-off from
+- **Operative legal text.** The three legal sections (`legal.document-header`,
+  `-intro`, `-part`) expose a `documentRef` enum and **no body field**, so legal
+  prose cannot be carried by a PageSpec. In `mode: "clone"` the reference is one
+  of the two real documents (and the part count must match it); in
+  `mode: "generation"` it must be `operator-supplied`. **This is operative legal text and requires sign-off from
   whoever owns legal/content before any real deployment.** A generator must never
   fabricate or paraphrase legal clauses.
 
@@ -154,3 +156,39 @@ The real **titles, covers and tags are genuine**.
 
 Keep that distinction explicit so nobody mistakes the placeholders for source
 content, or tries to "restore" the originals.
+
+## 11. Clone mode vs generation mode (since 2.0.0)
+
+Every PageSpec declares `mode`:
+
+- **`clone`** — a faithful reconstruction of withotter.com. Real assets and copy
+  may be *referenced* (existing files only, per each role's `generationPolicy`).
+- **`generation`** — a new page for a **different brand**. Only roles whose
+  `availability` is `generation-safe` (pinned in code as `PINNED_AVAILABILITY` in
+  both validators). The chrome-owned identity that no section field exposes — the
+  wordmark, the app host behind every sign-up CTA, the footer social links, the
+  press-bar marks, the trust video embed — is substituted through the required
+  `generationContext`. `schema/semantic_validate.py` rejects source identity and
+  content with one named rule per category: `GENERATION_MODE_BRAND`, `_CUSTOMER`,
+  `_PERSON`, `_URL`, `_EMBED`, `_CLAIM`, `_COPY`, `_ASSET`, `_SCREENSHOT`, `_LEGAL`.
+
+The patterns come from `schema/source-identity.json`, **derived** from the real
+source by `extraction/build_source_identity.py` with file:line evidence. Detection
+is **string-based** (NFKC, zero-width removal, quote and dash folding, then token
+and 5-word-shingle matching). It does not catch paraphrase, translation or text in
+images, and **no human has reviewed the derived patterns**.
+
+No app-store marks or store links are rendered anywhere in the source; the App
+Store and Google Play are only mentioned inside the terms-of-use text, which
+`GENERATION_MODE_COPY` covers. So there is no separate store-mark rule.
+
+## 12. Tokens in a PageSpec (since 2.0.0)
+
+A PageSpec names seven page-level tokens in a closed `tokens` object (surface,
+text, fontDisplay, fontBody, sectionPadding, cardRadius, buttonRadius) plus the
+pre-existing per-node blob/stone `fill` enums. Every value must be a path in
+`tokens/llm/token-catalog.json` (generated from the token files) that
+`tokens/llm/token-policy.json` allows for that slot and that the declared theme
+scopes: `auth.*` tokens are invalid under `marketing-light` and marketing tokens are
+invalid under `auth-light`. Raw hex / rgb() / named colours, raw lengths and font
+names are rejected (`TOKEN_*` rules).

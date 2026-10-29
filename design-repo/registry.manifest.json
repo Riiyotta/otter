@@ -3,17 +3,39 @@
   "category": "consumer-service-marketplace",
   "productDomain": "childcare-services",
   "designPolicy": {
-    "ref": "policy/design-policy.json",
-    "policyId": "consumer-service-marketplace-web",
+    "policyId": "n0-design-constraints-common",
+    "policyVersion": "0.1.0",
     "commonIrVersion": "0.5",
-    "notBoundTo": [
-      "n0-saas-design-constraints-common"
-    ]
+    "enforcementMode": "hard-and-soft",
+    "category": "consumer-service-marketplace",
+    "domain": "childcare-services",
+    "contentHash": "sha256:9e6b5191f6cdb2250e1a177b35ba58e0548c1dd23502113f547d521c6037fae6",
+    "contentHashFiles": [
+      "tokens/llm/token-policy.json",
+      "compatibility/graph.json",
+      "schema/pagespec.schema.json",
+      "schema/semantic_validate.py"
+    ],
+    "contentHashMethod": "extraction/policy_hash.py: for each contentHashFiles entry in order append '<path>\\n<sha256 hex of bytes>\\n'; contentHash = 'sha256:' + sha256 hex of that text. Recomputed and compared by extraction/verify_all.py (design-policy check).",
+    "localExtension": {
+      "ref": "policy/design-policy.json",
+      "policyId": "consumer-service-marketplace-web",
+      "policyVersion": "1.0.0"
+    },
+    "notBoundTo": {
+      "n0-saas-design-constraints-common": "Not a SaaS product: a two-sided consumer childcare marketplace marketing site with no pricing tiers, dashboards, feature matrices or integrations (evidence: policy/design-policy.json classification). Bound to the generic non-SaaS common policy instead."
+    },
+    "decision": {
+      "policyDecision": "ratified",
+      "decidedBy": "repository owner (user), recorded by Claude in the review session",
+      "decidedAt": "2026-10-29",
+      "recordedIn": "policy/design-policy.json approval"
+    }
   },
-  "repositoryVersion": "1.0.0",
-  "pageSpecVersion": "1.0.0",
-  "allowlistVersion": "1.0.0",
-  "versionFieldNote": "Be explicit about what is actually enforced. allowlistVersion IS machine-checked: extraction/verify_all.py's version-parity check fails the run if it drifts from tokens/llm/component-allowlist.json's own version field, and that check is proven to catch drift by `verify_all.py --prove-drift`. repositoryVersion and pageSpecVersion are DOCUMENTATION-ONLY, hand-maintained markers -- nothing checks them automatically. No version field here implies an enforcement guarantee it does not have.",
+  "repositoryVersion": "2.0.0",
+  "pageSpecVersion": "1.1.0",
+  "allowlistVersion": "2.0.0",
+  "versionFieldNote": "Be explicit about what is actually enforced. allowlistVersion, tokenCatalogVersion and tokenPolicyVersion ARE machine-checked: extraction/verify_all.py fails the run if any drifts from the version field of tokens/llm/component-allowlist.json, token-catalog.json or token-policy.json (proven by extraction/prove_drift.py). pageSpecVersion is checked against the schema's pageSpecVersion const. repositoryVersion is a DOCUMENTATION-ONLY, hand-maintained marker. No version field here implies an enforcement guarantee it does not have.",
   "status": "design-review-pending",
   "productionApproved": false,
   "approvalFlags": {
@@ -46,18 +68,21 @@
     }
   },
   "counts": {
-    "sections": 28,
+    "sections": 30,
     "primitives": 14,
     "components": 18,
     "templates": 11,
     "routePatterns": 13,
-    "compatibilityRules": 28,
-    "assetRoles": 13,
-    "schemaContentBranches": 28,
-    "jsonFiles": 82
+    "compatibilityRules": 48,
+    "assetRoles": 21,
+    "schemaContentBranches": 30,
+    "jsonFiles": 96,
+    "catalogTokens": 203,
+    "tokenSlots": 7,
+    "generationExamples": 7
   },
   "countsNote": "Every number in `counts` is RECOMPUTED FROM DISK by extraction/verify_all.py's manifest-counts check, which fails the run on any mismatch. A manifest is not self-verifying just because it looks internally coherent -- it has to be checked against the files it summarises. Proven to catch a hand-bumped number by `verify_all.py --prove-drift`.",
-  "settablePropertyPaths": 189,
+  "settablePropertyPaths": 191,
   "citationCount": 66,
   "entryPoints": {
     "readme": "README.md",
@@ -92,6 +117,8 @@
       "tokens/20-component/component.json",
       "tokens/30-layout/layout.json",
       "tokens/llm/component-allowlist.json",
+      "tokens/llm/token-catalog.json",
+      "tokens/llm/token-policy.json",
       "tokens/themes/auth-light.json",
       "tokens/themes/marketing-light.json"
     ],
@@ -117,7 +144,9 @@
       "sections/hero.dark-rounded.json",
       "sections/hero.light-split.json",
       "sections/jobs.listing-rows.json",
-      "sections/legal.document-prose.json",
+      "sections/legal.document-header.json",
+      "sections/legal.document-intro.json",
+      "sections/legal.document-part.json",
       "sections/process.numbered-cards.json",
       "sections/stats.grid.json",
       "sections/testimonials.slider-empty.json",
@@ -161,7 +190,33 @@
       "components/values-card.json",
       "components/video-facade.json"
     ],
-    "designPolicy": "policy/design-policy.json"
+    "designPolicy": "policy/design-policy.json",
+    "tokenCatalog": "tokens/llm/token-catalog.json",
+    "tokenPolicy": "tokens/llm/token-policy.json",
+    "sectionContractSchema": "schema/section-contract.schema.json",
+    "sourceIdentity": "schema/source-identity.json",
+    "textNormaliser": "schema/textnorm.py",
+    "generationExamples": [
+      "schema/examples/generated.auth-login.pagespec.json",
+      "schema/examples/generated.blog-post.pagespec.json",
+      "schema/examples/generated.careers.pagespec.json",
+      "schema/examples/generated.home.pagespec.json",
+      "schema/examples/generated.legal-prose.pagespec.json",
+      "schema/examples/generated.not-found.pagespec.json",
+      "schema/examples/generated.trust-safety.pagespec.json"
+    ],
+    "builders": [
+      "schema/build_schema.py",
+      "extraction/build_token_catalog.py",
+      "extraction/build_source_identity.py",
+      "extraction/build_section_provenance.py",
+      "extraction/build_generation_examples.py",
+      "extraction/policy_hash.py"
+    ],
+    "wrapperGate": "extraction/wrapper_gate.py",
+    "wrapperGateWhitelist": "extraction/wrapper-gate-whitelist.json",
+    "measureSections": "extraction/measure_sections.mjs",
+    "proveDrift": "extraction/prove_drift.py"
   },
   "entryPointsNote": "Every path here is INSIDE design-repo/ and is verified to exist by verify_all.py's self-contained check. There are deliberately no ../ paths to the sibling source project: an entry point is a promise about this package's own contents, and a standalone copy or an extracted zip must not reference files it does not contain. External build-time evidence is recorded in extraction/measured-values.json instead, which degrades gracefully (warns, does not fail) when no sibling source tree is present.",
   "dependencies": {
@@ -171,10 +226,20 @@
   },
   "verification": {
     "command": "python3 extraction/verify_all.py",
-    "driftProof": "python3 extraction/verify_all.py --prove-drift",
+    "driftProof": "python3 extraction/prove_drift.py --scratch <empty dir>",
     "crossCheck": "python3 extraction/verify_all.py --cross-check",
     "adversarial": "python3 schema/tests/adversarial_test.py",
-    "validateOne": "python3 schema/semantic_validate.py <pagespec.json>"
+    "wrapperGate": "python3 extraction/wrapper_gate.py && python3 extraction/wrapper_gate.py --self-test",
+    "validateOne": "python3 schema/semantic_validate.py <pagespec.json>",
+    "remeasure": "NODE_PATH=\"$(npm root -g)\" node extraction/measure_sections.mjs --base http://localhost:<port> --write"
   },
-  "snapshotNote": "A design-repo is a snapshot, not a living mirror of its source project. The source can be upgraded after this was built with nothing re-checking these claims. If the project has moved on, re-diff the framework versions, counts and factual claims in extraction/measured-values.json against current source rather than trusting this snapshot."
+  "snapshotNote": "A design-repo is a snapshot, not a living mirror of its source project. The source can be upgraded after this was built with nothing re-checking these claims. If the project has moved on, re-diff the framework versions, counts and factual claims in extraction/measured-values.json against current source rather than trusting this snapshot.",
+  "tokenCatalogVersion": "1.0.0",
+  "tokenPolicyVersion": "1.0.0",
+  "generationModes": {
+    "field": "PageSpec.mode (required, closed): clone | generation",
+    "clone": "faithful reconstruction of withotter.com; real assets/copy may be referenced (existing files only). Examples: schema/example.pagespec.json + one synthesised control per template (schema/tests/adversarial_test.py).",
+    "generation": "a different brand built from this design-repo; generation-safe roles only, generationContext required, GENERATION_MODE_* rules. Examples: schema/examples/generated.*.pagespec.json (one per template family).",
+    "leakageRegistry": "schema/source-identity.json, derived from the real source by extraction/build_source_identity.py (string-based detection; patterns not human-reviewed)."
+  }
 }

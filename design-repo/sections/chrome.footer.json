@@ -70,5 +70,19 @@
   "notes": [
     "Two clip-path blobs: footer-shape-left filled olive on the dark card, footer-shape-right filled peach on the white card.",
     "/log-in renders no footer."
-  ]
+  ],
+  "generatedAssetRoles": [
+    "blob.fill"
+  ],
+  "retrievalEligible": true,
+  "source": {
+    "id": "Footer.jsx:footer.section.cc-footer",
+    "tag": "footer",
+    "file": "src/components/Footer.jsx",
+    "lines": "59-154"
+  },
+  "semantic": {
+    "id": "chrome.footer",
+    "category": "SHELL"
+  }
 }

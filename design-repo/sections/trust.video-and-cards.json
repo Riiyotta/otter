@@ -29,7 +29,10 @@
             "type": "object",
             "assetRoleEnumRef": "assets/asset-roles.json#/roles",
             "allowedRoles": [
-              "media.videoPoster"
+              "media.videoPoster",
+              "screenshot.placeholder",
+              "illustration.generated",
+              "asset.operatorSupplied"
             ]
           },
           "clickToPlay": {
@@ -71,7 +74,9 @@
               "type": "object",
               "assetRoleEnumRef": "assets/asset-roles.json#/roles",
               "allowedRoles": [
-                "icon.feature"
+                "icon.feature",
+                "illustration.generated",
+                "asset.operatorSupplied"
               ]
             }
           },
@@ -114,7 +119,10 @@
   },
   "assetRoles": [
     "media.videoPoster",
-    "icon.feature"
+    "icon.feature",
+    "screenshot.placeholder",
+    "illustration.generated",
+    "asset.operatorSupplied"
   ],
   "observedOn": [
     "/trust-safety"
@@ -123,5 +131,21 @@
   "notes": [
     "The iframe interior was explicitly not measurable; only the outer box is spec-exact.",
     "One icon carries width=\"96\" as an HTML attribute, so it renders narrower than the 104px CSS cap \u2014 a direct consequence of preflight being disabled."
-  ]
+  ],
+  "generatedAssetRoles": [
+    "screenshot.placeholder",
+    "illustration.generated",
+    "asset.operatorSupplied"
+  ],
+  "retrievalEligible": true,
+  "source": {
+    "id": "TrustSafety.jsx:section.section",
+    "tag": "section",
+    "file": "src/pages/TrustSafety.jsx",
+    "lines": "108-148"
+  },
+  "semantic": {
+    "id": "trust.video-and-cards",
+    "category": "TRUST"
+  }
 }

@@ -117,5 +117,17 @@
   "observedOn": [
     "/contact"
   ],
-  "measuredFrom": "spec/SPEC_faq_contact_careers.md:368-398"
+  "measuredFrom": "spec/SPEC_faq_contact_careers.md:368-398",
+  "generatedAssetRoles": [],
+  "retrievalEligible": true,
+  "source": {
+    "id": "Contact.jsx:section.section",
+    "tag": "section",
+    "file": "src/pages/Contact.jsx",
+    "lines": "77-266"
+  },
+  "semantic": {
+    "id": "form.contact",
+    "category": "FORM"
+  }
 }

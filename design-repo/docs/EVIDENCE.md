@@ -30,8 +30,20 @@ Two templates cover two routes each. Neither was grouped by assumption:
   the CTA card's variant (narrow vs wide), which is exactly why structural rules
   key on `(section, variant)` rather than bare section id.
 - **legal-prose** (`/terms-of-use`, `/privacy-policy`) — both render the identical
-  single component with the same three-node shape, differing only in which
-  document module they pass and in their declared per-route link repairs.
+  single component, differing only in which document module they pass and in
+  their declared per-route link repairs. Since 2.0.0 the page is decomposed into
+  header + intro + one part per heading-bounded section (25 / 12), because the
+  former single legal section measured 95.5% / 90.6% of the page at 1440px.
+
+## Section heights (R9)
+
+`extraction/measured-values.json` → `sectionHeights` was measured at 1440x900 by
+`extraction/measure_sections.mjs` against a **local `vite preview` of the built
+clone** (not the live site), for all 13 route patterns (the blog post route at
+`/blog-posts/series-a`, the catch-all at an unknown path). The wrapper gate
+reports two warnings and no errors: `/blog` post grid 57.1% and `/trust-safety`
+video-and-cards 58.9% of their pages (both under the 60% error line).
+Visual parity against the live site was **not** measured in this pass.
 
 ## Where the pre-existing specs did not hold up
 

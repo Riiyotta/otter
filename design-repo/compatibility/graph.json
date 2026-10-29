@@ -1,6 +1,6 @@
 {
   "$comment": "Rhythm and adjacency rules JSON Schema cannot express. EVERY rule below was derived by reading templates/templates.json's actual node sequences at the moment it was written, never from assumption \u2014 the sets in `derivedSets` are computed, not hand-listed. schema/semantic_validate.py enforces these and must agree with this file; extraction/verify_all.py fails the run if the two drift apart.",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "severities": [
     "error",
     "warn"
@@ -100,9 +100,13 @@
       "rule": "Two consecutive nodes should not share the same section category.",
       "exception": "REAL AND NAMED: faq.category-empty legitimately appears twice consecutively on /faq ('For parents' then 'For sitters'). Verified against src/pages/Faq.jsx, which renders exactly two CategorySection elements back to back. This is a warn, not an error, precisely because a blanket rule here would reject real, correct content.",
       "exemptSections": [
-        "faq.category-empty"
+        "faq.category-empty",
+        "legal.document-header",
+        "legal.document-intro",
+        "legal.document-part"
       ],
-      "enforcedBy": "semantic_validate.py::check_adjacency"
+      "enforcedBy": "semantic_validate.py::check_adjacency",
+      "exemptionNote": " The three legal.document-* sections are one decomposed document (header, intro, N heading-bounded parts) and are adjacent by construction."
     },
     {
       "id": "HOME_ONLY_SECTIONS",
@@ -191,11 +195,11 @@
     {
       "id": "LEGAL_TEXT_NOT_FABRICABLE",
       "severity": "error",
-      "rule": "legal.document-prose exposes a documentRef enum of the two real documents and NO body field.",
+      "rule": "The legal.document-header / -intro / -part sections expose a documentRef enum (and a part index) and NO body field.",
       "licensing": "Operative legal text, ported verbatim from the real company's site. assetRole legal.operativeText is pinned to must-not-fabricate. A generator must never write, paraphrase, summarise or 'restore' legal clauses. Requires sign-off from whoever owns legal/content before any real deployment.",
       "enforcedBy": "schema (there is no body field) + semantic_validate.py::check_asset_roles",
       "ruleIdEmittedAs": "ASSET_ROLE_CLOSED",
-      "enforcementNote": "Enforced STRUCTURALLY: legal.document-prose exposes a documentRef enum of the two real documents and no body field, so a PageSpec cannot carry legal prose at all. A smuggled legal.operativeText role is rejected by check_asset_roles under the ASSET_ROLE_CLOSED id."
+      "enforcementNote": "Enforced STRUCTURALLY: the three legal sections expose only documentRef (+ title / partIndex) and no body field, so a PageSpec cannot carry legal prose at all. A smuggled legal.operativeText role is rejected by check_asset_roles under the ASSET_ROLE_CLOSED id. mode:generation must use documentRef 'operator-supplied' (GENERATION_MODE_LEGAL)."
     },
     {
       "id": "ASSET_ROLE_CLOSED",
@@ -246,7 +250,8 @@
         "hero.light-split CTAs": "https://app.withotter.com/sign-up/welcome, or the #jobs anchor on /careers",
         "conversion.cta-card": "https://app.withotter.com/sign-up/welcome",
         "conversion.cta-band (/blog)": "'#' -- a dead link on the original, preserved deliberately"
-      }
+      },
+      "modeNote": "mode:clone only. In mode:generation the source app host / job board is rejected and every URL must be a reserved .example/.invalid placeholder (GENERATION_MODE_URL)."
     },
     {
       "id": "NO_REMOVED_ROUTES",
@@ -260,7 +265,127 @@
       "severity": "error",
       "rule": "Every text-bearing field must respect its section contract's maxWords budget. Budgets are set from the measured longest real instance plus roughly 30% headroom, and each field records that measured figure.",
       "enforcedBy": "semantic_validate.py::check_max_words"
+    },
+    {
+      "id": "GENERATION_MODE_BRAND",
+      "severity": "error",
+      "rule": "mode:generation: no source brand name, host, email, social handle or legal entity anywhere in the PageSpec; generationContext (fictional brandName + placeholder/operator brandMark) is required because the chrome renders the wordmark, and forbidden in mode:clone.",
+      "enforcedBy": "semantic_validate.py::check_generation_mode"
+    },
+    {
+      "id": "GENERATION_MODE_CUSTOMER",
+      "severity": "error",
+      "rule": "mode:generation: no source press/customer marks (Forbes, The New York Times, parents.com, mom.com) in any string; a page with trust.press-bar must declare one generationContext.pressLogos (logo.placeholder) per logo slot.",
+      "enforcedBy": "semantic_validate.py::check_generation_mode"
+    },
+    {
+      "id": "GENERATION_MODE_PERSON",
+      "severity": "error",
+      "rule": "mode:generation: no real person's name (derived from the source's photo files) in any string; people imagery uses person.fictional.",
+      "enforcedBy": "semantic_validate.py::check_generation_mode"
+    },
+    {
+      "id": "GENERATION_MODE_URL",
+      "severity": "error",
+      "rule": "mode:generation: every URL / mailto must sit on a reserved .example or .invalid domain; source hosts are rejected anywhere in the PageSpec.",
+      "enforcedBy": "semantic_validate.py::check_generation_mode + check_cta_hrefs"
+    },
+    {
+      "id": "GENERATION_MODE_EMBED",
+      "severity": "error",
+      "rule": "mode:generation: no source video id / embed host; a page with trust.video-and-cards must declare generationContext.videoEmbedUrl on a reserved domain.",
+      "enforcedBy": "semantic_validate.py::check_generation_mode"
+    },
+    {
+      "id": "GENERATION_MODE_CLAIM",
+      "severity": "error",
+      "rule": "mode:generation: no source statistic / claim sentence (src/pages/Careers.jsx STATS).",
+      "enforcedBy": "semantic_validate.py::check_generation_mode"
+    },
+    {
+      "id": "GENERATION_MODE_COPY",
+      "severity": "error",
+      "rule": "mode:generation: no 5-word shingle of source copy (JSX text, blog titles, legal documents), after NFKC / zero-width / quote / dash normalisation.",
+      "enforcedBy": "semantic_validate.py::check_generation_mode"
+    },
+    {
+      "id": "GENERATION_MODE_ASSET",
+      "severity": "error",
+      "rule": "mode:generation: only generation-safe asset roles (PINNED_AVAILABILITY) and no source asset file name in any assetRef.",
+      "enforcedBy": "semantic_validate.py::check_asset_availability"
+    },
+    {
+      "id": "GENERATION_MODE_SCREENSHOT",
+      "severity": "error",
+      "rule": "mode:generation: no source screenshot file; use screenshot.placeholder.",
+      "enforcedBy": "semantic_validate.py::check_asset_availability"
+    },
+    {
+      "id": "GENERATION_MODE_LEGAL",
+      "severity": "error",
+      "rule": "mode:generation: legal sections must point at documentRef 'operator-supplied'; the source's operative legal text is never reused or generated.",
+      "enforcedBy": "semantic_validate.py::check_legal_binding"
+    },
+    {
+      "id": "ASSET_AVAILABILITY_PINNED",
+      "severity": "error",
+      "rule": "Every asset role's availability equals PINNED_AVAILABILITY (pinned in code in semantic_validate.py and verify_all.py); the registry alone cannot loosen a role.",
+      "enforcedBy": "semantic_validate.py::check_asset_availability"
+    },
+    {
+      "id": "RETRIEVAL_ELIGIBILITY_PINNED",
+      "severity": "error",
+      "rule": "Runtime / empty-state / scaffold sections are retrievalEligible:false with a 30+ char reason, pinned in code (RETRIEVAL_INELIGIBLE); node-level and allowlist echoes must agree.",
+      "enforcedBy": "semantic_validate.py::check_retrieval"
+    },
+    {
+      "id": "LEGAL_DOCUMENT_BINDING",
+      "severity": "error",
+      "rule": "Legal sections on one page share one documentRef; parts run 1..N; mode:clone N equals the real document's part count and the header title equals the real title.",
+      "enforcedBy": "semantic_validate.py::check_legal_binding"
+    },
+    {
+      "id": "TOKEN_UNKNOWN",
+      "severity": "error",
+      "rule": "A token slot or fill names a path that is not in tokens/llm/token-catalog.json.",
+      "enforcedBy": "semantic_validate.py::check_tokens"
+    },
+    {
+      "id": "TOKEN_RAW_COLOR",
+      "severity": "error",
+      "rule": "No raw hex / rgb() / hsl() / named colour in a token slot, and no hex / functional colour anywhere in a PageSpec.",
+      "enforcedBy": "semantic_validate.py::check_tokens"
+    },
+    {
+      "id": "TOKEN_ARBITRARY_SPACING",
+      "severity": "error",
+      "rule": "Spacing and radius slots take tokens, never raw px / rem / em / % / vh / vw / calc() lengths.",
+      "enforcedBy": "semantic_validate.py::check_tokens"
+    },
+    {
+      "id": "TOKEN_UNSUPPORTED_FONT",
+      "severity": "error",
+      "rule": "Font slots take one of the two catalog font families only.",
+      "enforcedBy": "semantic_validate.py::check_tokens"
+    },
+    {
+      "id": "TOKEN_SLOT_MISMATCH",
+      "severity": "error",
+      "rule": "A token must be in its slot's allow list (tokens/llm/token-policy.json).",
+      "enforcedBy": "semantic_validate.py::check_tokens"
+    },
+    {
+      "id": "TOKEN_NOT_APPROVED",
+      "severity": "error",
+      "rule": "colorLiteral tokens are not generation-approved.",
+      "enforcedBy": "semantic_validate.py::check_tokens"
+    },
+    {
+      "id": "TOKEN_THEME_COMBINATION",
+      "severity": "error",
+      "rule": "Tokens must be in the declared theme's tokenScopes (marketing-light: marketing + shared; auth-light: auth + shared), the theme must match the designSystem, and text must reach 4.5:1 contrast on surface.",
+      "enforcedBy": "semantic_validate.py::check_tokens"
     }
   ],
-  "ruleCount": 28
+  "ruleCount": 48
 }

@@ -1,0 +1,114 @@
+{
+  "pageSpecVersion": "1.1.0",
+  "mode": "generation",
+  "route": "/terms-of-use",
+  "template": "legal-prose",
+  "designSystem": "marketing",
+  "theme": "marketing-light",
+  "tokens": {
+    "surface": "semantic.surface.page",
+    "text": "semantic.text.primary",
+    "fontDisplay": "typography.font.display",
+    "fontBody": "typography.font.sans",
+    "sectionPadding": "spacing.section.default",
+    "cardRadius": "radius.card",
+    "buttonRadius": "radius.pill"
+  },
+  "nodes": [
+    {
+      "section": "chrome.navbar",
+      "content": {
+        "variant": "site"
+      },
+      "motion": {
+        "pattern": "mobileNav.open",
+        "reducedMotionFallback": "instant-switch"
+      },
+      "variant": "site"
+    },
+    {
+      "section": "legal.document-header",
+      "content": {
+        "documentRef": "operator-supplied",
+        "title": "Terms of service"
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    },
+    {
+      "section": "legal.document-intro",
+      "content": {
+        "documentRef": "operator-supplied"
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    },
+    {
+      "section": "legal.document-part",
+      "content": {
+        "documentRef": "operator-supplied",
+        "partIndex": 1
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    },
+    {
+      "section": "legal.document-part",
+      "content": {
+        "documentRef": "operator-supplied",
+        "partIndex": 2
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    },
+    {
+      "section": "legal.document-part",
+      "content": {
+        "documentRef": "operator-supplied",
+        "partIndex": 3
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    },
+    {
+      "section": "chrome.footer",
+      "content": {
+        "variant": "site"
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      },
+      "variant": "site"
+    }
+  ],
+  "generationContext": {
+    "brandName": "Kettlewood",
+    "brandMark": {
+      "assetRole": "placeholder.brandMark",
+      "assetRef": "placeholder/kettlewood-mark.svg"
+    },
+    "siteUrl": "https://kettlewood.example",
+    "appUrl": "https://app.kettlewood.example",
+    "socialLinks": [
+      {
+        "label": "Newsletter",
+        "href": "https://kettlewood.example/newsletter"
+      },
+      {
+        "label": "Community",
+        "href": "https://kettlewood.example/community"
+      }
+    ]
+  }
+}

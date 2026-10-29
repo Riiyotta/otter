@@ -9,6 +9,15 @@ mapping is asserted by extraction/verify_all.py so the graph's prose and this
 file's code cannot silently diverge (a real failure mode in prior builds: the
 docs get corrected and the enforcing code keeps asserting the old, wrong fact).
 
+Since 2.0.0 it also enforces the BASELINE rules:
+  * mode (clone | generation): GENERATION_MODE_BRAND / _CUSTOMER / _PERSON / _URL / _EMBED / _CLAIM / _COPY /
+    _ASSET / _SCREENSHOT / _LEGAL against schema/source-identity.json (derived from the real source by
+    extraction/build_source_identity.py; string-based, normalised by schema/textnorm.py);
+  * PINNED_AVAILABILITY (asset roles), RETRIEVAL_INELIGIBLE (runtime / empty-state UI), PINNED_THEME_RULES --
+    pinned here in code and cross-checked against the registries by extraction/verify_all.py;
+  * TOKEN_* rules against tokens/llm/token-catalog.json + tokens/llm/token-policy.json;
+  * LEGAL_DOCUMENT_BINDING for the decomposed legal page.
+
 Paths are derived from __file__, never hardcoded, so the repo keeps working when
 it is extracted somewhere else.
 
@@ -21,6 +30,8 @@ import os
 import re
 import sys
 
+sys.dont_write_bytecode = True
+
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(REPO, "schema"))
 
@@ -31,6 +42,7 @@ def _load(*parts):
 
 
 def load_registry():
+    """Everything a check needs, loaded once. Paths derive from __file__."""
     sections = {}
     secdir = os.path.join(REPO, "sections")
     for name in sorted(os.listdir(secdir)):
@@ -42,6 +54,9 @@ def load_registry():
         "templates": _load("templates", "templates.json"),
         "graph": _load("compatibility", "graph.json"),
         "assets": _load("assets", "asset-roles.json"),
+        "catalog": _load("tokens", "llm", "token-catalog.json"),
+        "policy": _load("tokens", "llm", "token-policy.json"),
+        "identity": _load("schema", "source-identity.json"),
     }
 
 
@@ -447,13 +462,26 @@ def check_cta_hrefs(spec, reg):
             return
         if isinstance(value, dict):
             href = value.get("href")
-            allowed = (schema.get("properties") or {}).get("href", {}).get("enum")
-            if isinstance(href, str) and allowed and href not in allowed:
+            hs = (schema.get("properties") or {}).get("href", {})
+            allowed = hs.get("x-cloneEnum") or hs.get("enum")
+            clone_pattern = hs.get("x-clonePattern")
+            if isinstance(href, str) and spec.get("mode") == "generation" and (allowed or clone_pattern):
+                anchor_ok = bool(allowed) and href in allowed and not URL_LIKE.search(href)
+                if not anchor_ok and not PLACEHOLDER_URL.match(href):
+                    out.append(("error", "GENERATION_MODE_URL",
+                                "%s: href %r in a mode:generation PageSpec must be a reserved "
+                                ".example/.invalid URL (or a same-page anchor); the source's "
+                                "app host / job board must not be reused" % (path, href)))
+            elif isinstance(href, str) and allowed and href not in allowed:
                 out.append(("error", "CTA_HREF_NOT_NORMALISED",
                             "%s: href %r is not one of the values this section pins "
                             "(%s). The app-host target is per component, not per "
                             "route -- do not normalise it."
                             % (path, href, allowed)))
+            elif isinstance(href, str) and clone_pattern and not re.match(clone_pattern, href):
+                out.append(("error", "CTA_HREF_NOT_NORMALISED",
+                            "%s: href %r does not match the source pattern %s required in "
+                            "mode:clone" % (path, href, clone_pattern)))
             for key, sub in (schema.get("properties") or {}).items():
                 if key in value:
                     walk(value[key], sub, "%s.%s" % (path, key))
@@ -603,6 +631,381 @@ def check_max_words(spec, reg):
     return out
 
 
+
+# --------------------------------------------------------------------------
+# BASELINE R1-R3 / R8 / R10 additions: mode, generation leakage, asset
+# availability pins, retrieval eligibility pins, legal binding, tokens.
+# --------------------------------------------------------------------------
+
+import textnorm as tn  # noqa: E402
+
+PLACEHOLDER_URL = re.compile(
+    r"^(https?://([a-z0-9-]+\.)*[a-z0-9-]+\.(example|invalid)(/[^\s]*)?"
+    r"|mailto:[^@\s]+@([a-z0-9-]+\.)*[a-z0-9-]+\.(example|invalid))$")
+URL_LIKE = re.compile(r"(https?://|mailto:|\bwww\.|\b[a-z0-9-]+\.(com|org|net|io|co|app)\b)", re.I)
+URL_IN_TEXT = re.compile(r"(https?://[^\s\"'<>]+|mailto:[^\s\"'<>]+|\bwww\.[^\s\"'<>]+)", re.I)
+
+# PINNED_AVAILABILITY -- pinned in code, independent of assets/asset-roles.json, so editing the registry alone
+# cannot loosen a role. extraction/verify_all.py holds an identical pin and cross-checks registry == both pins.
+PINNED_AVAILABILITY = {
+    "asset.operatorSupplied": "generation-safe",
+    "auth.illustration": "clone-only",
+    "blob.fill": "generation-safe",
+    "brand.wordmark": "blocked-for-generation",
+    "copy.original": "generation-safe",
+    "decorative.none": "generation-safe",
+    "editorial.cover": "clone-only",
+    "icon.feature": "clone-only",
+    "icon.values": "clone-only",
+    "illustration.brand": "clone-only",
+    "illustration.editorial": "clone-only",
+    "illustration.generated": "generation-safe",
+    "legal.operativeText": "blocked-for-generation",
+    "logo.placeholder": "generation-safe",
+    "media.videoPoster": "clone-only",
+    "person.fictional": "generation-safe",
+    "photo.person": "clone-only",
+    "placeholder.brandMark": "generation-safe",
+    "press.logo": "blocked-for-generation",
+    "screenshot.placeholder": "generation-safe",
+    "url.placeholder": "generation-safe",
+}
+
+# RETRIEVAL_INELIGIBLE -- runtime / empty-state / scaffold UI that must never be retrieved as a design
+# exemplar. Pinned here AND in extraction/verify_all.py; a contract whose id or name looks like runtime UI
+# (RUNTIME_UI_HINT) must be in the pin.
+RETRIEVAL_INELIGIBLE = {
+    "content.stub-notice",
+    "faq.category-empty",
+    "faq.common-questions-empty",
+    "testimonials.slider-empty",
+}
+RUNTIME_UI_HINT = re.compile(r"cookie|consent|modal|dialog|drawer|popup|overlay|preloader|toast|cursor|empty|stub", re.I)
+
+# PINNED_THEME_RULES -- the theme/token restrictions of tokens/llm/token-policy.json themeRules, pinned in code.
+PINNED_THEME_RULES = {
+    "marketing-light": {"designSystem": "marketing", "tokenScopes": ["marketing", "shared"]},
+    "auth-light": {"designSystem": "auth", "tokenScopes": ["auth", "shared"]},
+    "minTextContrast": 4.5,
+}
+
+LEGAL_SECTIONS = ("legal.document-header", "legal.document-intro", "legal.document-part")
+LEGAL_TITLES = {"terms-of-use": "Terms of use", "privacy-policy": "Privacy Policy"}
+
+# string paths that are closed identifiers, not copy: excluded from the COPY/BRAND scans (they are schema enums)
+IDENT_KEYS = {"section", "template", "variant", "theme", "designSystem", "mode", "pageSpecVersion", "pattern",
+              "reducedMotionFallback", "easing", "assetRole", "clipId", "fill", "kind", "ledeClass", "color",
+              "documentRef", "slot", "anchorId", "srHeading", "requiredNote"}
+
+
+def iter_strings(obj, path="$", key=None):
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            for x in iter_strings(v, "%s.%s" % (path, k), k):
+                yield x
+    elif isinstance(obj, list):
+        for i, v in enumerate(obj):
+            for x in iter_strings(v, "%s[%d]" % (path, i), key):
+                yield x
+    elif isinstance(obj, str):
+        yield path, key, obj
+
+
+def check_asset_availability(spec, reg):
+    """ASSET_AVAILABILITY_PINNED + GENERATION_MODE_ASSET / _SCREENSHOT."""
+    out = []
+    roles = reg["assets"]["roles"]
+    for role, want in sorted(PINNED_AVAILABILITY.items()):
+        got = (roles.get(role) or {}).get("availability")
+        if got != want:
+            out.append(("error", "ASSET_AVAILABILITY_PINNED",
+                        "assets/asset-roles.json role %s has availability %r but PINNED_AVAILABILITY "
+                        "says %r (the registry cannot loosen a pinned role)" % (role, got, want)))
+    extra = sorted(set(roles) - set(PINNED_AVAILABILITY))
+    if extra:
+        out.append(("error", "ASSET_AVAILABILITY_PINNED",
+                    "roles %s are not pinned in PINNED_AVAILABILITY" % extra))
+    if spec.get("mode") != "generation":
+        return out
+    files = {a["term"] for a in reg["identity"]["assetFiles"]}
+    shots = {a["term"] for a in reg["identity"]["screenshotFiles"]}
+
+    def walk(value, path):
+        if isinstance(value, dict):
+            role = value.get("assetRole")
+            if isinstance(role, str):
+                avail = PINNED_AVAILABILITY.get(role)
+                if avail != "generation-safe":
+                    subs = (roles.get(role) or {}).get("generationSafeSubstitutes") or []
+                    out.append(("error", "GENERATION_MODE_ASSET",
+                                "%s: assetRole %r is %s; a mode:generation PageSpec may only use "
+                                "generation-safe roles (substitutes: %s)" % (path, role, avail, subs)))
+                ref = value.get("assetRef")
+                if isinstance(ref, str):
+                    base = os.path.basename(ref)
+                    if base in shots:
+                        out.append(("error", "GENERATION_MODE_SCREENSHOT",
+                                    "%s: assetRef %r is a source screenshot" % (path, ref)))
+                    elif base in files or ref.startswith(("public/", "src/")):
+                        out.append(("error", "GENERATION_MODE_ASSET",
+                                    "%s: assetRef %r is a source asset file" % (path, ref)))
+            for k, v in value.items():
+                walk(v, "%s.%s" % (path, k))
+        elif isinstance(value, list):
+            for i, v in enumerate(value):
+                walk(v, "%s[%d]" % (path, i))
+
+    walk(spec.get("nodes"), "nodes")
+    walk(spec.get("generationContext"), "generationContext")
+    return out
+
+
+def check_generation_mode(spec, reg):
+    """GENERATION_MODE_BRAND / _CUSTOMER / _PERSON / _URL / _EMBED / _CLAIM / _COPY (and the clone-mode
+    counterpart: generationContext belongs to generation mode only)."""
+    out = []
+    mode = spec.get("mode")
+    ctx = spec.get("generationContext")
+    if mode == "clone":
+        if ctx is not None:
+            out.append(("error", "GENERATION_MODE_BRAND",
+                        "mode:clone must not declare generationContext (the source's own identity renders)"))
+        return out
+    if mode != "generation":
+        return out
+    if not isinstance(ctx, dict):
+        out.append(("error", "GENERATION_MODE_BRAND",
+                    "mode:generation requires generationContext: without it the chrome renders the source "
+                    "wordmark, app host and social links"))
+        ctx = {}
+    ident = reg["identity"]
+    by_cat = {}
+    for t in ident["terms"]:
+        by_cat.setdefault(t["category"], []).append(t)
+    shingles = set(ident["copy"]["hashes"])
+    rule_of = {"BRAND": "GENERATION_MODE_BRAND", "CUSTOMER": "GENERATION_MODE_CUSTOMER",
+               "PERSON": "GENERATION_MODE_PERSON", "URL": "GENERATION_MODE_URL",
+               "EMBED": "GENERATION_MODE_EMBED", "CLAIM": "GENERATION_MODE_CLAIM"}
+    seen = set()
+    for path, key, s in iter_strings({"nodes": spec.get("nodes"), "generationContext": ctx, "route": spec.get("route")}):
+        if key in IDENT_KEYS:
+            continue
+        toks = tn.tokens(s)
+        for cat, rule in rule_of.items():
+            for t in by_cat.get(cat, []):
+                if tn.contains_terms(toks, t["tokens"]) and (path, rule) not in seen:
+                    seen.add((path, rule))
+                    out.append(("error", rule, "%s: %r carries source %s %r (%s)"
+                                % (path, s[:60], cat.lower(), t["term"], t["evidence"][0])))
+        for m in URL_IN_TEXT.finditer(s):
+            u = m.group(0).rstrip(".,;)")
+            if not PLACEHOLDER_URL.match(u) and (path, "GENERATION_MODE_URL") not in seen:
+                seen.add((path, "GENERATION_MODE_URL"))
+                out.append(("error", "GENERATION_MODE_URL",
+                            "%s: URL %r is not on a reserved .example/.invalid domain" % (path, u)))
+        hit = tn.shingle_hashes(s) & shingles
+        if hit:
+            out.append(("error", "GENERATION_MODE_COPY",
+                        "%s: %r reuses source copy (%d matching 5-word shingle(s))" % (path, s[:60], len(hit))))
+    ids = [n.get("section") for n in spec.get("nodes", [])]
+    if "trust.press-bar" in ids:
+        node = spec["nodes"][ids.index("trust.press-bar")]
+        want = (node.get("content") or {}).get("logoCount")
+        logos = ctx.get("pressLogos") or []
+        if len(logos) != want:
+            out.append(("error", "GENERATION_MODE_CUSTOMER",
+                        "trust.press-bar shows %r logo slot(s) but generationContext.pressLogos has %d: "
+                        "without placeholder logos the bar renders the source's real press marks"
+                        % (want, len(logos))))
+    if "trust.video-and-cards" in ids:
+        url = ctx.get("videoEmbedUrl")
+        if not isinstance(url, str) or not PLACEHOLDER_URL.match(url):
+            out.append(("error", "GENERATION_MODE_EMBED",
+                        "trust.video-and-cards needs generationContext.videoEmbedUrl on a reserved "
+                        ".example/.invalid domain; otherwise the facade plays the source's video"))
+    return out
+
+
+def check_retrieval(spec, reg):
+    """RETRIEVAL_ELIGIBILITY_PINNED."""
+    out = []
+    sections = reg["sections"]
+    for sid, c in sorted(sections.items()):
+        want = sid not in RETRIEVAL_INELIGIBLE
+        got = c.get("retrievalEligible")
+        if got is not want:
+            out.append(("error", "RETRIEVAL_ELIGIBILITY_PINNED",
+                        "contract %s retrievalEligible is %r but the RETRIEVAL_INELIGIBLE pin says %r"
+                        % (sid, got, want)))
+        if not want and len(str(c.get("retrievalReason", ""))) < 30:
+            out.append(("error", "RETRIEVAL_ELIGIBILITY_PINNED",
+                        "contract %s is retrieval-ineligible without a 30+ char retrievalReason" % sid))
+        if want and RUNTIME_UI_HINT.search(sid + " " + str(c.get("name", ""))):
+            out.append(("error", "RETRIEVAL_ELIGIBILITY_PINNED",
+                        "contract %s looks like runtime/utility UI but is not in RETRIEVAL_INELIGIBLE" % sid))
+    for i, node in enumerate(spec.get("nodes", [])):
+        if "retrievalEligible" in node:
+            want = node.get("section") not in RETRIEVAL_INELIGIBLE
+            if node["retrievalEligible"] is not want:
+                out.append(("error", "RETRIEVAL_ELIGIBILITY_PINNED",
+                            "node %d (%s): retrievalEligible %r contradicts the pinned contract value %r"
+                            % (i, node.get("section"), node["retrievalEligible"], want)))
+    return out
+
+
+def check_legal_binding(spec, reg):
+    """LEGAL_DOCUMENT_BINDING and GENERATION_MODE_LEGAL."""
+    out = []
+    nodes = [n for n in spec.get("nodes", []) if n.get("section") in LEGAL_SECTIONS]
+    if not nodes:
+        return out
+    refs = {(n.get("content") or {}).get("documentRef") for n in nodes}
+    if len(refs) != 1:
+        out.append(("error", "LEGAL_DOCUMENT_BINDING",
+                    "legal sections on one page point at different documents: %s" % sorted(map(str, refs))))
+        return out
+    ref = refs.pop()
+    parts = [(n.get("content") or {}).get("partIndex") for n in nodes if n["section"] == "legal.document-part"]
+    if parts != list(range(1, len(parts) + 1)):
+        out.append(("error", "LEGAL_DOCUMENT_BINDING",
+                    "legal.document-part partIndex must run 1..N in order, got %s" % parts))
+    if spec.get("mode") == "generation":
+        if ref != "operator-supplied":
+            out.append(("error", "GENERATION_MODE_LEGAL",
+                        "mode:generation legal pages must use documentRef 'operator-supplied' (the "
+                        "deployer's legal owner supplies the text); %r is the source's operative legal text" % ref))
+        return out
+    if ref not in LEGAL_TITLES:
+        out.append(("error", "LEGAL_DOCUMENT_BINDING",
+                    "mode:clone documentRef must be one of the real documents %s, got %r" % (sorted(LEGAL_TITLES), ref)))
+        return out
+    want_parts = reg["sections"]["legal.document-part"]["constraints"]["documentParts"][ref]
+    if len(parts) != want_parts:
+        out.append(("error", "LEGAL_DOCUMENT_BINDING",
+                    "%s has %d heading-bounded parts; the PageSpec declares %d" % (ref, want_parts, len(parts))))
+    for n in nodes:
+        if n["section"] == "legal.document-header" and (n.get("content") or {}).get("title") != LEGAL_TITLES[ref]:
+            out.append(("error", "LEGAL_DOCUMENT_BINDING",
+                        "mode:clone %s title must be %r" % (ref, LEGAL_TITLES[ref])))
+    return out
+
+
+HEX = re.compile(r"#[0-9A-Fa-f]{3,8}\b")
+FUNC_COLOR = re.compile(r"\b(rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\s*\(", re.I)
+NAMED_COLOR = re.compile(r"^(white|black|red|green|blue|yellow|orange|purple|pink|gray|grey|teal|navy|transparent|currentcolor)$", re.I)
+RAW_LENGTH = re.compile(r"^-?\d*\.?\d+\s*(px|rem|em|vh|vw|vmin|vmax|%|pt|ch|ex)?$|calc\(", re.I)
+TOKEN_PATH = re.compile(r"^[A-Za-z][A-Za-z0-9-]*(\.[A-Za-z0-9-]+)+$")
+
+
+def _hex_rgb(value):
+    v = value.strip().lstrip("#")
+    if len(v) == 3:
+        v = "".join(c * 2 for c in v)
+    if not re.match(r"^[0-9a-fA-F]{6}$", v):
+        return None
+    return tuple(int(v[i:i + 2], 16) / 255.0 for i in (0, 2, 4))
+
+
+def contrast_ratio(a, b):
+    ca, cb = _hex_rgb(a), _hex_rgb(b)
+    if ca is None or cb is None:
+        return None
+
+    def lum(c):
+        lin = [x / 12.92 if x <= 0.03928 else ((x + 0.055) / 1.055) ** 2.4 for x in c]
+        return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2]
+    la, lb = sorted((lum(ca), lum(cb)), reverse=True)
+    return (la + 0.05) / (lb + 0.05)
+
+
+def _resolve(cat, theme, path):
+    th = cat["themes"].get(theme) or {}
+    r = (th.get("resolves") or {}).get(path)
+    if r:
+        return r.get("value")
+    v = cat["tokens"].get(path, {}).get("value")
+    m = re.match(r"^\{(.+)\}$", str(v))
+    return cat["tokens"].get(m.group(1), {}).get("value") if m else v
+
+
+def classify_token(slot_name, slot, value, reg):
+    cat, pol = reg["catalog"], reg["policy"]
+    kind = slot["kind"]
+    if HEX.search(value) or FUNC_COLOR.search(value) or NAMED_COLOR.match(value):
+        return "TOKEN_RAW_COLOR", "%s: raw colour %r; name a token (%s)" % (slot_name, value, ", ".join(slot["allow"][:3]))
+    if kind in ("spacing", "radius") and RAW_LENGTH.search(value):
+        return "TOKEN_ARBITRARY_SPACING", "%s: arbitrary length %r; name a %s token (%s)" % (slot_name, value, kind, ", ".join(slot["allow"][:3]))
+    if not TOKEN_PATH.match(value):
+        if kind == "fontFamily":
+            return "TOKEN_UNSUPPORTED_FONT", "%s: unsupported font %r; fonts are tokens (%s)" % (slot_name, value, ", ".join(slot["allow"]))
+        return "TOKEN_UNKNOWN", "%s: %r is not a token path" % (slot_name, value)
+    if value not in cat["tokens"]:
+        if kind == "fontFamily":
+            return "TOKEN_UNSUPPORTED_FONT", "%s: %r is not one of the catalog font families (%s)" % (slot_name, value, ", ".join(slot["allow"]))
+        return "TOKEN_UNKNOWN", "%s: unknown token %r (not in tokens/llm/token-catalog.json)" % (slot_name, value)
+    entry = cat["tokens"][value]
+    if entry["category"] in pol["notGenerationApproved"]["categories"] or not entry.get("generationApproved", True):
+        return "TOKEN_NOT_APPROVED", "%s: token %r (%s) is not generation-approved" % (slot_name, value, entry["category"])
+    if value not in slot["allow"]:
+        return "TOKEN_SLOT_MISMATCH", "%s: token %r (%s) is not accepted by this slot (allowed: %s)" % (slot_name, value, entry["category"], ", ".join(slot["allow"]))
+    return None
+
+
+def check_tokens(spec, reg):
+    """TOKEN_UNKNOWN / _RAW_COLOR / _ARBITRARY_SPACING / _UNSUPPORTED_FONT / _SLOT_MISMATCH / _NOT_APPROVED /
+    _THEME_COMBINATION. The policy is tokens/llm/token-policy.json; the catalog is generated from the token files."""
+    out = []
+    cat, pol = reg["catalog"], reg["policy"]
+    slots = {k: v for k, v in pol["pageSpecTokenSlots"].items() if not k.startswith("$")}
+    given = spec.get("tokens") if isinstance(spec.get("tokens"), dict) else {}
+    ok = {}
+    for name, value in given.items():
+        if name not in slots or not isinstance(value, str):
+            continue
+        res = classify_token(name, slots[name], value, reg)
+        if res:
+            out.append(("error",) + res)
+        else:
+            ok[name] = value
+    fills = pol["nodeFillSlots"]
+    for i, node in enumerate(spec.get("nodes", [])):
+        for path, key, s in iter_strings(node.get("content"), "node[%d].content" % i):
+            if key == "fill" and s != fills["noFillSentinel"]:
+                if s not in cat["tokens"]:
+                    out.append(("error", "TOKEN_UNKNOWN", "%s: fill %r is not a catalog token" % (path, s)))
+                elif s not in fills["allow"]:
+                    out.append(("error", "TOKEN_SLOT_MISMATCH", "%s: fill %r is not a colour fill token" % (path, s)))
+                else:
+                    ok.setdefault("__fill__%s" % path, s)
+    for path, key, s in iter_strings({k: v for k, v in spec.items() if k != "tokens"}):
+        if HEX.search(s) or FUNC_COLOR.search(s):
+            out.append(("error", "TOKEN_RAW_COLOR", "%s: raw colour value in %r; colours are tokens, never values" % (path, s[:60])))
+    theme = spec.get("theme")
+    pinned = PINNED_THEME_RULES.get(theme)
+    th = cat["themes"].get(theme)
+    if th is None or pinned is None:
+        out.append(("error", "TOKEN_THEME_COMBINATION", "theme %r is not a theme of the token catalog %s" % (theme, sorted(cat["themes"]))))
+        return out
+    if th["designSystem"] != spec.get("designSystem") or pinned["designSystem"] != spec.get("designSystem"):
+        out.append(("error", "TOKEN_THEME_COMBINATION", "theme %r belongs to design system %r, not %r" % (theme, th["designSystem"], spec.get("designSystem"))))
+    scopes = set(pinned["tokenScopes"])
+    for name, value in ok.items():
+        scope = cat["tokens"][value]["themeScope"]
+        if scope not in scopes:
+            out.append(("error", "TOKEN_THEME_COMBINATION", "%s: token %r is %s-scoped and cannot be used with theme %r (allowed scopes %s)"
+                        % (name.replace("__fill__", ""), value, scope, theme, sorted(scopes))))
+        elif slots.get(name, {}).get("themeResolved") and value not in th["semanticTokens"]:
+            out.append(("error", "TOKEN_THEME_COMBINATION", "%s: token %r is not resolved by theme %r" % (name, value, theme)))
+    against = slots.get("text", {}).get("contrastAgainst")
+    if "text" in ok and against in ok:
+        a, b = _resolve(cat, theme, ok["text"]), _resolve(cat, theme, ok[against])
+        r = contrast_ratio(a, b) if isinstance(a, str) and isinstance(b, str) else None
+        if r is not None and r < PINNED_THEME_RULES["minTextContrast"]:
+            out.append(("error", "TOKEN_THEME_COMBINATION", "text %r (%s) on %s %r (%s) has contrast %.2f, below %s in theme %r"
+                        % (ok["text"], a, against, ok[against], b, r, PINNED_THEME_RULES["minTextContrast"], theme)))
+    return out
+
+
 CHECKS = [
     check_template_sequence,
     check_one_hero,
@@ -624,6 +1027,11 @@ CHECKS = [
     check_asset_roles,
     check_blog_forbidden_fields,
     check_max_words,
+    check_asset_availability,
+    check_generation_mode,
+    check_retrieval,
+    check_legal_binding,
+    check_tokens,
 ]
 
 

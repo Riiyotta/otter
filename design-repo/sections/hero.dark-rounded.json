@@ -32,9 +32,21 @@
           },
           "href": {
             "type": "string",
-            "enum": [
+            "anyOf": [
+              {
+                "enum": [
+                  "https://app.withotter.com/sign-up"
+                ]
+              },
+              {
+                "pattern": "^(https?://([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid)(/[^\\s]*)?|mailto:[^@\\s]+@([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid))$"
+              }
+            ],
+            "x-cloneEnum": [
               "https://app.withotter.com/sign-up"
-            ]
+            ],
+            "x-generationPattern": "url.placeholder",
+            "x-modeNote": "mode:clone -> one of x-cloneEnum (CTA_HREF_NOT_NORMALISED). mode:generation -> a reserved .example/.invalid URL (GENERATION_MODE_URL); the source app host is rejected."
           },
           "variant": {
             "const": "cc-light"
@@ -79,7 +91,10 @@
               "assetRoleEnumRef": "assets/asset-roles.json#/roles",
               "allowedRoles": [
                 "photo.person",
-                "decorative.none"
+                "decorative.none",
+                "person.fictional",
+                "illustration.generated",
+                "asset.operatorSupplied"
               ]
             }
           },
@@ -121,10 +136,31 @@
   "assetRoles": [
     "photo.person",
     "blob.fill",
-    "decorative.none"
+    "decorative.none",
+    "person.fictional",
+    "illustration.generated",
+    "asset.operatorSupplied"
   ],
   "observedOn": [
     "/"
   ],
-  "measuredFrom": "CLONE_SPEC.md:305-334"
+  "measuredFrom": "CLONE_SPEC.md:305-334",
+  "generatedAssetRoles": [
+    "blob.fill",
+    "decorative.none",
+    "person.fictional",
+    "illustration.generated",
+    "asset.operatorSupplied"
+  ],
+  "retrievalEligible": true,
+  "source": {
+    "id": "Hero.jsx:header.section.u-pt-0.u-pb-2",
+    "tag": "header",
+    "file": "src/components/Hero.jsx",
+    "lines": "5-102"
+  },
+  "semantic": {
+    "id": "hero.dark-rounded",
+    "category": "HERO"
+  }
 }

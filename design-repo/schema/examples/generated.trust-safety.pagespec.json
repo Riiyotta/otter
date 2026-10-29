@@ -1,0 +1,142 @@
+{
+  "pageSpecVersion": "1.1.0",
+  "mode": "generation",
+  "route": "/trust-safety",
+  "template": "trust-safety",
+  "designSystem": "marketing",
+  "theme": "marketing-light",
+  "tokens": {
+    "surface": "semantic.surface.page",
+    "text": "semantic.text.primary",
+    "fontDisplay": "typography.font.display",
+    "fontBody": "typography.font.sans",
+    "sectionPadding": "spacing.section.default",
+    "cardRadius": "radius.card",
+    "buttonRadius": "radius.pill"
+  },
+  "nodes": [
+    {
+      "section": "chrome.navbar",
+      "content": {
+        "variant": "site"
+      },
+      "motion": {
+        "pattern": "mobileNav.open",
+        "reducedMotionFallback": "instant-switch"
+      },
+      "variant": "site"
+    },
+    {
+      "section": "hero.light-split",
+      "content": {
+        "variant": "pst-stones",
+        "heading": "Safety at every visit",
+        "ctas": [
+          {
+            "label": "Find a companion",
+            "href": "https://kettlewood.example/start",
+            "variant": "dark"
+          }
+        ],
+        "shapes": [
+          {
+            "clipId": "stone-hero_top-right",
+            "fill": "color.peach",
+            "media": {
+              "assetRole": "decorative.none"
+            }
+          }
+        ]
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      },
+      "variant": "pst-stones"
+    },
+    {
+      "section": "trust.video-and-cards",
+      "content": {
+        "heading": "How Kettlewood keeps visits safe",
+        "lede": "Every companion completes identity checks, reference calls and a practical orientation before a first visit.",
+        "video": {
+          "poster": {
+            "assetRole": "screenshot.placeholder",
+            "assetRef": "placeholder/poster-1.webp"
+          },
+          "clickToPlay": true,
+          "title": "A short tour of our checks"
+        },
+        "cards": [
+          {
+            "heading": "Identity checks",
+            "body": "A fictional safety step written for this example page.",
+            "icon": {
+              "assetRole": "illustration.generated",
+              "assetRef": "generated/art-2.svg"
+            }
+          },
+          {
+            "heading": "Reference calls",
+            "body": "A fictional safety step written for this example page.",
+            "icon": {
+              "assetRole": "illustration.generated",
+              "assetRef": "generated/art-3.svg"
+            }
+          },
+          {
+            "heading": "Orientation",
+            "body": "A fictional safety step written for this example page.",
+            "icon": {
+              "assetRole": "illustration.generated",
+              "assetRef": "generated/art-4.svg"
+            }
+          },
+          {
+            "heading": "Visit check-ins",
+            "body": "A fictional safety step written for this example page.",
+            "icon": {
+              "assetRole": "illustration.generated",
+              "assetRef": "generated/art-5.svg"
+            }
+          }
+        ]
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    },
+    {
+      "section": "chrome.footer",
+      "content": {
+        "variant": "site"
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      },
+      "variant": "site"
+    }
+  ],
+  "generationContext": {
+    "brandName": "Kettlewood",
+    "brandMark": {
+      "assetRole": "placeholder.brandMark",
+      "assetRef": "placeholder/kettlewood-mark.svg"
+    },
+    "siteUrl": "https://kettlewood.example",
+    "appUrl": "https://app.kettlewood.example",
+    "socialLinks": [
+      {
+        "label": "Newsletter",
+        "href": "https://kettlewood.example/newsletter"
+      },
+      {
+        "label": "Community",
+        "href": "https://kettlewood.example/community"
+      }
+    ],
+    "videoEmbedUrl": "https://video.kettlewood.example/embed/safety-tour"
+  }
+}

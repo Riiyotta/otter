@@ -25,7 +25,9 @@
         "type": "object",
         "assetRoleEnumRef": "assets/asset-roles.json#/roles",
         "allowedRoles": [
-          "illustration.editorial"
+          "illustration.editorial",
+          "illustration.generated",
+          "asset.operatorSupplied"
         ]
       }
     },
@@ -56,10 +58,27 @@
     "le479": "aspect wrapper radius drops to 16px; image 351x196.547."
   },
   "assetRoles": [
-    "illustration.editorial"
+    "illustration.editorial",
+    "illustration.generated",
+    "asset.operatorSupplied"
   ],
   "observedOn": [
     "/careers"
   ],
-  "measuredFrom": "spec/SPEC_faq_contact_careers.md:569-578"
+  "measuredFrom": "spec/SPEC_faq_contact_careers.md:569-578",
+  "generatedAssetRoles": [
+    "illustration.generated",
+    "asset.operatorSupplied"
+  ],
+  "retrievalEligible": true,
+  "source": {
+    "id": "Careers.jsx:section.section",
+    "tag": "section",
+    "file": "src/pages/Careers.jsx",
+    "lines": "172-200"
+  },
+  "semantic": {
+    "id": "content.image-copy-split",
+    "category": "CONTENT"
+  }
 }

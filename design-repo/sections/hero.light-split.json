@@ -69,11 +69,24 @@
             },
             "href": {
               "type": "string",
-              "enum": [
+              "anyOf": [
+                {
+                  "enum": [
+                    "https://app.withotter.com/sign-up/welcome",
+                    "#jobs"
+                  ]
+                },
+                {
+                  "pattern": "^(https?://([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid)(/[^\\s]*)?|mailto:[^@\\s]+@([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid))$"
+                }
+              ],
+              "x-cloneEnum": [
                 "https://app.withotter.com/sign-up/welcome",
                 "#jobs"
               ],
-              "note": "Only two CTA targets are observed on light heroes: the app-host welcome path (subpages use /sign-up/welcome, NOT the bare /sign-up the homepage uses) and the /careers same-page #jobs anchor."
+              "x-generationPattern": "url.placeholder",
+              "note": "Only two CTA targets are observed on light heroes: the app-host welcome path (subpages use /sign-up/welcome, NOT the bare /sign-up the homepage uses) and the /careers same-page #jobs anchor.",
+              "x-modeNote": "mode:clone -> one of x-cloneEnum (CTA_HREF_NOT_NORMALISED). mode:generation -> a reserved .example/.invalid URL (GENERATION_MODE_URL); the source app host is rejected."
             },
             "variant": {
               "enum": [
@@ -128,7 +141,10 @@
               "assetRoleEnumRef": "assets/asset-roles.json#/roles",
               "allowedRoles": [
                 "photo.person",
-                "decorative.none"
+                "decorative.none",
+                "person.fictional",
+                "illustration.generated",
+                "asset.operatorSupplied"
               ]
             }
           },
@@ -149,7 +165,10 @@
             "assetRoleEnumRef": "assets/asset-roles.json#/roles",
             "allowedRoles": [
               "photo.person",
-              "decorative.none"
+              "decorative.none",
+              "person.fictional",
+              "illustration.generated",
+              "asset.operatorSupplied"
             ]
           }
         ],
@@ -188,7 +207,10 @@
   "assetRoles": [
     "photo.person",
     "blob.fill",
-    "decorative.none"
+    "decorative.none",
+    "person.fictional",
+    "illustration.generated",
+    "asset.operatorSupplied"
   ],
   "observedOn": [
     "/parents",
@@ -203,5 +225,23 @@
   "notes": [
     "The three PST routes share one hero skeleton; only copy, CTA count and shape fills differ.",
     "/parents and /careers rotate their bottom blob 90deg (computed matrix(0,1,-1,0,0,0))."
-  ]
+  ],
+  "generatedAssetRoles": [
+    "blob.fill",
+    "decorative.none",
+    "person.fictional",
+    "illustration.generated",
+    "asset.operatorSupplied"
+  ],
+  "retrievalEligible": true,
+  "source": {
+    "id": "PageHero.jsx:header.section",
+    "tag": "header",
+    "file": "src/components/pst/PageHero.jsx",
+    "lines": "17-50"
+  },
+  "semantic": {
+    "id": "hero.light-split",
+    "category": "HERO"
+  }
 }

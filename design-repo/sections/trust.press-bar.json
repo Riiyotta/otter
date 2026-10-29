@@ -51,5 +51,17 @@
   "observedOn": [
     "/"
   ],
-  "measuredFrom": "CLONE_SPEC.md:403-425"
+  "measuredFrom": "CLONE_SPEC.md:403-425",
+  "generatedAssetRoles": [],
+  "retrievalEligible": true,
+  "source": {
+    "id": "TrustBar.jsx:section.section",
+    "tag": "section",
+    "file": "src/components/TrustBar.jsx",
+    "lines": "11-34"
+  },
+  "semantic": {
+    "id": "trust.press-bar",
+    "category": "SOCIAL_PROOF"
+  }
 }

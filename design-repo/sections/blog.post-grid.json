@@ -32,7 +32,11 @@
             "assetRoleEnumRef": "assets/asset-roles.json#/roles",
             "allowedRoles": [
               "editorial.cover",
-              "photo.person"
+              "photo.person",
+              "illustration.generated",
+              "screenshot.placeholder",
+              "asset.operatorSupplied",
+              "person.fictional"
             ]
           },
           "tags": {
@@ -110,7 +114,11 @@
               "assetRoleEnumRef": "assets/asset-roles.json#/roles",
               "allowedRoles": [
                 "editorial.cover",
-                "photo.person"
+                "photo.person",
+                "illustration.generated",
+                "screenshot.placeholder",
+                "asset.operatorSupplied",
+                "person.fictional"
               ]
             },
             "tags": {
@@ -205,7 +213,11 @@
   },
   "assetRoles": [
     "editorial.cover",
-    "photo.person"
+    "photo.person",
+    "illustration.generated",
+    "screenshot.placeholder",
+    "asset.operatorSupplied",
+    "person.fictional"
   ],
   "observedOn": [
     "/blog"
@@ -215,5 +227,22 @@
     "Blog cards have NO hover state and NO transition. Do not add one.",
     "The pill's metrics are a cascade accident preserved on purpose: .w-pagination-next's base font-size:14px beats .btn's 1rem, and because .btn expresses padding and radius in em the whole pill scales down to 110x40.5 with a 1386px radius. The clone wins this with a 0,2,0 selector (.w-pagination-next.btn) rather than relying on source order \u2014 see docs/CASCADE.md.",
     "The hidden w-page-count still reads '1 / 4' because that is what the original ships; it describes the original collection, not this clone's 10 posts, and it is never visible or exposed to the a11y tree."
-  ]
+  ],
+  "generatedAssetRoles": [
+    "illustration.generated",
+    "screenshot.placeholder",
+    "asset.operatorSupplied",
+    "person.fictional"
+  ],
+  "retrievalEligible": true,
+  "source": {
+    "id": "Blog.jsx:section.section",
+    "tag": "section",
+    "file": "src/pages/Blog.jsx",
+    "lines": "62-93"
+  },
+  "semantic": {
+    "id": "blog.post-grid",
+    "category": "EDITORIAL"
+  }
 }

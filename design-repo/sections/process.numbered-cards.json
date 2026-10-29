@@ -26,7 +26,9 @@
         "type": "object",
         "assetRoleEnumRef": "assets/asset-roles.json#/roles",
         "allowedRoles": [
-          "illustration.editorial"
+          "illustration.editorial",
+          "illustration.generated",
+          "asset.operatorSupplied"
         ],
         "note": "Illo-Sitter-and-Kid.webp, max-width 70% with margin-bottom -56px so it overhangs the row"
       },
@@ -97,10 +99,27 @@
     "le479": "illustration margin-left -24px; bullet shrinks to 48px."
   },
   "assetRoles": [
-    "illustration.editorial"
+    "illustration.editorial",
+    "illustration.generated",
+    "asset.operatorSupplied"
   ],
   "observedOn": [
     "/"
   ],
-  "measuredFrom": "CLONE_SPEC.md:355-387"
+  "measuredFrom": "CLONE_SPEC.md:355-387",
+  "generatedAssetRoles": [
+    "illustration.generated",
+    "asset.operatorSupplied"
+  ],
+  "retrievalEligible": true,
+  "source": {
+    "id": "HowItWorks.jsx:section.section.how-it-works",
+    "tag": "section",
+    "file": "src/components/HowItWorks.jsx",
+    "lines": "59-127"
+  },
+  "semantic": {
+    "id": "process.numbered-cards",
+    "category": "FEATURES"
+  }
 }

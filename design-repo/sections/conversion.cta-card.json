@@ -35,9 +35,21 @@
           },
           "href": {
             "type": "string",
-            "enum": [
+            "anyOf": [
+              {
+                "enum": [
+                  "https://app.withotter.com/sign-up/welcome"
+                ]
+              },
+              {
+                "pattern": "^(https?://([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid)(/[^\\s]*)?|mailto:[^@\\s]+@([a-z0-9-]+\\.)*[a-z0-9-]+\\.(example|invalid))$"
+              }
+            ],
+            "x-cloneEnum": [
               "https://app.withotter.com/sign-up/welcome"
-            ]
+            ],
+            "x-generationPattern": "url.placeholder",
+            "x-modeNote": "mode:clone -> one of x-cloneEnum (CTA_HREF_NOT_NORMALISED). mode:generation -> a reserved .example/.invalid URL (GENERATION_MODE_URL); the source app host is rejected."
           },
           "variant": {
             "const": "dark"
@@ -53,7 +65,10 @@
         "type": "object",
         "assetRoleEnumRef": "assets/asset-roles.json#/roles",
         "allowedRoles": [
-          "photo.person"
+          "photo.person",
+          "person.fictional",
+          "illustration.generated",
+          "asset.operatorSupplied"
         ]
       },
       "blob": {
@@ -109,11 +124,31 @@
   },
   "assetRoles": [
     "photo.person",
-    "blob.fill"
+    "blob.fill",
+    "person.fictional",
+    "illustration.generated",
+    "asset.operatorSupplied"
   ],
   "observedOn": [
     "/parents",
     "/sitters"
   ],
-  "measuredFrom": "spec/SPEC_parents_sitters_trust.md:531-591"
+  "measuredFrom": "spec/SPEC_parents_sitters_trust.md:531-591",
+  "generatedAssetRoles": [
+    "blob.fill",
+    "person.fictional",
+    "illustration.generated",
+    "asset.operatorSupplied"
+  ],
+  "retrievalEligible": true,
+  "source": {
+    "id": "Parents.jsx:section.section.u-p-0.u-mb-3",
+    "tag": "section",
+    "file": "src/pages/Parents.jsx",
+    "lines": "91-107"
+  },
+  "semantic": {
+    "id": "conversion.cta-card",
+    "category": "CTA"
+  }
 }

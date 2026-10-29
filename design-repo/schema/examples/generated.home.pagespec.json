@@ -1,0 +1,208 @@
+{
+  "pageSpecVersion": "1.1.0",
+  "mode": "generation",
+  "route": "/",
+  "template": "home",
+  "designSystem": "marketing",
+  "theme": "marketing-light",
+  "tokens": {
+    "surface": "semantic.surface.page",
+    "text": "semantic.text.primary",
+    "fontDisplay": "typography.font.display",
+    "fontBody": "typography.font.sans",
+    "sectionPadding": "spacing.section.default",
+    "cardRadius": "radius.card",
+    "buttonRadius": "radius.pill"
+  },
+  "nodes": [
+    {
+      "section": "chrome.navbar",
+      "content": {
+        "variant": "home"
+      },
+      "motion": {
+        "pattern": "mobileNav.open",
+        "reducedMotionFallback": "instant-switch"
+      },
+      "variant": "home"
+    },
+    {
+      "section": "hero.dark-rounded",
+      "content": {
+        "heading": "Companions for the people you love",
+        "lede": "Kettlewood pairs families with vetted companions for everyday visits and errands.",
+        "cta": {
+          "label": "Find a companion",
+          "href": "https://kettlewood.example/start",
+          "variant": "cc-light"
+        },
+        "stones": [
+          {
+            "slot": "top-left",
+            "fill": "color.peach",
+            "media": {
+              "assetRole": "decorative.none"
+            }
+          },
+          {
+            "slot": "middle-left",
+            "fill": "color.olive",
+            "media": {
+              "assetRole": "decorative.none"
+            }
+          },
+          {
+            "slot": "bottom-left",
+            "fill": "none",
+            "media": {
+              "assetRole": "person.fictional",
+              "assetRef": "generated/person-hero-2.webp"
+            }
+          },
+          {
+            "slot": "top-right",
+            "fill": "color.celeste",
+            "media": {
+              "assetRole": "decorative.none"
+            }
+          },
+          {
+            "slot": "bottom-right",
+            "fill": "none",
+            "media": {
+              "assetRole": "person.fictional",
+              "assetRef": "generated/person-hero-4.webp"
+            }
+          }
+        ]
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      },
+      "variant": "home"
+    },
+    {
+      "section": "banner.beta-card",
+      "content": {
+        "eyebrow": "Now in early access",
+        "heading": "Kettlewood is opening in three new towns",
+        "body": "Join the waitlist and we will tell you when visits open near you.",
+        "cta": {
+          "label": "Join the waitlist",
+          "href": "https://kettlewood.example/start",
+          "variant": "cc-white"
+        },
+        "illustration": {
+          "assetRole": "illustration.generated",
+          "assetRef": "generated/art-1.svg"
+        }
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    },
+    {
+      "section": "process.numbered-cards",
+      "content": {
+        "eyebrow": "the visit flow",
+        "heading": "Three steps to a calmer week",
+        "illustration": {
+          "assetRole": "illustration.generated",
+          "assetRef": "generated/art-2.svg"
+        },
+        "cards": [
+          {
+            "number": 1,
+            "heading": "Share your routine",
+            "body": "Tell us about the visits, errands and hobbies that matter."
+          },
+          {
+            "number": 1,
+            "heading": "Meet your companion",
+            "body": "We introduce a vetted companion who fits your schedule."
+          },
+          {
+            "number": 1,
+            "heading": "Settle in together",
+            "body": "Visits run on your calendar and billing stays simple."
+          }
+        ]
+      },
+      "motion": {
+        "pattern": "scrollReveal.slideInBottom",
+        "reducedMotionFallback": "instant-visible"
+      }
+    },
+    {
+      "section": "conversion.join-card",
+      "content": {
+        "heading": "Become a Kettlewood companion",
+        "body": "Flexible hours, friendly neighbours and fair pay every week.",
+        "cta": {
+          "label": "Apply today",
+          "href": "https://kettlewood.example/start",
+          "variant": "button-primary"
+        }
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    },
+    {
+      "section": "trust.press-bar",
+      "content": {
+        "eyebrow": "Mentioned by",
+        "logoCount": 2
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      }
+    },
+    {
+      "section": "chrome.footer",
+      "content": {
+        "variant": "home"
+      },
+      "motion": {
+        "pattern": "none",
+        "reducedMotionFallback": "none"
+      },
+      "variant": "home"
+    }
+  ],
+  "generationContext": {
+    "brandName": "Kettlewood",
+    "brandMark": {
+      "assetRole": "placeholder.brandMark",
+      "assetRef": "placeholder/kettlewood-mark.svg"
+    },
+    "siteUrl": "https://kettlewood.example",
+    "appUrl": "https://app.kettlewood.example",
+    "socialLinks": [
+      {
+        "label": "Newsletter",
+        "href": "https://kettlewood.example/newsletter"
+      },
+      {
+        "label": "Community",
+        "href": "https://kettlewood.example/community"
+      }
+    ],
+    "pressLogos": [
+      {
+        "name": "Harbor Weekly",
+        "assetRole": "logo.placeholder",
+        "assetRef": "placeholder/press-harbor-weekly.svg"
+      },
+      {
+        "name": "Morning Ledger",
+        "assetRole": "logo.placeholder",
+        "assetRef": "placeholder/press-morning-ledger.svg"
+      }
+    ]
+  }
+}

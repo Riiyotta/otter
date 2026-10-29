@@ -109,5 +109,17 @@
   "measuredFrom": "spec/SPEC_blog_legal.md:528-601",
   "notes": [
     "DEVIATION recorded in the clone: the original fakes lists with <br> + ' - ' inside a <p>; the clone authors real <ul>. The vertical rhythm of those passages therefore differs from source."
-  ]
+  ],
+  "generatedAssetRoles": [],
+  "retrievalEligible": true,
+  "source": {
+    "id": "BlogPost.jsx:div.section",
+    "tag": "div",
+    "file": "src/pages/BlogPost.jsx",
+    "lines": "71-79"
+  },
+  "semantic": {
+    "id": "content.rich-text-body",
+    "category": "EDITORIAL"
+  }
 }

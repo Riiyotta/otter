@@ -1,0 +1,159 @@
+{
+  "version": "1.0.0",
+  "description": "Rules for token use in PageSpecs (BASELINE R10). Category names are real keys of tokens/llm/token-catalog.json counts.byCategory, slot names are real keys of the PageSpec `tokens` object, and every `allow` entry is a real catalog path; extraction/verify_all.py (token-policy check) resolves all three. schema/semantic_validate.py enforces the TOKEN_* rules on every PageSpec.",
+  "catalog": "tokens/llm/token-catalog.json",
+  "allowedTokenCategories": [
+    "authColor",
+    "authRadius",
+    "authSpacing",
+    "authTypography",
+    "breakpoint",
+    "clipPath",
+    "color",
+    "component",
+    "elevation",
+    "fontFamily",
+    "fontWeight",
+    "layout",
+    "motion",
+    "radius",
+    "semanticColor",
+    "spacing",
+    "typography"
+  ],
+  "notGenerationApproved": {
+    "categories": [
+      "colorLiteral"
+    ],
+    "reason": "Measured literal colours (overlay, focus rings, shadows, selection, placeholder, empty-state grey) are kept OUT of the brand palette by tokens/00-foundation/color.json itself. A PageSpec may not name them (TOKEN_NOT_APPROVED); verify_all.py checks this list equals the catalog's notGenerationApprovedCategories."
+  },
+  "forbiddenRawValues": {
+    "hexColor": "#[0-9A-Fa-f]{3,8}\\b",
+    "functionalColor": "\\b(rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\\s*\\(",
+    "namedColorInTokenSlot": "^(white|black|red|green|blue|yellow|orange|purple|pink|gray|grey|teal|navy|transparent|currentcolor)$",
+    "rawLength": "^-?\\d*\\.?\\d+\\s*(px|rem|em|vh|vw|vmin|vmax|%|pt|ch|ex)?$|calc\\(",
+    "scope": "hexColor and functionalColor are rejected in EVERY string of a PageSpec (copy included: a colour value never belongs in content). namedColorInTokenSlot and rawLength are rejected in token slots (TOKEN_RAW_COLOR / TOKEN_ARBITRARY_SPACING). A font slot holding anything but a fontFamily catalog path is TOKEN_UNSUPPORTED_FONT."
+  },
+  "rules": {
+    "TOKEN_UNKNOWN": "A token slot names a path that is not in tokens/llm/token-catalog.json.",
+    "TOKEN_RAW_COLOR": "A raw hex / rgb() / hsl() / named colour appears in a token slot or anywhere in the PageSpec.",
+    "TOKEN_ARBITRARY_SPACING": "A spacing or radius slot holds a raw length (px / rem / em / % / vh / vw / calc()) instead of a token.",
+    "TOKEN_UNSUPPORTED_FONT": "A font slot holds a font name or stack instead of one of the two catalog font families (typography.font.display, typography.font.sans).",
+    "TOKEN_SLOT_MISMATCH": "A real catalog token of the wrong kind for its slot (not in the slot's allow list).",
+    "TOKEN_NOT_APPROVED": "A token whose category is not generation-approved (colorLiteral).",
+    "TOKEN_THEME_COMBINATION": "A token outside the declared theme's tokenScopes (auth.* under marketing-light, marketing tokens under auth-light), a theme that does not match the designSystem, or text/surface that the theme resolves to a contrast below minTextContrast."
+  },
+  "pageSpecTokenSlots": {
+    "$comment": "Every token a PageSpec can name. `tokens.*` slots are the keys of the closed PageSpec `tokens` object (schema/pagespec.schema.json, generated from this list by schema/build_schema.py). nodeFill slots are the pre-existing per-node colour fields. `allow` is the closed list of catalog paths; the theme further restricts it by tokenScopes.",
+    "surface": {
+      "location": "tokens.surface",
+      "kind": "semanticColor",
+      "required": true,
+      "themeResolved": true,
+      "allow": [
+        "semantic.surface.page",
+        "semantic.surface.card",
+        "auth.color.surface.shell"
+      ],
+      "purpose": "Page background colour (marketing: the ivory .page-wrapper; auth: the flat shell)."
+    },
+    "text": {
+      "location": "tokens.text",
+      "kind": "semanticColor",
+      "required": true,
+      "themeResolved": true,
+      "contrastAgainst": "surface",
+      "allow": [
+        "semantic.text.primary",
+        "semantic.text.onInverse",
+        "auth.color.river"
+      ],
+      "purpose": "Body text colour; must reach minTextContrast against the surface slot in the declared theme."
+    },
+    "fontDisplay": {
+      "location": "tokens.fontDisplay",
+      "kind": "fontFamily",
+      "required": true,
+      "allow": [
+        "typography.font.display"
+      ],
+      "purpose": "Display family (Reckless Neue; h1)."
+    },
+    "fontBody": {
+      "location": "tokens.fontBody",
+      "kind": "fontFamily",
+      "required": true,
+      "allow": [
+        "typography.font.sans"
+      ],
+      "purpose": "Body family (Jokker)."
+    },
+    "sectionPadding": {
+      "location": "tokens.sectionPadding",
+      "kind": "spacing",
+      "required": true,
+      "allow": [
+        "spacing.section.default",
+        "spacing.section.footer",
+        "auth.spacing.lg",
+        "auth.spacing.xl"
+      ],
+      "purpose": "Vertical section rhythm; a token, never a measured length."
+    },
+    "cardRadius": {
+      "location": "tokens.cardRadius",
+      "kind": "radius",
+      "required": true,
+      "allow": [
+        "radius.card",
+        "radius.hero",
+        "radius.footerCard",
+        "radius.trustBar",
+        "auth.radius.sm",
+        "auth.radius.md",
+        "auth.radius.lg"
+      ],
+      "purpose": "Corner radius of cards and rounded containers."
+    },
+    "buttonRadius": {
+      "location": "tokens.buttonRadius",
+      "kind": "radius",
+      "required": true,
+      "allow": [
+        "radius.pill",
+        "radius.pillPx",
+        "auth.radius.sm",
+        "auth.radius.md",
+        "auth.radius.lg"
+      ],
+      "purpose": "Corner radius of buttons (.btn 99em pill, .button-primary 999px)."
+    }
+  },
+  "nodeFillSlots": {
+    "$comment": "Pre-existing colour fields inside section content (blob / stone / shape fills). Their schema enums must be a subset of `allow` plus the sentinel; verify_all.py checks every contract's fill enum against this list.",
+    "locations": [
+      "hero.dark-rounded content.stones[].fill",
+      "hero.light-split content.shapes[].fill",
+      "conversion.cta-card content.blob.fill"
+    ],
+    "kind": "color",
+    "allow": [
+      "color.celeste",
+      "color.coral",
+      "color.olive",
+      "color.peach",
+      "color.sandstone"
+    ],
+    "noFillSentinel": "none"
+  },
+  "themeRules": {
+    "$comment": "Pinned in code as PINNED_THEME_RULES in schema/semantic_validate.py and checked against this block by extraction/verify_all.py.",
+    "themeMustExist": "spec.theme must be a key of token-catalog.json themes.",
+    "themeDesignSystem": "spec.theme's designSystem (catalog themes.<theme>.designSystem) must equal spec.designSystem.",
+    "tokenScopes": "Every token a PageSpec names must have a themeScope listed in the theme's tokenScopes: marketing-light -> marketing + shared; auth-light -> auth + shared. The auth tokens must never be merged into the marketing set (and vice versa).",
+    "themeResolved": "A themeResolved slot may only name a token the declared theme resolves (themes.<theme>.semanticTokens).",
+    "minTextContrast": 4.5,
+    "contrast": "text resolved through the theme must reach minTextContrast (WCAG 2.x relative-luminance ratio) against surface. Rejects semantic.text.onInverse (#ffffff) on semantic.surface.page (#f8f6f5)."
+  },
+  "overrides": "A PageSpec carries no per-instance style override. It declares a closed set of page-level tokens in `tokens` (validated here) and the pre-existing per-node fill enums; styling inside a section stays owned by the section/component contracts. Nothing else in a PageSpec can carry a colour, length or font."
+}

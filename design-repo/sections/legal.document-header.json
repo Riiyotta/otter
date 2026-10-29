@@ -1,12 +1,11 @@
 {
-  "id": "legal.document-prose",
+  "id": "legal.document-header",
   "kind": "section",
-  "name": "Legal document",
+  "name": "Legal document header",
   "category": "legal",
   "designSystem": "marketing",
   "variants": [
-    "terms",
-    "privacy"
+    "default"
   ],
   "content": {
     "type": "object",
@@ -15,27 +14,21 @@
       "documentRef": {
         "enum": [
           "terms-of-use",
-          "privacy-policy"
+          "privacy-policy",
+          "operator-supplied"
         ],
-        "note": "An ENUM of the two real documents, not a body field. A PageSpec can only point at an existing signed-off document; it cannot carry legal prose."
+        "note": "An ENUM, never a body field. mode:clone -> one of the two real signed-off documents (terms-of-use: 25 heading-bounded parts, privacy-policy: 12). mode:generation -> operator-supplied (the deployer's legal owner supplies the text; GENERATION_MODE_LEGAL)."
       },
       "title": {
-        "enum": [
-          "Terms of use",
-          "Privacy Policy"
-        ]
-      },
-      "sectionCount": {
-        "type": "integer",
-        "minimum": 1,
-        "maximum": 40,
-        "note": "terms-of-use has 25 top-level sections, privacy-policy has 12. Recorded for structural validation only."
+        "type": "string",
+        "maxWords": 4,
+        "measuredLongestRealInstance": "\"Privacy Policy\" / \"Terms of use\" = 2 words",
+        "note": "mode:clone -> must equal the real document title (Terms of use / Privacy Policy), LEGAL_DOCUMENT_BINDING."
       }
     },
     "required": [
       "documentRef",
-      "title",
-      "sectionCount"
+      "title"
     ]
   },
   "constraints": {
@@ -58,8 +51,8 @@
     "note": "No entrance or scroll animation. Global .btn hover transitions only."
   },
   "responsive": {
-    "desktop": "single prose column; .splitter rules at 1px with 3em margin-block.",
-    "le991": "column narrows with the percentage container.",
+    "desktop": "div.section.u-pb-0 > .container > .row-justify-center > .col-lg-8 > .section-header > h1.u-mb-0 (200px tall at 1440).",
+    "le991": "column widens to col-md-12.",
     "le479": "same structure; section padding 48px 0."
   },
   "assetRoles": [],
@@ -69,6 +62,18 @@
   ],
   "measuredFrom": "spec/SPEC_blog_legal.md:634-662",
   "notes": [
-    "Two declared link repairs in the clone, both recorded rather than silently applied: a dead https://withotter.com/privacy link remapped to the local /privacy-policy route; and on /privacy-policy an orphaned href=\"#\" wired to the one real anchor id that already existed. One in-body href=\"#\" inside the binding-arbitration clause is deliberately LEFT INERT and flagged for content review, because synthesising an outbound URL there is a legal-content decision, not a build decision."
-  ]
+    "Split out of the former whole-page legal.document-prose section (R6): the measured legal body was 95.5% (/terms-of-use) and 90.6% (/privacy-policy) of the page at 1440px."
+  ],
+  "generatedAssetRoles": [],
+  "retrievalEligible": true,
+  "source": {
+    "id": "LegalDocument.jsx:div.section.u-pb-0",
+    "tag": "div",
+    "file": "src/components/legal/LegalDocument.jsx",
+    "lines": "38-48"
+  },
+  "semantic": {
+    "id": "legal.document-header",
+    "category": "LEGAL"
+  }
 }

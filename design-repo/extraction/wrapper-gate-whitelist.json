@@ -1,0 +1,4 @@
+{
+  "$comment": "Reviewed exceptions to extraction/wrapper_gate.py. Each entry needs route, section, rule (HERO_HEIGHT | SECTION_SHARE), maxHeightPx above the measured height, a 30+ char justification and reviewedBy; an agent reviewer must say \"agent attestation, not a human sign-off\". Stale entries fail the gate. Currently EMPTY: after the legal decomposition no measured section crosses an error threshold.",
+  "entries": []
+}

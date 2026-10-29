@@ -592,5 +592,967 @@
         "no TOC"
       ]
     }
-  ]
+  ],
+  "sectionHeights": {
+    "_note": "Measured from a LOCAL vite preview of the BUILT clone (not the live site) at 1440x900 by extraction/measure_sections.mjs. heightPx = getBoundingClientRect().height of the element SELECTORS names for the section (or a vertical range of it, see the script header), after a full scroll pass; position fixed/sticky elements are inFlow:false and take no page height. Repeatable nodes are recorded once per DOM instance (instance index). Consumed by extraction/wrapper_gate.py.",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "measuredAt": "2026-10-29",
+    "tool": "playwright chromium (headless), extraction/measure_sections.mjs",
+    "baseUrl": "local vite preview of the built clone",
+    "blogSlugMeasured": "series-a",
+    "notFoundProbe": "/__not-a-route__",
+    "routes": {
+      "*": {
+        "template": "not-found",
+        "url": "/__not-a-route__",
+        "pageHeight": 930,
+        "sections": [
+          {
+            "section": "chrome.navbar",
+            "variant": "site",
+            "selector": "nav.nav_wrapper",
+            "heightPx": 60,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "content.stub-notice",
+            "variant": null,
+            "selector": "main#main.section",
+            "heightPx": 200,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "chrome.footer",
+            "variant": "site",
+            "selector": "footer.section.cc-footer",
+            "heightPx": 574,
+            "position": "relative",
+            "inFlow": true
+          }
+        ]
+      },
+      "/": {
+        "template": "home",
+        "url": "/",
+        "pageHeight": 3771,
+        "sections": [
+          {
+            "section": "chrome.navbar",
+            "variant": "home",
+            "selector": "nav.nav_wrapper",
+            "heightPx": 60,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "hero.dark-rounded",
+            "variant": null,
+            "selector": ".page-wrapper > header.section.u-pt-0",
+            "heightPx": 832,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "banner.beta-card",
+            "variant": null,
+            "selector": ".page-wrapper > header.section.hp-banner",
+            "heightPx": 454,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "process.numbered-cards",
+            "variant": null,
+            "selector": "{\"range\":\"section.how-it-works\",\"until\":\"section.how-it-works .col.col-lg-12\"}",
+            "heightPx": 916,
+            "position": "relative",
+            "inFlow": true,
+            "measuredAs": "vertical range of section.how-it-works"
+          },
+          {
+            "section": "conversion.join-card",
+            "variant": null,
+            "selector": "{\"range\":\"section.how-it-works\",\"from\":\"section.how-it-works .col.col-lg-12\"}",
+            "heightPx": 543,
+            "position": "relative",
+            "inFlow": true,
+            "measuredAs": "vertical range of section.how-it-works"
+          },
+          {
+            "section": "trust.press-bar",
+            "variant": null,
+            "selector": "main#main > section:has(.trust-bar)",
+            "heightPx": 296,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "chrome.footer",
+            "variant": "home",
+            "selector": "footer.section.cc-footer",
+            "heightPx": 574,
+            "position": "relative",
+            "inFlow": true
+          }
+        ]
+      },
+      "/blog": {
+        "template": "blog-index",
+        "url": "/blog",
+        "pageHeight": 4174,
+        "sections": [
+          {
+            "section": "chrome.navbar",
+            "variant": "site",
+            "selector": "nav.nav_wrapper",
+            "heightPx": 60,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "hero.light-split",
+            "variant": "bare-image",
+            "selector": ".page-wrapper > header.section",
+            "heightPx": 421,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "blog.post-grid",
+            "variant": null,
+            "selector": "main#main > section",
+            "heightPx": 2383,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "conversion.cta-band",
+            "variant": null,
+            "selector": "main#main > div.section",
+            "heightPx": 640,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "chrome.footer",
+            "variant": "site",
+            "selector": "footer.section.cc-footer",
+            "heightPx": 574,
+            "position": "relative",
+            "inFlow": true
+          }
+        ]
+      },
+      "/blog-posts/:slug": {
+        "template": "blog-post",
+        "url": "/blog-posts/series-a",
+        "pageHeight": 2966,
+        "sections": [
+          {
+            "section": "chrome.navbar",
+            "variant": "site",
+            "selector": "nav.nav_wrapper",
+            "heightPx": 60,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "blog.post-header",
+            "variant": null,
+            "selector": ".page-wrapper > div.section.u-pb-0",
+            "heightPx": 660,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "content.rich-text-body",
+            "variant": null,
+            "selector": "main#main > div.section:nth-of-type(1)",
+            "heightPx": 808,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "blog.related-posts",
+            "variant": null,
+            "selector": "main#main > div.section:nth-of-type(2)",
+            "heightPx": 768,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "chrome.footer",
+            "variant": "site",
+            "selector": "footer.section.cc-footer",
+            "heightPx": 574,
+            "position": "relative",
+            "inFlow": true
+          }
+        ]
+      },
+      "/careers": {
+        "template": "careers",
+        "url": "/careers",
+        "pageHeight": 6631,
+        "sections": [
+          {
+            "section": "chrome.navbar",
+            "variant": "site",
+            "selector": "nav.nav_wrapper",
+            "heightPx": 60,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "hero.light-split",
+            "variant": "shape-stack",
+            "selector": ".page-wrapper > header.section",
+            "heightPx": 766,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "content.image-copy-split",
+            "variant": null,
+            "selector": "main#main > section:nth-of-type(1)",
+            "heightPx": 525,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "stats.grid",
+            "variant": "six-with-spacers",
+            "selector": "main#main > section:nth-of-type(2)",
+            "heightPx": 760,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "values.principle-cards",
+            "variant": null,
+            "selector": "main#main > section:nth-of-type(3)",
+            "heightPx": 824,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "benefits.card-grid",
+            "variant": null,
+            "selector": "main#main > section:nth-of-type(4)",
+            "heightPx": 1440,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "stats.grid",
+            "variant": "three-centered",
+            "selector": "main#main > section:nth-of-type(5)",
+            "heightPx": 710,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "jobs.listing-rows",
+            "variant": null,
+            "selector": "main#main > section#jobs",
+            "heightPx": 878,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "chrome.footer",
+            "variant": "site",
+            "selector": "footer.section.cc-footer",
+            "heightPx": 574,
+            "position": "relative",
+            "inFlow": true
+          }
+        ]
+      },
+      "/contact": {
+        "template": "contact",
+        "url": "/contact",
+        "pageHeight": 2043,
+        "sections": [
+          {
+            "section": "chrome.navbar",
+            "variant": "site",
+            "selector": "nav.nav_wrapper",
+            "heightPx": 60,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "hero.light-split",
+            "variant": "image-square",
+            "selector": ".page-wrapper > header.section",
+            "heightPx": 637,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "form.contact",
+            "variant": null,
+            "selector": "main#main > section",
+            "heightPx": 676,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "chrome.footer",
+            "variant": "site",
+            "selector": "footer.section.cc-footer",
+            "heightPx": 574,
+            "position": "relative",
+            "inFlow": true
+          }
+        ]
+      },
+      "/faq": {
+        "template": "faq-categories",
+        "url": "/faq",
+        "pageHeight": 2019,
+        "sections": [
+          {
+            "section": "chrome.navbar",
+            "variant": "site",
+            "selector": "nav.nav_wrapper",
+            "heightPx": 60,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "hero.light-split",
+            "variant": "shape-stack",
+            "selector": ".page-wrapper > header.section",
+            "heightPx": 732,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "faq.category-empty",
+            "variant": null,
+            "selector": "main#main > section",
+            "instance": 0,
+            "heightPx": 278,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "faq.category-empty",
+            "variant": null,
+            "selector": "main#main > section",
+            "instance": 1,
+            "heightPx": 278,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "chrome.footer",
+            "variant": "site",
+            "selector": "footer.section.cc-footer",
+            "heightPx": 574,
+            "position": "relative",
+            "inFlow": true
+          }
+        ]
+      },
+      "/log-in": {
+        "template": "auth-login",
+        "url": "/log-in",
+        "pageHeight": 900,
+        "sections": [
+          {
+            "section": "auth.login-form",
+            "variant": null,
+            "selector": "div.auth-screen",
+            "heightPx": 900,
+            "position": "static",
+            "inFlow": true
+          }
+        ]
+      },
+      "/parents": {
+        "template": "audience-landing",
+        "url": "/parents",
+        "pageHeight": 3621,
+        "sections": [
+          {
+            "section": "chrome.navbar",
+            "variant": "site",
+            "selector": "nav.nav_wrapper",
+            "heightPx": 60,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "hero.light-split",
+            "variant": "pst-stones",
+            "selector": ".page-wrapper > header.section",
+            "heightPx": 732,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "disclosure.tabs-accordion",
+            "variant": null,
+            "selector": "main#main > section:has(.cc-tabas-header)",
+            "heightPx": 692,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "conversion.cta-card",
+            "variant": null,
+            "selector": "main#main > section:has(.cc-cta)",
+            "heightPx": 480,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "testimonials.slider-empty",
+            "variant": null,
+            "selector": "main#main > section:has(.testimonials-contain)",
+            "heightPx": 640,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "faq.common-questions-empty",
+            "variant": null,
+            "selector": "main#main > section:last-of-type",
+            "heightPx": 300,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "chrome.footer",
+            "variant": "site",
+            "selector": "footer.section.cc-footer",
+            "heightPx": 574,
+            "position": "relative",
+            "inFlow": true
+          }
+        ]
+      },
+      "/privacy-policy": {
+        "template": "legal-prose",
+        "url": "/privacy-policy",
+        "pageHeight": 9856,
+        "sections": [
+          {
+            "section": "chrome.navbar",
+            "variant": "site",
+            "selector": "nav.nav_wrapper",
+            "heightPx": 60,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-header",
+            "variant": null,
+            "selector": ".page-wrapper > div.section.u-pb-0",
+            "heightPx": 200,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-intro",
+            "variant": null,
+            "selector": "main#main .col > div:first-child",
+            "heightPx": 298,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 0,
+            "heightPx": 2301,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 1,
+            "heightPx": 1149,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 2,
+            "heightPx": 933,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 3,
+            "heightPx": 1293,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 4,
+            "heightPx": 285,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 5,
+            "heightPx": 357,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 6,
+            "heightPx": 213,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 7,
+            "heightPx": 429,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 8,
+            "heightPx": 237,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 9,
+            "heightPx": 261,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 10,
+            "heightPx": 213,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 11,
+            "heightPx": 165,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "chrome.footer",
+            "variant": "site",
+            "selector": "footer.section.cc-footer",
+            "heightPx": 574,
+            "position": "relative",
+            "inFlow": true
+          }
+        ]
+      },
+      "/sitters": {
+        "template": "audience-landing",
+        "url": "/sitters",
+        "pageHeight": 3733,
+        "sections": [
+          {
+            "section": "chrome.navbar",
+            "variant": "site",
+            "selector": "nav.nav_wrapper",
+            "heightPx": 60,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "hero.light-split",
+            "variant": "pst-stones",
+            "selector": ".page-wrapper > header.section",
+            "heightPx": 732,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "disclosure.tabs-accordion",
+            "variant": null,
+            "selector": "main#main > section:has(.cc-tabas-header)",
+            "heightPx": 728,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "conversion.cta-card",
+            "variant": null,
+            "selector": "main#main > section:has(.cc-cta)",
+            "heightPx": 640,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "testimonials.slider-empty",
+            "variant": null,
+            "selector": "main#main > section:has(.testimonials-contain)",
+            "heightPx": 604,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "faq.common-questions-empty",
+            "variant": null,
+            "selector": "main#main > section:last-of-type",
+            "heightPx": 300,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "chrome.footer",
+            "variant": "site",
+            "selector": "footer.section.cc-footer",
+            "heightPx": 574,
+            "position": "relative",
+            "inFlow": true
+          }
+        ]
+      },
+      "/terms-of-use": {
+        "template": "legal-prose",
+        "url": "/terms-of-use",
+        "pageHeight": 20679,
+        "sections": [
+          {
+            "section": "chrome.navbar",
+            "variant": "site",
+            "selector": "nav.nav_wrapper",
+            "heightPx": 60,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-header",
+            "variant": null,
+            "selector": ".page-wrapper > div.section.u-pb-0",
+            "heightPx": 200,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-intro",
+            "variant": null,
+            "selector": "main#main .col > div:first-child",
+            "heightPx": 176,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 0,
+            "heightPx": 525,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 1,
+            "heightPx": 429,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 2,
+            "heightPx": 549,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 3,
+            "heightPx": 549,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 4,
+            "heightPx": 1989,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 5,
+            "heightPx": 741,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 6,
+            "heightPx": 569,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 7,
+            "heightPx": 381,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 8,
+            "heightPx": 549,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 9,
+            "heightPx": 257,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 10,
+            "heightPx": 1485,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 11,
+            "heightPx": 501,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 12,
+            "heightPx": 213,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 13,
+            "heightPx": 1053,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 14,
+            "heightPx": 645,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 15,
+            "heightPx": 957,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 16,
+            "heightPx": 429,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 17,
+            "heightPx": 2637,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 18,
+            "heightPx": 285,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 19,
+            "heightPx": 309,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 20,
+            "heightPx": 357,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 21,
+            "heightPx": 981,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 22,
+            "heightPx": 141,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 23,
+            "heightPx": 693,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "legal.document-part",
+            "variant": null,
+            "selector": "main#main .col > div:not(:first-child)",
+            "instance": 24,
+            "heightPx": 933,
+            "position": "static",
+            "inFlow": true
+          },
+          {
+            "section": "chrome.footer",
+            "variant": "site",
+            "selector": "footer.section.cc-footer",
+            "heightPx": 574,
+            "position": "relative",
+            "inFlow": true
+          }
+        ]
+      },
+      "/trust-safety": {
+        "template": "trust-safety",
+        "url": "/trust-safety",
+        "pageHeight": 3558,
+        "sections": [
+          {
+            "section": "chrome.navbar",
+            "variant": "site",
+            "selector": "nav.nav_wrapper",
+            "heightPx": 60,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "hero.light-split",
+            "variant": "pst-stones",
+            "selector": ".page-wrapper > header.section",
+            "heightPx": 732,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "trust.video-and-cards",
+            "variant": null,
+            "selector": "main#main > section",
+            "heightPx": 2096,
+            "position": "relative",
+            "inFlow": true
+          },
+          {
+            "section": "chrome.footer",
+            "variant": "site",
+            "selector": "footer.section.cc-footer",
+            "heightPx": 574,
+            "position": "relative",
+            "inFlow": true
+          }
+        ]
+      }
+    }
+  }
 }

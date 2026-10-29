@@ -53,7 +53,10 @@
               "type": "object",
               "assetRoleEnumRef": "assets/asset-roles.json#/roles",
               "allowedRoles": [
-                "photo.person"
+                "photo.person",
+                "person.fictional",
+                "illustration.generated",
+                "asset.operatorSupplied"
               ]
             }
           },
@@ -105,7 +108,10 @@
     "le479": "the active trigger's top corners animate 99px -> 20px over 300ms."
   },
   "assetRoles": [
-    "photo.person"
+    "photo.person",
+    "person.fictional",
+    "illustration.generated",
+    "asset.operatorSupplied"
   ],
   "observedOn": [
     "/parents",
@@ -114,5 +120,21 @@
   "measuredFrom": "spec/SPEC_parents_sitters_trust.md:350-377",
   "notes": [
     "CASCADE: requires a.tab-trigger{display:flex}. A bare .tab-trigger{display:flex} loses at equal specificity to index.css's .w-inline-block{display:inline-block}, which measurably rendered the pills 60.8px instead of 48px. See docs/CASCADE.md."
-  ]
+  ],
+  "generatedAssetRoles": [
+    "person.fictional",
+    "illustration.generated",
+    "asset.operatorSupplied"
+  ],
+  "retrievalEligible": true,
+  "source": {
+    "id": "Parents.jsx:section.section",
+    "tag": "section",
+    "file": "src/pages/Parents.jsx",
+    "lines": "80-89"
+  },
+  "semantic": {
+    "id": "disclosure.tabs-accordion",
+    "category": "FEATURES"
+  }
 }
